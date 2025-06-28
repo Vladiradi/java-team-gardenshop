@@ -34,13 +34,13 @@ git push origin mybranch
 
 ## 📌 Полезные ссылки
 
-- 📘 [Макет (Figma или PDF)](https://www.figma.com/design/SDNWLzCWkh9ZXdCpWEaByv/project-frontend?node-id=0-1&p=f) 
+- 📘 [Макет](https://www.figma.com/design/SDNWLzCWkh9ZXdCpWEaByv/project-frontend?node-id=0-1&p=f) 
  
 
 - 📄 [Техническое задание](https://docs.google.com/document/d/1Xn41eFhdYAJVYzRucsNwpbLJ5lNxdvpfx__SZf5DwXA/edit?tab=t.0)
 
 
--  🚀 [Демо-версия (deploy)](https://) *( appear later)*
+-  🚀 [Демо-версия](https://) *( appear later)*
 
 
 ---

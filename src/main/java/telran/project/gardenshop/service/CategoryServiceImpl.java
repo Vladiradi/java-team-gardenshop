@@ -1,4 +1,4 @@
-package service;
+package telran.project.gardenshop.service;
 
 import java.util.List;
 import java.util.Collectors;

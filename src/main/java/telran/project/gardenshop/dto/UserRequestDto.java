@@ -1,7 +1,7 @@
 package telran.project.gardenshop.dto;
 
 import lombok.Data;
-import enums.Role;
+import telran.project.gardenshop.enums.Role;
 
 @Data
 public class UserRequestDto {

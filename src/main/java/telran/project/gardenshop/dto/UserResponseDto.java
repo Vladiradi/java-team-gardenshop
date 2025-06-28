@@ -1,8 +1,9 @@
 package telran.project.gardenshop.dto;
 
+import telran.project.gardenshop.enums.Role;
 import lombok.Data;
-import enums.Role;
 
+@Data
 public class UserResponseDto {
     private Long id;
     private String email;

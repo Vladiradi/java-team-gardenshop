@@ -2,7 +2,8 @@ package telran.project.gardenshop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import enums.Role;
+import lombok.Builder;
+import telran.project.gardenshop.enums.Role;
 
 @Entity
 @Table(name = "users")
@@ -29,5 +30,6 @@ public class User {
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private Role role = Role.USER;
 }

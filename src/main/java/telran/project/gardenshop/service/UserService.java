@@ -1,7 +1,7 @@
 package telran.project.gardenshop.service;
 
-import dto.UserRequestDto;
-import dto.UserResponseDto;
+import telran.project.gardenshop.dto.UserRequestDto;
+import telran.project.gardenshop.dto.UserResponseDto;
 
 import java.util.List;
 

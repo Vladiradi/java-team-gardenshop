@@ -1,5 +1,4 @@
 package telran.project.gardenshop.mapper;
-package telran.project.gardenshop.mapper;
 
 import org.mapstruct.Mapper;
 import telran.project.gardenshop.dto.CategoryRequestDto;

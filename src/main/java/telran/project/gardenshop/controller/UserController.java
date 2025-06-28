@@ -1,9 +1,12 @@
 package telran.project.gardenshop.controller;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.UserRequestDto;
 import telran.project.gardenshop.dto.UserResponseDto;
 import telran.project.gardenshop.service.UserService;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -12,7 +15,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserResponseDto create(@RequestBody UserRequestDto dto) {
+    public UserResponseDto create(@Valid @RequestBody UserRequestDto dto) {
         return userService.create(dto);
     }
 

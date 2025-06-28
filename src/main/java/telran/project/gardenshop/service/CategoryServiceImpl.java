@@ -1,28 +1,39 @@
 package telran.project.gardenshop.service;
 
+import telran.project.gardenshop.dto.CategoryRequestDto;
+import telran.project.gardenshop.dto.CategoryResponseDto;
+import telran.project.gardenshop.entity.Category;
+import telran.project.gardenshop.repository.CategoryRepository;
+import telran.project.gardenshop.mapper.CategoryMapper;
+import telran.project.gardenshop.exception.CategoryNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Collectors;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
+@Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService{
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
     @Override
-    public CategoryResponceDto create(CategoryRequestDto dto) {
+    public CategoryResponseDto create(CategoryRequestDto dto) {
         Category category = categoryMapper.toEntity(dto);
         return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Override
-    public List<CategoryResponceDto> getAll() {
+    public List<CategoryResponseDto> getAll() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CategoryResponceDto getById(Long id) {
+    public CategoryResponseDto getById(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Category not found"));
         return categoryMapper.toDto(category);
@@ -35,6 +46,5 @@ public class CategoryServiceImpl implements CategoryService{
         }
         categoryRepository.deleteById(id);
     }
-
 
 }

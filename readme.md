@@ -1,6 +1,6 @@
 
-# 🌿 Java Team Project – Garden Shop Backend
-#### Telran-BE 2025
+# 🌿 Java Team Project – GardenShop
+### Telran School BE 2025
  Командный backend-проект онлайн-магазина товаров для дома и сада, реализованный на Java Spring Boot.
 
  

@@ -2,7 +2,7 @@ package telran.project.gardenshop.dto;
 import lombok.Data;
 
 @Data
-public class CategoryResponceDto {
+public class CategoryResponseDto {
     private Long id;
     private String category;
 }

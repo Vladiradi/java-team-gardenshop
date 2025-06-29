@@ -16,5 +16,5 @@ public class ProductResponseDto {
     private String description;
     private double price;
     private String imageUrl;
-    private Category category; // можно также вернуть categoryId или объект
+    private CategoryResponseDto category; // можно также вернуть categoryId или объект
 }

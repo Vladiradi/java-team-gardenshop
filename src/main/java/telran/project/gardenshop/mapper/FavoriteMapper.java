@@ -1,8 +1,6 @@
 package telran.project.gardenshop.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
 import telran.project.gardenshop.dto.FavoriteRequestDto;
 import telran.project.gardenshop.dto.FavoriteResponseDto;
 import telran.project.gardenshop.entity.Favorite;

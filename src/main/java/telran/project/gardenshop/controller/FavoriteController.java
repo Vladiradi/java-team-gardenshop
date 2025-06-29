@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.FavoriteRequestDto;
 import telran.project.gardenshop.dto.FavoriteResponseDto;
-import telran.project.gardenshop.entity.Favorite;
 import telran.project.gardenshop.service.FavoriteService;
 
 import java.util.List;

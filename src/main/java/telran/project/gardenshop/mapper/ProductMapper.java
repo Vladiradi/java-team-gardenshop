@@ -2,6 +2,7 @@ package telran.project.gardenshop.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import telran.project.gardenshop.dto.CategoryResponseDto;
 import telran.project.gardenshop.dto.ProductRequestDto;
 import telran.project.gardenshop.dto.ProductResponseDto;
@@ -11,30 +12,10 @@ import telran.project.gardenshop.entity.Product;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    Product toEntity(ProductRequestDto dto);
-
-    @Mapping(target = "category", source = "category") // в ProductResponseDto category — строка?
+    @Mapping(target = "category", source = "category.category") // или category.name — в зависимости от поля
     ProductResponseDto toDto(Product product);
 
-    // Явный метод преобразования Category в CategoryResponseDto
-    default CategoryResponseDto map(Category category) {
-        if (category == null) {
-            return null;
-        }
-        return CategoryResponseDto.builder()
-                .id(category.getId())
-                .category(category.getCategory())
-                .build();
-    }
+    // Для создания сущности из DTO — не мапим category, тк у нас только имя категории в DTO
+    Product toEntity(ProductRequestDto dto);
 
-    // Аналогично для обратного преобразования, если нужно
-    default Category map(CategoryResponseDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        return Category.builder()
-                .id(dto.getId())
-                .category(dto.getCategory())
-                .build();
-    }
 }

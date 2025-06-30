@@ -18,6 +18,7 @@ import telran.project.gardenshop.enums.Role;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     @EqualsAndHashCode.Include
     private Long id;
     private String fullName;
@@ -31,5 +32,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
+    @Column(nullable = false)
     private Role role = Role.USER;
+
+    //Добавить @CreationTimestamp для поля "дата регистрации", если нужно.
 }

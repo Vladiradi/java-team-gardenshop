@@ -13,8 +13,8 @@ import telran.project.gardenshop.entity.Category;
 public class ProductResponseDto {
     private Long id;
     private String name;
+    private String imageUrl;
     private String description;
     private double price;
-    private String imageUrl;
-    private CategoryResponseDto category; // можно также вернуть categoryId или объект
+    private String category; // только имя категории
 }

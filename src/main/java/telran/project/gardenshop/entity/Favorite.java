@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "favorites")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +25,8 @@ public class Favorite {
     @ManyToOne(optional = false)
     private Product product;
 
+    @Column(nullable = false, updatable = false)
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 }
 

@@ -34,11 +34,7 @@ public class FavoriteServiceImpl implements FavoriteService {
             Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
-            Favorite favorite = Favorite.builder()
-                    .user(user)
-                    .product(product)
-                    .createdAt(LocalDateTime.now())
-                    .build();
+            Favorite favorite = favoriteMapper.toEntity(user, product);
             favoriteRepository.save(favorite);
         }
     }

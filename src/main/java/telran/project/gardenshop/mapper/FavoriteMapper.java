@@ -21,19 +21,18 @@ public interface FavoriteMapper {
         return FavoriteResponseDto.builder()
                 .productId(product.getId())
                 .productName(product.getName())
-                .price((int) product.getPrice())  // приведение к int, если price — double
+                .price((int) product.getPrice())
                 .imageUrl(product.getImageUrl())
                 .build();
     }
 
     List<FavoriteResponseDto> toDtoList(List<Favorite> favorites);
 
-    default Favorite toEntity(FavoriteRequestDto dto) {
-        if (dto == null) return null;
-        User user = new User();
-        user.setId(dto.getUserId());
-        Product product = new Product();
-        product.setId(dto.getProductId());
+    // Метод для создания Favorite из готовых сущностей User и Product
+    default Favorite toEntity(User user, Product product) {
+        if (user == null || product == null) {
+            return null;
+        }
         return Favorite.builder()
                 .user(user)
                 .product(product)

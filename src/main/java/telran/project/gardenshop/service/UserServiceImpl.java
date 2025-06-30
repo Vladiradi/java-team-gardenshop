@@ -10,6 +10,7 @@ import telran.project.gardenshop.enums.Role;
 import telran.project.gardenshop.exception.UserNotFoundException;
 import telran.project.gardenshop.repository.UserRepository;
 import telran.project.gardenshop.service.UserService;
+import telran.project.gardenshop.mapper.UserMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Override
     public UserResponseDto create(UserRequestDto dto) {
@@ -30,14 +32,14 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(dto.getPhoneNumber())
                 .role(dto.getRole() != null ? dto.getRole() : Role.USER)
                 .build();
-        return toDto(repository.save(user));
+        return userMapper.toDto(repository.save(user));
     }
 
     @Override
     public List<UserResponseDto> getAll() {
         return repository.findAll()
                 .stream()
-                .map(this::toDto)
+                .map(userMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -45,7 +47,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto getById(Long id) {
         User user = repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-        return toDto(user);
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -54,15 +56,5 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException(id);
         }
         repository.deleteById(id);
-    }
-
-    private UserResponseDto toDto(User user) {
-        UserResponseDto dto = new UserResponseDto();
-        dto.setId(user.getId());
-        dto.setEmail(user.getEmail());
-        dto.setFullName(user.getFullName());
-        dto.setPhoneNumber(user.getPhoneNumber());
-        dto.setRole(user.getRole());
-        return dto;
     }
 }

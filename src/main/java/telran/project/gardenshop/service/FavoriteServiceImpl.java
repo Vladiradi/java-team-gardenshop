@@ -1,6 +1,7 @@
 package telran.project.gardenshop.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import telran.project.gardenshop.dto.FavoriteResponseDto;
@@ -43,11 +44,13 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
+    @Transactional
     public void removeFromFavorites(Long userId, Long productId) {
         favoriteRepository.deleteByUserIdAndProductId(userId, productId);
     }
 
     @Override
+    @Transactional
     public List<FavoriteResponseDto> getFavoritesByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));

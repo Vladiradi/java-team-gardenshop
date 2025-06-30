@@ -1,6 +1,7 @@
 package telran.project.gardenshop.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import telran.project.gardenshop.entity.Favorite;
 import telran.project.gardenshop.entity.User;
 
@@ -14,7 +15,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     Optional<Favorite> findByUserIdAndProductId(Long userId, Long productId);
 
     boolean existsByUserIdAndProductId(Long userId, Long productId);
-
+    @Modifying
     void deleteByUserIdAndProductId(Long userId, Long productId);
 }
 //Можно использовать оба варианта в зависимости от ситуации:

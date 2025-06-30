@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class FavoriteResponseDto {
-    private Long id;
-    private UserResponseDto user;
-    private ProductResponseDto product;
-    private LocalDateTime createdAt;
+    private Long productId;
+    private String productName;
+    private int price;
+    private String imageUrl;
 }

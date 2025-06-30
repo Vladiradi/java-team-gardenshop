@@ -13,21 +13,27 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface FavoriteMapper {
 
-    FavoriteResponseDto toDto(Favorite favorite);
+    default FavoriteResponseDto toDto(Favorite favorite) {
+        if (favorite == null || favorite.getProduct() == null) {
+            return null;
+        }
+        Product product = favorite.getProduct();
+        return FavoriteResponseDto.builder()
+                .productId(product.getId())
+                .productName(product.getName())
+                .price((int) product.getPrice())  // приведение к int, если price — double
+                .imageUrl(product.getImageUrl())
+                .build();
+    }
 
     List<FavoriteResponseDto> toDtoList(List<Favorite> favorites);
 
-    // В этом методе мы НЕ сможем напрямую замапить userId → User и productId → Product,
-    // поэтому лучше использовать ручной mapping:
     default Favorite toEntity(FavoriteRequestDto dto) {
         if (dto == null) return null;
-
         User user = new User();
         user.setId(dto.getUserId());
-
         Product product = new Product();
         product.setId(dto.getProductId());
-
         return Favorite.builder()
                 .user(user)
                 .product(product)

@@ -1,0 +1,11 @@
+🔧 Как убрать H2 полностью (если не используешь):
+Удали из pom.xml:
+
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+</dependency>
+Или отключи только консоль:
+properties
+
+spring.h2.console.enabled=false

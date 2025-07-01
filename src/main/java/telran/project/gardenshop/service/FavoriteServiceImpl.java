@@ -29,11 +29,8 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public void addToFavorites(Long userId, Long productId) {
         if (!favoriteRepository.existsByUserIdAndProductId(userId, productId)) {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
-            Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
+            User user = findUserById(userId);
+            Product product = findProductById(productId);
             Favorite favorite = favoriteMapper.toEntity(user, product);
             favoriteRepository.save(favorite);
         }
@@ -48,9 +45,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional
     public List<FavoriteResponseDto> getFavoritesByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
+        User user = findUserById(userId);
         return favoriteRepository.findByUser(user).stream()
                 .map(favoriteMapper::toDto)
                 .collect(Collectors.toList());
@@ -59,5 +54,15 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public boolean isFavorite(Long userId, Long productId) {
         return favoriteRepository.existsByUserIdAndProductId(userId, productId);
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
 }

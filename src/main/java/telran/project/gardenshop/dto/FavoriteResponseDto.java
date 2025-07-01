@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class FavoriteResponseDto {
     private Long productId;
     private String productName;
-    private int price;
+    private double price;
     private String imageUrl;
 }

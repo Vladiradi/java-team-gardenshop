@@ -1,6 +1,7 @@
 package telran.project.gardenshop.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import telran.project.gardenshop.dto.FavoriteRequestDto;
 import telran.project.gardenshop.dto.FavoriteResponseDto;
 import telran.project.gardenshop.entity.Favorite;
@@ -13,22 +14,14 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface FavoriteMapper {
 
-    default FavoriteResponseDto toDto(Favorite favorite) {
-        if (favorite == null || favorite.getProduct() == null) {
-            return null;
-        }
-        Product product = favorite.getProduct();
-        return FavoriteResponseDto.builder()
-                .productId(product.getId())
-                .productName(product.getName())
-                .price((int) product.getPrice())
-                .imageUrl(product.getImageUrl())
-                .build();
-    }
+    @Mapping(source = "product.id", target = "productId")
+    @Mapping(source = "product.name", target = "productName")
+    @Mapping(source = "product.price", target = "price")
+    @Mapping(source = "product.imageUrl", target = "imageUrl")
+    FavoriteResponseDto toDto(Favorite favorite);
 
-    List<FavoriteResponseDto> toDtoList(List<Favorite> favorites);
-
-    // Метод для создания Favorite из готовых сущностей User и Product
+    // Для создания Favorite из User и Product MapStruct не умеет маппить сразу из двух источников,
+    // поэтому используем default метод, чтобы сохранить логику централизованной конвертации
     default Favorite toEntity(User user, Product product) {
         if (user == null || product == null) {
             return null;
@@ -40,3 +33,5 @@ public interface FavoriteMapper {
                 .build();
     }
 }
+
+

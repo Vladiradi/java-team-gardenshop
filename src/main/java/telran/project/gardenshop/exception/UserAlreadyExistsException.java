@@ -9,4 +9,5 @@ public class UserAlreadyExistsException extends RuntimeException {
         super("User with " + field + " '" + value + "' already exists");
     }
 
+
 }

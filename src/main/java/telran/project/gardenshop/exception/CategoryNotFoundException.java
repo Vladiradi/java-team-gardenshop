@@ -9,4 +9,5 @@ public class CategoryNotFoundException extends RuntimeException {
         super("Category with name '" + name + "' not found");
     }
 
+
 }

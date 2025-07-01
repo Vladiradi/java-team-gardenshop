@@ -5,4 +5,5 @@ public class FavoriteAlreadyExistsException extends RuntimeException {
         super("Favorite for user " + userId + " and product " + productId + " already exists");
     }
 
+
 }

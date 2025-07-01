@@ -9,4 +9,5 @@ public class FavoriteNotFoundException extends RuntimeException {
         super("Favorite for user " + userId + " and product " + productId + " not found");
     }
 
+
 }

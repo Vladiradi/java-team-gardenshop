@@ -47,19 +47,19 @@ git push origin mybranch
 
 ## ⚙️ Стек технологий
 
-| Технология      | Назначение                          |
-|-----------------|-------------------------------------|
-| Java 23         | Язык программирования               |
-| Spring Boot     | Backend фреймворк                   |
-| Spring Web      | Обработка HTTP-запросов             |
-| Spring Data JPA | Работа с базой данных через ORM     |
-| Hibernate       | Провайдер JPA                       |
-| MySQL / H2      | Реляционная БД (prod/dev)           |
-| Lombok          | Генерация шаблонного кода           |
-| MapStruct       | Маппинг DTO ↔ Entity                |
-| Liquibase       | Миграции базы данных                |
-| Maven           | Система сборки                      |
-| JUnit / Mockito | Тестирование                        |
+| Технология      | Назначение                      |
+|-----------------|---------------------------------|
+| Java 21         | Язык программирования           |
+| Spring Boot     | Backend фреймворк               |
+| Spring Web      | Обработка HTTP-запросов         |
+| Spring Data JPA | Работа с базой данных через ORM |
+| Hibernate       | Провайдер JPA                   |
+| PostgreSQL / H2 | Реляционная БД (prod/test)      |
+| Lombok          | Генерация шаблонного кода       |
+| MapStruct       | Маппинг DTO ↔ Entity            |
+| Liquibase       | Миграции базы данных            |
+| Maven           | Система сборки                  |
+| JUnit / Mockito | Тестирование                    |
 
 ---
 

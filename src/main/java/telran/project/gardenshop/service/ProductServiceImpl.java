@@ -1,5 +1,7 @@
 package telran.project.gardenshop.service;
 
+import telran.project.gardenshop.mapper.ProductMapper;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import telran.project.gardenshop.dto.ProductRequestDto;
@@ -20,6 +22,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductMapper productMapper;
 
     @Override
     public ProductResponseDto createProduct(ProductRequestDto requestDto) {
@@ -35,20 +38,20 @@ public class ProductServiceImpl implements ProductService {
                 .build();
 
         productRepository.save(product);
-        return convertToDto(product);
+        return productMapper.toDto(product);
     }
 
     @Override
     public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        return convertToDto(product);
+        return productMapper.toDto(product);
     }
 
     @Override
     public List<ProductResponseDto> getAllProducts() {
         return productRepository.findAll().stream()
-                .map(this::convertToDto)
+                .map(productMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -67,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category);
 
         productRepository.save(product);
-        return convertToDto(product);
+        return productMapper.toDto(product);
     }
 
     @Override

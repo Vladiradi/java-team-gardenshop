@@ -25,29 +25,29 @@ public class ProductController {
     @Operation(summary = "Добавить новый товар")
     @PostMapping
     public ResponseEntity<ProductResponseDto> create(@RequestBody ProductRequestDto dto) {
-        return ResponseEntity.status(201)
-                .body(productMapper.toDto(productService.createProduct(dto)));
+        var responseDto = productService.createProduct(dto);
+        return ResponseEntity.status(201).body(responseDto);
     }
 
     @Operation(summary = "Получить товар по ID")
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(productMapper.toDto(productService.getProductById(id)));
+        var responseDto = productService.getProductById(id);
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Получить все товары")
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getAll() {
-        return ResponseEntity.ok(productService.getAllProducts().stream()
-                .map(productMapper::toDto)
-                .collect(Collectors.toList()));
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @Operation(summary = "Обновить товар")
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
                                                      @RequestBody ProductRequestDto dto) {
-        return ResponseEntity.ok(productMapper.toDto(productService.updateProduct(id, dto)));
+        var responseDto = productService.updateProduct(id, dto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @Operation(summary = "Удалить товар")

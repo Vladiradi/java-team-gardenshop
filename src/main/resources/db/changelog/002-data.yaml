@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002
+      author: vlad
+      changes:
+        - sql:
+            sql: |
+              TRUNCATE TABLE favorites RESTART IDENTITY CASCADE;
+              TRUNCATE TABLE products RESTART IDENTITY CASCADE;
+              TRUNCATE TABLE categories RESTART IDENTITY CASCADE;
+              TRUNCATE TABLE app_users RESTART IDENTITY CASCADE;
+
+              INSERT INTO app_users (name, email, phone_number, password_hash, role)
+              VALUES
+                  ('Anna Petrova', 'anna.petrova@garden.ru', '+79001112233', 'pw123', 'ROLE_USER'),
+                  ('Sergey Ivanov', 'sergey.ivanov@plants.ru', '+79004567890', 'pw123', 'ROLE_USER'),
+                  ('Elena Sidorova', 'elena.sidorova@flowershop.ru', '+79007894561', 'pw123', 'ROLE_USER'),
+                  ('Dmitry Smirnov', 'dmitry.smirnov@greenzone.ru', '+79006543210', 'pw123', 'ROLE_USER');
+
+              INSERT INTO categories (name)
+              VALUES
+                  ('Удобрения и подкормки'),
+                  ('Защита растений'),
+                  ('Семена и рассада'),
+                  ('Инструменты для сада'),
+                  ('Горшки и кашпо');
+
+              INSERT INTO products (name, discount_price, price, category_id, description, image_url)
+              VALUES
+                  ('Комплексное удобрение для роз', 5.99, 8.99, 1, 'Минеральное удобрение для пышного цветения роз', 'https://example.com/images/rose_fertilizer.jpg'),
+                  ('Органическое удобрение BioGrow', 9.90, 13.50, 1, 'Подходит для всех овощей и цветов', 'https://example.com/images/biogrow.jpg'),
+                  ('Средство от тли и паутинного клеща', 6.45, 9.20, 2, 'Безопасный спрей от вредителей', 'https://example.com/images/pest_spray.jpg'),
+                  ('Гранулы от слизней', 4.99, 7.25, 2, 'Эффективная защита от слизней и улиток', 'https://example.com/images/snail_granules.jpg'),
+                  ('Семена огурцов (сорт Вязниковский)', 1.90, 2.90, 3, 'Высокая урожайность, устойчив к болезням', 'https://example.com/images/cucumber_seeds.jpg'),
+                  ('Семена петунии махровой', 2.25, 3.50, 3, 'Яркие цветы для клумб и горшков', 'https://example.com/images/petunia_seeds.jpg'),
+                  ('Ножницы садовые с усилителем', 14.90, 19.99, 4, 'Удобные ножницы для обрезки веток', 'https://example.com/images/garden_shears.jpg'),
+                  ('Лейка металлическая 5л', 9.99, 14.50, 4, 'Надёжная оцинкованная лейка', 'https://example.com/images/metal_watering_can.jpg'),
+                  ('Кашпо настенное керамическое', 11.45, 16.90, 5, 'Декоративное кашпо для подвесных растений', 'https://example.com/images/wall_pot.jpg'),
+                  ('Горшок пластиковый для орхидей', 3.99, 6.25, 5, 'Прозрачный горшок с дренажем', 'https://example.com/images/orchid_pot.jpg');
+
+              INSERT INTO favorites (user_id, product_id)
+              VALUES
+                  (1, 2),
+                  (1, 6),
+                  (2, 1),
+                  (2, 7),
+                  (3, 4),
+                  (4, 9),
+                  (4, 5);

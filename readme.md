@@ -67,9 +67,9 @@ git push origin mybranch
 
 | Участник            | Контакты                           | Вклад в проект |
 |---------------------|------------------------------------|----------------|
-| Vladimir Ryzhov     | [LinkedIn](https://linkedin.com/in/) | Архитектура    |
-| Arkady Zon          | [LinkedIn](https://linkedin.com/in/) | -              |
-| Anyuta Boldt        | [LinkedIn](https://linkedin.com/in/) | -              |
-| Liudmyla Lermolenko | [LinkedIn](https://linkedin.com/in/) | -              |
+| Vladimir Ryzhov     | [LinkedIn](https://linkedin.com/in/) | Team Lead      |
+| Arkady Zon          | [LinkedIn](https://linkedin.com/in/) | Exception      |
+| Anyuta Boldt        | [LinkedIn](https://linkedin.com/in/) | Testing        |
+| Liudmyla Lermolenko | [LinkedIn](https://linkedin.com/in/) | Favorites      |
 
 

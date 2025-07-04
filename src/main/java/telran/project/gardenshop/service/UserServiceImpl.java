@@ -18,47 +18,29 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository repository;
+
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
 
     @Override
-    public UserResponseDto create(UserRequestDto dto) {
-
-        User user = User.builder()
-                .email(dto.getEmail())
-                .passwordHash(passwordEncoder.encode(dto.getPassword()))
-                .fullName(dto.getFullName())
-                .phoneNumber(dto.getPhoneNumber())
-                .role(dto.getRole() != null ? dto.getRole() : Role.USER)
-                .build();
-        return userMapper.toDto(repository.save(user));
+    public User create(User user) {
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash())); // предполагаем, что passwordHash приходит как plain password
+        return userRepository.save(user);
     }
 
     @Override
-    public List<UserResponseDto> getAll() {
-        return repository.findAll()
-                .stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 
     @Override
-    public UserResponseDto getById(Long id) {
-        User user = repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-        return userMapper.toDto(user);
+    public User getById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
     }
 
     @Override
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new UserNotFoundException(id);
-        }
-        repository.deleteById(id);
+        userRepository.deleteById(id);
     }
-
-
-
-
 }

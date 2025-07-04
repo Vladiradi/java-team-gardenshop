@@ -14,37 +14,31 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
 
     @Override
-    public CategoryResponseDto create(CategoryRequestDto dto) {
-        Category category = categoryMapper.toEntity(dto);
-        return categoryMapper.toDto(categoryRepository.save(category));
+    public Category create(CategoryRequestDto dto) {
+        Category category = Category.builder()
+                .category(dto.getCategory())
+                .build();
+        return categoryRepository.save(category);
     }
 
     @Override
-    public List<CategoryResponseDto> getAll() {
-        return categoryRepository.findAll().stream()
-                .map(categoryMapper::toDto)
-                .collect(Collectors.toList());
+    public List<Category> getAll() {
+        return categoryRepository.findAll();
     }
 
     @Override
-    public CategoryResponseDto getById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
-        return categoryMapper.toDto(category);
+    public Category getById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + id));
     }
 
     @Override
     public void delete(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new CategoryNotFoundException("Category not found");
-        }
         categoryRepository.deleteById(id);
     }
-
 }

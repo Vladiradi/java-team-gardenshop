@@ -14,7 +14,6 @@ import telran.project.gardenshop.enums.Role;
 @Setter
 @EqualsAndHashCode
 @ToString
-
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

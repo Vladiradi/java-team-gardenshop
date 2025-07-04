@@ -1,5 +1,6 @@
 package telran.project.gardenshop.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import telran.project.gardenshop.mapper.ProductMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -22,62 +23,36 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final ProductMapper productMapper;
 
     @Override
-    public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-        Category category = categoryRepository.findById(requestDto.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
+    public Product create(ProductRequestDto dto) {
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + dto.getCategoryId()));
 
         Product product = Product.builder()
-                .name(requestDto.getName())
-                .description(requestDto.getDescription())
-                .price(requestDto.getPrice())
-                .imageUrl(requestDto.getImageUrl())
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .price(dto.getPrice())
+                .imageUrl(dto.getImageUrl())
                 .category(category)
                 .build();
 
-        productRepository.save(product);
-        return productMapper.toDto(product);
+        return productRepository.save(product);
     }
 
     @Override
-    public ProductResponseDto getProductById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        return productMapper.toDto(product);
+    public List<Product> getAll() {
+        return productRepository.findAll();
     }
 
     @Override
-    public List<ProductResponseDto> getAllProducts() {
-        return productRepository.findAll().stream()
-                .map(productMapper::toDto)
-                .collect(Collectors.toList());
+    public Product getById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
     }
 
     @Override
-    public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-
-        Category category = categoryRepository.findById(requestDto.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
-
-        product.setName(requestDto.getName());
-        product.setDescription(requestDto.getDescription());
-        product.setPrice(requestDto.getPrice());
-        product.setImageUrl(requestDto.getImageUrl());
-        product.setCategory(category);
-
-        productRepository.save(product);
-        return productMapper.toDto(product);
+    public void delete(Long id) {
+        productRepository.deleteById(id);
     }
-
-    @Override
-    public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        productRepository.delete(product);
-    }
-
 }

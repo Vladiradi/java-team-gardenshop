@@ -70,6 +70,6 @@ git push origin mybranch
 | Vladimir Ryzhov     | [LinkedIn](https://linkedin.com/in/) | Team Lead      |
 | Arkady Zon          | [LinkedIn](https://linkedin.com/in/) | Exception      |
 | Anyuta Boldt        | [LinkedIn](https://linkedin.com/in/) | Testing        |
-| Liudmyla Lermolenko | [LinkedIn](https://linkedin.com/in/) | Favorites      |
+| Liudmyla Iermolenko | [LinkedIn](https://linkedin.com/in/) | Favorites      |
 
 

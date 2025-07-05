@@ -1,20 +1,14 @@
 package telran.project.gardenshop.service;
 
-import telran.project.gardenshop.mapper.ProductMapper;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import telran.project.gardenshop.dto.ProductRequestDto;
-import telran.project.gardenshop.dto.ProductResponseDto;
+import telran.project.gardenshop.common.fetcher.EntityFetcher;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.entity.Product;
-import telran.project.gardenshop.exception.CategoryNotFoundException;
-import telran.project.gardenshop.exception.ProductNotFoundException;
 import telran.project.gardenshop.repository.CategoryRepository;
 import telran.project.gardenshop.repository.ProductRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,62 +16,50 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final ProductMapper productMapper;
+    private final EntityFetcher entityFetcher;
 
     @Override
-    public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-        Category category = categoryRepository.findById(requestDto.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
-
-        Product product = Product.builder()
-                .name(requestDto.getName())
-                .description(requestDto.getDescription())
-                .price(requestDto.getPrice())
-                .imageUrl(requestDto.getImageUrl())
-                .category(category)
-                .build();
-
-        productRepository.save(product);
-        return productMapper.toDto(product);
+    public Product createProduct(Product product) {
+        Category category = getCategoryByIdOrThrow(product.getCategory().getId());
+        product.setCategory(category);
+        return productRepository.save(product);
     }
 
     @Override
-    public ProductResponseDto getProductById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        return productMapper.toDto(product);
+    public Product getProductById(Long id) {
+        return findProductById(id);
     }
 
     @Override
-    public List<ProductResponseDto> getAllProducts() {
-        return productRepository.findAll().stream()
-                .map(productMapper::toDto)
-                .collect(Collectors.toList());
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     @Override
-    public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+    public Product updateProduct(Long id, Product updatedProduct) {
+        Product product = findProductById(id);
+        Category category = getCategoryByIdOrThrow(updatedProduct.getCategory().getId());
 
-        Category category = categoryRepository.findById(requestDto.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
-
-        product.setName(requestDto.getName());
-        product.setDescription(requestDto.getDescription());
-        product.setPrice(requestDto.getPrice());
-        product.setImageUrl(requestDto.getImageUrl());
+        product.setName(updatedProduct.getName());
+        product.setDescription(updatedProduct.getDescription());
+        product.setPrice(updatedProduct.getPrice());
+        product.setImageUrl(updatedProduct.getImageUrl());
         product.setCategory(category);
 
-        productRepository.save(product);
-        return productMapper.toDto(product);
+        return productRepository.save(product);
     }
 
     @Override
     public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        Product product = findProductById(id);
         productRepository.delete(product);
     }
 
+    private Product findProductById(Long id) {
+        return entityFetcher.fetchOrThrow(productRepository, id, "Product");
+    }
+
+    private Category getCategoryByIdOrThrow(Long categoryId) {
+        return entityFetcher.fetchOrThrow(categoryRepository, categoryId, "Category");
+    }
 }

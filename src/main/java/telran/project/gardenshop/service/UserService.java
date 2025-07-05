@@ -1,13 +1,12 @@
 package telran.project.gardenshop.service;
 
-import telran.project.gardenshop.dto.UserRequestDto;
-import telran.project.gardenshop.dto.UserResponseDto;
-
+import telran.project.gardenshop.entity.User;
 import java.util.List;
 
 public interface UserService {
-    UserResponseDto create(UserRequestDto dto);
-    List<UserResponseDto> getAll();
-    UserResponseDto getById(Long id);
-    void delete(Long id);
+    User createUser(User user);
+    User getUserById(Long id);
+    List<User> getAllUsers();
+    User updateUser(Long id, User updated);
+    void deleteUser(Long id);
 }

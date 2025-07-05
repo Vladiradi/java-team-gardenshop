@@ -2,34 +2,27 @@ package telran.project.gardenshop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.Builder;
 import telran.project.gardenshop.enums.Role;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
-
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-    private String fullName;
 
-    @Column(nullable = false, unique = true)
     private String email;
+    private String fullName;
     private String phoneNumber;
-
-    @Column(nullable = false)
-    private String passwordHash;
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private Role role = Role.USER;
+    private Role role;
 }

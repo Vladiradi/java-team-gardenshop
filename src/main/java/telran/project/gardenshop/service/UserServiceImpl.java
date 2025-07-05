@@ -3,62 +3,50 @@ package telran.project.gardenshop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import telran.project.gardenshop.dto.UserRequestDto;
-import telran.project.gardenshop.dto.UserResponseDto;
+import telran.project.gardenshop.common.fetcher.EntityFetcher;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.enums.Role;
-import telran.project.gardenshop.exception.UserNotFoundException;
 import telran.project.gardenshop.repository.UserRepository;
-import telran.project.gardenshop.service.UserService;
-import telran.project.gardenshop.mapper.UserMapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository repository;
+
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
+    private final EntityFetcher fetcher;
 
     @Override
-    public UserResponseDto create(UserRequestDto dto) {
-
-        User user = User.builder()
-                .email(dto.getEmail())
-                .passwordHash(passwordEncoder.encode(dto.getPassword()))
-                .fullName(dto.getFullName())
-                .phoneNumber(dto.getPhoneNumber())
-                .role(dto.getRole() != null ? dto.getRole() : Role.USER)
-                .build();
-        return userMapper.toDto(repository.save(user));
+    public User createUser(User user) {
+        user.setRole(user.getRole() == null ? Role.USER : user.getRole());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     @Override
-    public List<UserResponseDto> getAll() {
-        return repository.findAll()
-                .stream()
-                .map(userMapper::toDto)
-                .collect(Collectors.toList());
+    public User getUserById(Long id) {
+        return fetcher.fetchOrThrow(userRepository, id, "User");
     }
 
     @Override
-    public UserResponseDto getById(Long id) {
-        User user = repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-        return userMapper.toDto(user);
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
-    public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new UserNotFoundException(id);
-        }
-        repository.deleteById(id);
+    public User updateUser(Long id, User updated) {
+        User user = fetcher.fetchOrThrow(userRepository, id, "User");
+        user.setFullName(updated.getFullName());
+        user.setPhoneNumber(updated.getPhoneNumber());
+        user.setEmail(updated.getEmail());
+        return userRepository.save(user);
     }
 
-
-
-
+    @Override
+    public void deleteUser(Long id) {
+        User user = fetcher.fetchOrThrow(userRepository, id, "User");
+        userRepository.delete(user);
+    }
 }

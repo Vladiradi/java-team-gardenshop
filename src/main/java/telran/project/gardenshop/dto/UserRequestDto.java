@@ -1,13 +1,22 @@
 package telran.project.gardenshop.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import telran.project.gardenshop.enums.Role;
 
 @Data
 public class UserRequestDto {
-    private String email;
-    private String password;
+    @NotBlank
     private String fullName;
+
+    @Email
+    private String email;
+
+    @NotBlank
     private String phoneNumber;
-    private Role role;
+
+    @NotBlank
+    private String password;
+
+    private String role; // USER or ADMIN
 }

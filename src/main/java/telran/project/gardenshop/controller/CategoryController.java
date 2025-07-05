@@ -1,45 +1,67 @@
 package telran.project.gardenshop.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import jakarta.validation.Valid;
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.CategoryRequestDto;
 import telran.project.gardenshop.dto.CategoryResponseDto;
+import telran.project.gardenshop.entity.Category;
+import telran.project.gardenshop.mapper.CategoryMapper;
 import telran.project.gardenshop.service.CategoryService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/api/categories")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
     @PostMapping
-    public CategoryResponseDto create(@Valid @RequestBody CategoryRequestDto dto) {
-        return categoryService.create(dto);
-    }
-
-    @GetMapping
-    public List<CategoryResponseDto> getAll() {
-        return categoryService.getAll();
+    @Operation(summary = "Создать категорию")
+    public ResponseEntity<CategoryResponseDto> create(@RequestBody CategoryRequestDto dto) {
+        Category category = categoryMapper.toEntity(dto);
+        Category saved = categoryService.createCategory(category);
+        return ResponseEntity.status(201).body(categoryMapper.toDto(saved));
     }
 
     @GetMapping("/{id}")
-    public CategoryResponseDto getById(@PathVariable Long id) {
-        return categoryService.getById(id);
+    @Operation(summary = "Получить категорию по ID")
+    public ResponseEntity<CategoryResponseDto> getById(@PathVariable Long id) {
+        Category category = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(categoryMapper.toDto(category));
+    }
+
+    @GetMapping
+    @Operation(summary = "Получить все категории")
+    public ResponseEntity<List<CategoryResponseDto>> getAll() {
+        List<Category> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(
+                categories.stream()
+                        .map(categoryMapper::toDto)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Обновить категорию")
+    public ResponseEntity<CategoryResponseDto> update(@PathVariable Long id,
+                                                      @RequestBody CategoryRequestDto dto) {
+        Category updated = categoryMapper.toEntity(dto);
+        Category saved = categoryService.updateCategory(id, updated);
+        return ResponseEntity.ok(categoryMapper.toDto(saved));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        categoryService.delete(id);
+    @Operation(summary = "Удалить категорию")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
     }
-
 }

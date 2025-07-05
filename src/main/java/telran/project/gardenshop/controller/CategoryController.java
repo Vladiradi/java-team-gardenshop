@@ -2,6 +2,7 @@ package telran.project.gardenshop.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +22,13 @@ import telran.project.gardenshop.service.CategoryService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/categories")
+@Validated
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<CategoryResponseDto> create(@RequestBody @Valid CategoryRequestDto dto) {
+    public ResponseEntity<CategoryResponseDto> create(@Valid @RequestBody CategoryRequestDto dto) {
         Category category = categoryService.create(dto);
 
         CategoryResponseDto responseDto = CategoryResponseDto.builder()

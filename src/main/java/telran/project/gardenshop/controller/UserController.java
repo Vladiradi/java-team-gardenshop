@@ -3,6 +3,7 @@ import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.UserRequestDto;
 import telran.project.gardenshop.dto.UserResponseDto;
@@ -13,15 +14,16 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> create(@RequestBody UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> create(@Valid @RequestBody UserRequestDto dto) {
         User user = userMapper.toEntity(dto);
         User savedUser = userService.create(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toDto(savedUser));

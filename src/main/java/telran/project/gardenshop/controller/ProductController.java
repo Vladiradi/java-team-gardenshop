@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.ProductRequestDto;
 import telran.project.gardenshop.dto.ProductResponseDto;
@@ -19,12 +20,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
+@Validated
 public class ProductController {
 
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductResponseDto> create(@RequestBody @Valid ProductRequestDto dto) {
+    public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto dto) {
         Product product = productService.create(dto);
 
         ProductResponseDto response = ProductResponseDto.builder()

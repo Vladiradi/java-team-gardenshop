@@ -70,6 +70,6 @@ git push origin mybranch
 | Vladimir Ryzhov     | [LinkedIn](https://linkedin.com/in/) | Архитектура    |
 | Arkady Zon          | [LinkedIn](https://linkedin.com/in/) | -              |
 | Anyuta Boldt        | [LinkedIn](https://linkedin.com/in/) | -              |
-| Liudmyla Lermolenko | [LinkedIn](https://linkedin.com/in/) | -              |
+| Liudmyla Iermolenko | [LinkedIn](https://linkedin.com/in/) | -              |
 
 

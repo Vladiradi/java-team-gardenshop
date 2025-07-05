@@ -5,7 +5,7 @@
 
  
 
----
+
 
 
 ## 📌 Описание проекта
@@ -14,7 +14,7 @@ Garden Shop — это backend-приложение для интернет-ма
 добавлять их в корзину, оформлять заказы и отслеживать их статус.  
 Администраторы могут управлять товарами, категориями, скидками и получать отчёты по продажам.
 
----
+
 
 ## 📌 Что нужно участнику:
 •	Принять приглашение
@@ -30,7 +30,7 @@ git clone https://github.com/Vladiradi/java-team-gardenshop.git
 git push origin mybranch
 ```
 
----
+
 
 ## 📌 Полезные ссылки
 
@@ -43,7 +43,7 @@ git push origin mybranch
 -  🚀 [Демо-версия](https://) *( appear later)*
 
 
----
+
 
 ## ⚙️ Стек технологий
 
@@ -61,16 +61,15 @@ git push origin mybranch
 | Maven           | Система сборки                  |
 | JUnit / Mockito | Тестирование                    |
 
----
+
 
 ## 📌 Авторы проекта
 
 | Участник            | Контакты                           | Вклад в проект |
 |---------------------|------------------------------------|----------------|
-| Vladimir Ryzhov     | [LinkedIn](https://linkedin.com/in/) | Архитектура    |
-| Arkady Zon          | [LinkedIn](https://linkedin.com/in/) | -              |
-| Anyuta Boldt        | [LinkedIn](https://linkedin.com/in/) | -              |
-| Liudmyla Lermolenko | [LinkedIn](https://linkedin.com/in/) | -              |
+| Vladimir Ryzhov     | [LinkedIn](https://linkedin.com/in/) | Team Lead      |
+| Arkady Zon          | [LinkedIn](https://linkedin.com/in/) | Exception      |
+| Anyuta Boldt        | [LinkedIn](https://linkedin.com/in/) | Testing        |
+| Liudmyla Lermolenko | [LinkedIn](https://linkedin.com/in/) | Favorites      |
 
 
----

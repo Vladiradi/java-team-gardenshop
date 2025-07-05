@@ -21,6 +21,6 @@ public interface ProductMapper {
 
     @Named("extractCategoryName")
     static String extractCategoryName(Category category) {
-        return category != null ? category.getCategory() : null;
+        return category != null ? category.getName() : null;
     }
 }

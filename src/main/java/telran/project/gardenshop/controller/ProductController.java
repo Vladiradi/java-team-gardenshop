@@ -52,9 +52,10 @@ public class ProductController {
     @Operation(summary = "Обновить товар")
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
                                                      @RequestBody ProductRequestDto dto) {
-        Product updated = productMapper.toEntity(dto);
-        Product saved = productService.updateProduct(id, updated);
-        return ResponseEntity.ok(productMapper.toDto(saved));
+        Product entity = productMapper.toEntity(dto);
+        entity.setId(id);
+        Product updated = productService.updateProduct(id, entity);
+        return ResponseEntity.ok(productMapper.toDto(updated));
     }
 
     @DeleteMapping("/{id}")

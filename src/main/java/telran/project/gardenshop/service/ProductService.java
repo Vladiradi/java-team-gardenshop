@@ -3,10 +3,12 @@ import java.util.List;
 import telran.project.gardenshop.dto.ProductRequestDto;
 import telran.project.gardenshop.dto.ProductResponseDto;
 
+import telran.project.gardenshop.entity.Product;
+
 public interface ProductService {
-    ProductResponseDto createProduct(ProductRequestDto requestDto);
-    ProductResponseDto getProductById(Long id);
-    List<ProductResponseDto> getAllProducts();
-    ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto);
+    Product createProduct(Product product);
+    Product getProductById(Long id);
+    List<Product> getAllProducts();
+    Product updateProduct(Long id, Product product);
     void deleteProduct(Long id);
 }

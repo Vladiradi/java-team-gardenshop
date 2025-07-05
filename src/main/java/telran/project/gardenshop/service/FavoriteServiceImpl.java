@@ -2,15 +2,10 @@ package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import telran.project.gardenshop.dto.FavoriteResponseDto;
+import telran.project.gardenshop.common.fetcher.EntityFetcher;
 import telran.project.gardenshop.entity.Favorite;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
-import telran.project.gardenshop.exception.FavoriteAlreadyExistsException;
-import telran.project.gardenshop.exception.FavoriteNotFoundException;
-import telran.project.gardenshop.exception.ProductNotFoundException;
-import telran.project.gardenshop.exception.UserNotFoundException;
-import telran.project.gardenshop.mapper.FavoriteMapper;
 import telran.project.gardenshop.repository.FavoriteRepository;
 import telran.project.gardenshop.repository.ProductRepository;
 import telran.project.gardenshop.repository.UserRepository;
@@ -24,40 +19,30 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-    private final FavoriteMapper favoriteMapper;
+    private final EntityFetcher fetcher;
 
     @Override
-    public void addToFavorites(Long userId, Long productId) {
-        if (favoriteRepository.existsByUserIdAndProductId(userId, productId)) {
-            throw new FavoriteAlreadyExistsException(userId, productId);
-        }
+    public Favorite addToFavorites(Favorite favorite) {
+        Long userId = favorite.getUser().getId();
+        Long productId = favorite.getProduct().getId();
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        User user = fetcher.fetchOrThrow(userRepository, userId, "User");
+        Product product = fetcher.fetchOrThrow(productRepository, productId, "Product");
 
-        Favorite favorite = favoriteMapper.toEntity(user, product);
-        favoriteRepository.save(favorite);
+        favorite.setUser(user);
+        favorite.setProduct(product);
+
+        return favoriteRepository.save(favorite);
     }
 
     @Override
-    public void removeFromFavorites(Long userId, Long productId) {
-        if (!favoriteRepository.existsByUserIdAndProductId(userId, productId)) {
-            throw new FavoriteNotFoundException(userId, productId);
-        }
-        favoriteRepository.deleteByUserIdAndProductId(userId, productId);
+    public void removeFromFavorites(Long id) {
+        Favorite favorite = fetcher.fetchOrThrow(favoriteRepository, id, "Favorite");
+        favoriteRepository.delete(favorite);
     }
 
     @Override
-    public List<FavoriteResponseDto> getFavoritesByUserId(Long userId) {
-        return favoriteRepository.findAllByUserId(userId).stream()
-                .map(favoriteMapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public boolean isFavorite(Long userId, Long productId) {
-        return favoriteRepository.existsByUserIdAndProductId(userId, productId);
+    public List<Favorite> getAllByUserId(Long userId) {
+        return favoriteRepository.findAllByUserId(userId);
     }
 }

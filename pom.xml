@@ -124,12 +124,12 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-        <!-- Liquibase -->
+		<!-- Liquibase -->
 		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.2.0</version>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
 		</dependency>
+
 
 	</dependencies>
 

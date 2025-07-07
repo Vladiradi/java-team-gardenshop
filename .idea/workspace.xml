@@ -4,13 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="487d7fca-259f-4690-bf01-c75aa6dc7538" name="Changes" comment="task 1 &#10;&#10;Testing">
-      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/controller/CategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/dto/CategoryResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/dto/CategoryResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/entity/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/entity/Category.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/mapper/CategoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/mapper/CategoryMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/service/CategoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/service/CategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/service/CategoryServiceImpl.java" afterDir="false" />
+    <list default="true" id="487d7fca-259f-4690-bf01-c75aa6dc7538" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/db/changelog/001-schema.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/001-schema.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/002-data.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/db/changelog/002-data.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/db.changelog-master.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/db/changelog/db.changelog-master.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,53 +66,53 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JUnit.CategoryControllerTest.executor": "Run",
-    "JUnit.CategoryControllerTest.testCreate.executor": "Run",
-    "JUnit.CategoryControllerTest.testDelete.executor": "Run",
-    "JUnit.CategoryControllerTest.testGetAll.executor": "Run",
-    "JUnit.CategoryServiceImplTest.executor": "Run",
-    "JUnit.UserControllerTest.createUser_ReturnsCreatedUser.executor": "Run",
-    "JUnit.UserControllerTest.executor": "Run",
-    "JUnit.UserControllerTest.getById_ReturnsUser.executor": "Run",
-    "JUnit.UserServiceImplTest.executor": "Run",
-    "JUnit.UserServiceImplTest.testCreateUser.executor": "Run",
-    "JUnit.UserServiceImplTest.testDelete_NotFound.executor": "Run",
-    "JUnit.UserServiceImplTest.testDelete_Success.executor": "Run",
-    "JUnit.UserServiceImplTest.testGetAllUsers.executor": "Run",
-    "JUnit.UserServiceImplTest.testGetById_NotFound.executor": "Run",
-    "JUnit.UserServiceImplTest.testGetById_Success.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "task2",
-    "ignore.preview.features.used": "true",
-    "last_opened_file_path": "C:/Users/phili/IdeaProjects/java-team-gardenshop",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "project.propVCSSupport.Mappings",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.CategoryControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CategoryControllerTest.testCreate.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CategoryControllerTest.testDelete.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CategoryControllerTest.testGetAll.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CategoryServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.createUser_ReturnsCreatedUser.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.getById_ReturnsUser.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceImplTest.testCreateUser.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceImplTest.testDelete_NotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceImplTest.testDelete_Success.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceImplTest.testGetAllUsers.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceImplTest.testGetById_NotFound.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceImplTest.testGetById_Success.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;task2&quot;,
+    &quot;ignore.preview.features.used&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/phili/IdeaProjects/java-team-gardenshop&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.Mappings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "ChangesTree.GroupingKeys": [
-      "directory",
-      "module",
-      "repository"
+  &quot;keyToStringList&quot;: {
+    &quot;ChangesTree.GroupingKeys&quot;: [
+      &quot;directory&quot;,
+      &quot;module&quot;,
+      &quot;repository&quot;
     ],
-    "DatabaseDriversLRU": [
-      "h2",
-      "postgresql"
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;h2&quot;,
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="JUnit.UserServiceImplTest">
     <configuration name="CategoryControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="gardenshop" />

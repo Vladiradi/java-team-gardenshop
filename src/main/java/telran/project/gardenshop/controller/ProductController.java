@@ -26,7 +26,7 @@ public class ProductController {
     private final ProductMapper productMapper;
 
     @PostMapping
-    @Operation(summary = "Добавить новый товар")
+    @Operation(summary = "Add new product")
     public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
         Product saved = productService.createProduct(entity);
@@ -34,14 +34,14 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Получить товар по ID")
+    @Operation(summary = "Get product by ID")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
         Product product = productService.getProductById(id);
         return ResponseEntity.ok(productMapper.toDto(product));
     }
 
     @GetMapping
-    @Operation(summary = "Получить все товары")
+    @Operation(summary = "Get all products")
     public ResponseEntity<List<ProductResponseDto>> getAll() {
         List<Product> products = productService.getAllProducts();
         List<ProductResponseDto> dtoList = products.stream()
@@ -51,7 +51,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Обновить товар")
+    @Operation(summary = "Update product")
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
                                                      @Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
@@ -61,7 +61,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Удалить товар")
+    @Operation(summary = "Delete product")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

@@ -2,9 +2,10 @@ package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import telran.project.gardenshop.common.fetcher.EntityFetcher;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.entity.Product;
+import telran.project.gardenshop.exception.CategoryNotFoundException;
+import telran.project.gardenshop.exception.ProductNotFoundException;
 import telran.project.gardenshop.repository.CategoryRepository;
 import telran.project.gardenshop.repository.ProductRepository;
 
@@ -16,7 +17,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final EntityFetcher entityFetcher;
 
     @Override
     public Product createProduct(Product product) {
@@ -27,7 +27,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Long id) {
-        return findProductById(id);
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @Override
@@ -37,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Long id, Product updatedProduct) {
-        Product product = findProductById(id);
+        Product product = getProductById(id);
         Category category = getCategoryByIdOrThrow(updatedProduct.getCategory().getId());
 
         product.setName(updatedProduct.getName());
@@ -51,15 +52,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long id) {
-        Product product = findProductById(id);
+        Product product = getProductById(id);
         productRepository.delete(product);
     }
 
-    private Product findProductById(Long id) {
-        return entityFetcher.fetchOrThrow(productRepository, id, "Product");
-    }
-
     private Category getCategoryByIdOrThrow(Long categoryId) {
-        return entityFetcher.fetchOrThrow(categoryRepository, categoryId, "Category");
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
     }
 }

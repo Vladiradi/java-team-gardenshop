@@ -1,0 +1,1421 @@
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n\t<modelVersion>4.0.0</modelVersion>\r\n\t<parent>\r\n\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t<artifactId>spring-boot-starter-parent</artifactId>\r\n\t\t<version>3.5.3</version>\r\n\t\t<relativePath/> <!-- lookup parent from repository -->\r\n\t</parent>\r\n\t<groupId>telran.project</groupId>\r\n\t<artifactId>gardenshop</artifactId>\r\n\t<version>0.0.1-SNAPSHOT</version>\r\n\t<name>java-team-gardenshop</name>\r\n\t<description>java-team-gardenshop</description>\r\n\t<url/>\r\n\t<licenses>\r\n\t\t<license/>\r\n\t</licenses>\r\n\t<developers>\r\n\t\t<developer/>\r\n\t</developers>\r\n\t<scm>\r\n\t\t<connection/>\r\n\t\t<developerConnection/>\r\n\t\t<tag/>\r\n\t\t<url/>\r\n\t</scm>\r\n\t<properties>\r\n\t\t<java.version>21</java.version>\r\n\t</properties>\r\n\t<dependencies>\r\n\r\n\t\t<!-- Spring Boot Starter Data JPA -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-data-jpa</artifactId>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-web</artifactId>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-devtools</artifactId>\r\n\t\t\t<scope>runtime</scope>\r\n\t\t\t<optional>true</optional>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.h2database</groupId>\r\n\t\t\t<artifactId>h2</artifactId>\r\n\t\t\t<scope>test</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.mysql</groupId>\r\n\t\t\t<artifactId>mysql-connector-j</artifactId>\r\n\t\t\t<scope>runtime</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- Lombok -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.projectlombok</groupId>\r\n\t\t\t<artifactId>lombok</artifactId>\r\n\t\t\t<optional>true</optional>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-test</artifactId>\r\n\t\t\t<scope>test</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- MapStruct -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.mapstruct</groupId>\r\n\t\t\t<artifactId>mapstruct</artifactId>\r\n\t\t\t<version>1.5.5.Final</version>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- Swagger -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springdoc</groupId>\r\n\t\t\t<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>\r\n\t\t\t<version>2.5.0</version>\r\n\t\t</dependency>\r\n\r\n\r\n\t\t<!-- Validation -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>jakarta.validation</groupId>\r\n\t\t\t<artifactId>jakarta.validation-api</artifactId>\r\n\t\t\t<version>3.0.2</version>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- Security  -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-security</artifactId>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.postgresql</groupId>\r\n\t\t\t<artifactId>postgresql</artifactId>\r\n\t\t\t<scope>runtime</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- Unit test -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.junit.jupiter</groupId>\r\n\t\t\t<artifactId>junit-jupiter</artifactId>\r\n\t\t\t<version>5.12.2</version>\r\n\t\t\t<scope>test</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline-->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.mockito</groupId>\r\n\t\t\t<artifactId>mockito-inline</artifactId>\r\n\t\t\t<version>5.2.0</version>\r\n\t\t\t<scope>test</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.mockito</groupId>\r\n\t\t\t<artifactId>mockito-core</artifactId>\r\n\t\t\t<version>5.17.0</version>\r\n\t\t\t<scope>test</scope>\r\n\t\t</dependency>\r\n\r\n\t</dependencies>\r\n\r\n\t<build>\r\n\t\t<plugins>\r\n\r\n\t\t\t<plugin>\r\n\t\t\t\t<groupId>org.apache.maven.plugins</groupId>\r\n\t\t\t\t<artifactId>maven-dependency-plugin</artifactId>\r\n\t\t\t\t<executions>\r\n\t\t\t\t\t<execution>\r\n\t\t\t\t\t\t<goals>\r\n\t\t\t\t\t\t\t<goal>properties</goal>\r\n\t\t\t\t\t\t</goals>\r\n\t\t\t\t\t</execution>\r\n\t\t\t\t</executions>\r\n\t\t\t</plugin>\r\n\r\n\t\t\t<plugin>\r\n\t\t\t\t<groupId>org.apache.maven.plugins</groupId>\r\n\t\t\t\t<artifactId>maven-surefire-plugin</artifactId>\r\n\t\t\t\t<version>2.22.2</version> <!-- стабильная версия -->\r\n\t\t\t\t<configuration>\r\n\t\t\t\t\t<argLine>-javaagent:${settings.localRepository}/org/mockito/mockito-inline/4.11.0/mockito-inline-4.11.0.jar</argLine>\r\n\t\t\t\t</configuration>\r\n\t\t\t</plugin>\r\n\t\t\t<plugin>\r\n\t\t\t\t<groupId>org.apache.maven.plugins</groupId>\r\n\t\t\t\t<artifactId>maven-compiler-plugin</artifactId>\r\n\t\t\t\t<version>3.10.1</version>\r\n\t\t\t\t<configuration>\r\n\t\t\t\t\t<source>${java.version}</source>\r\n\t\t\t\t\t<target>${java.version}</target>\r\n\t\t\t\t\t<annotationProcessorPaths>\r\n\t\t\t\t\t\t<!-- Lombok -->\r\n\t\t\t\t\t\t<path>\r\n\t\t\t\t\t\t\t<groupId>org.projectlombok</groupId>\r\n\t\t\t\t\t\t\t<artifactId>lombok</artifactId>\r\n\t\t\t\t\t\t\t<version>1.18.30</version> <!-- ← добавь ЭТУ строку -->\r\n\t\t\t\t\t\t</path>\r\n\t\t\t\t\t\t<!-- MapStruct -->\r\n\t\t\t\t\t\t<path>\r\n\t\t\t\t\t\t\t<groupId>org.mapstruct</groupId>\r\n\t\t\t\t\t\t\t<artifactId>mapstruct-processor</artifactId>\r\n\t\t\t\t\t\t\t<version>1.5.5.Final</version>\r\n\t\t\t\t\t\t</path>\r\n\t\t\t\t\t</annotationProcessorPaths>\r\n\t\t\t\t</configuration>\r\n\t\t\t</plugin>\r\n\r\n\r\n\t\t\t<plugin>\r\n\t\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t\t<artifactId>spring-boot-maven-plugin</artifactId>\r\n\t\t\t</plugin>\r\n\t\t</plugins>\r\n\t</build>\r\n\r\n</project>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+--- a/pom.xml	(revision db9bd81410ee11cf1db71a4b5bd96e779f3d08d1)
++++ b/pom.xml	(date 1751905141288)
+@@ -1,12 +1,12 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
++		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+ 	<modelVersion>4.0.0</modelVersion>
+ 	<parent>
+ 		<groupId>org.springframework.boot</groupId>
+ 		<artifactId>spring-boot-starter-parent</artifactId>
+ 		<version>3.5.3</version>
+-		<relativePath/> <!-- lookup parent from repository -->
++		<relativePath/>
+ 	</parent>
+ 	<groupId>telran.project</groupId>
+ 	<artifactId>gardenshop</artifactId>
+@@ -50,14 +50,8 @@
+ 		</dependency>
+ 
+ 		<dependency>
+-			<groupId>com.h2database</groupId>
+-			<artifactId>h2</artifactId>
+-			<scope>test</scope>
+-		</dependency>
+-
+-		<dependency>
+-			<groupId>com.mysql</groupId>
+-			<artifactId>mysql-connector-j</artifactId>
++			<groupId>org.postgresql</groupId>
++			<artifactId>postgresql</artifactId>
+ 			<scope>runtime</scope>
+ 		</dependency>
+ 
+@@ -68,12 +62,20 @@
+ 			<optional>true</optional>
+ 		</dependency>
+ 
++		<!-- ForTests -->
+ 		<dependency>
+ 			<groupId>org.springframework.boot</groupId>
+ 			<artifactId>spring-boot-starter-test</artifactId>
+ 			<scope>test</scope>
+ 		</dependency>
+ 
++		<!-- ForTests H2 DB-->
++		<dependency>
++			<groupId>com.h2database</groupId>
++			<artifactId>h2</artifactId>
++			<scope>test</scope>
++		</dependency>
++
+ 		<!-- MapStruct -->
+ 		<dependency>
+ 			<groupId>org.mapstruct</groupId>
+@@ -88,13 +90,17 @@
+ 			<version>2.5.0</version>
+ 		</dependency>
+ 
+-
+ 		<!-- Validation -->
+ 		<dependency>
+ 			<groupId>jakarta.validation</groupId>
+ 			<artifactId>jakarta.validation-api</artifactId>
+ 			<version>3.0.2</version>
+ 		</dependency>
++
++		<dependency>
++			<groupId>org.hibernate.validator</groupId>
++			<artifactId>hibernate-validator</artifactId>
++		</dependency>
+ 
+ 		<!-- Security  -->
+ 		<dependency>
+@@ -102,33 +108,11 @@
+ 			<artifactId>spring-boot-starter-security</artifactId>
+ 		</dependency>
+ 
+-		<dependency>
+-			<groupId>org.postgresql</groupId>
+-			<artifactId>postgresql</artifactId>
+-			<scope>runtime</scope>
+-		</dependency>
+-
+-		<!-- Unit test -->
+-		<dependency>
+-			<groupId>org.junit.jupiter</groupId>
+-			<artifactId>junit-jupiter</artifactId>
+-			<version>5.12.2</version>
+-			<scope>test</scope>
+-		</dependency>
+-
+-		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline-->
++		<!-- Liquibase -->
+ 		<dependency>
+-			<groupId>org.mockito</groupId>
+-			<artifactId>mockito-inline</artifactId>
+-			<version>5.2.0</version>
+-			<scope>test</scope>
+-		</dependency>
+-
+-		<dependency>
+-			<groupId>org.mockito</groupId>
+-			<artifactId>mockito-core</artifactId>
+-			<version>5.17.0</version>
+-			<scope>test</scope>
++			<groupId>org.springdoc</groupId>
++			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
++			<version>2.2.0</version>
+ 		</dependency>
+ 
+ 	</dependencies>
+@@ -168,7 +152,7 @@
+ 						<path>
+ 							<groupId>org.projectlombok</groupId>
+ 							<artifactId>lombok</artifactId>
+-							<version>1.18.30</version> <!-- ← добавь ЭТУ строку -->
++							<version>1.18.30</version>
+ 						</path>
+ 						<!-- MapStruct -->
+ 						<path>
+@@ -188,4 +172,4 @@
+ 		</plugins>
+ 	</build>
+ 
+-</project>
++</project>
+\ No newline at end of file
+Index: readme.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\r\n# \uD83C\uDF3F Java Team Project – GardenShop\r\n### Telran School BE 2025\r\n Командный backend-проект онлайн-магазина товаров для дома и сада, реализованный на Java Spring Boot.\r\n\r\n \r\n\r\n---\r\n\r\n\r\n## \uD83D\uDCCC Описание проекта\r\n\r\nGarden Shop — это backend-приложение для интернет-магазина, позволяющее клиентам просматривать каталог товаров,\r\nдобавлять их в корзину, оформлять заказы и отслеживать их статус.  \r\nАдминистраторы могут управлять товарами, категориями, скидками и получать отчёты по продажам.\r\n\r\n---\r\n\r\n## \uD83D\uDCCC Что нужно участнику:\r\n•\tПринять приглашение\r\n\r\n•\tКлонировать репозиторий:\r\n```\r\ngit clone https://github.com/Vladiradi/java-team-gardenshop.git\r\n```\r\n\r\n\r\n• Создать ветку, сделать коммиты и запушить:\r\n```\r\ngit push origin mybranch\r\n```\r\n\r\n---\r\n\r\n## \uD83D\uDCCC Полезные ссылки\r\n\r\n- \uD83D\uDCD8 [Макет](https://www.figma.com/design/SDNWLzCWkh9ZXdCpWEaByv/project-frontend?node-id=0-1&p=f) \r\n \r\n\r\n- \uD83D\uDCC4 [Техническое задание](https://docs.google.com/document/d/1Xn41eFhdYAJVYzRucsNwpbLJ5lNxdvpfx__SZf5DwXA/edit?tab=t.0)\r\n\r\n\r\n-  \uD83D\uDE80 [Демо-версия](https://) *( appear later)*\r\n\r\n\r\n---\r\n\r\n## ⚙\uFE0F Стек технологий\r\n\r\n| Технология      | Назначение                          |\r\n|-----------------|-------------------------------------|\r\n| Java 23         | Язык программирования               |\r\n| Spring Boot     | Backend фреймворк                   |\r\n| Spring Web      | Обработка HTTP-запросов             |\r\n| Spring Data JPA | Работа с базой данных через ORM     |\r\n| Hibernate       | Провайдер JPA                       |\r\n| MySQL / H2      | Реляционная БД (prod/dev)           |\r\n| Lombok          | Генерация шаблонного кода           |\r\n| MapStruct       | Маппинг DTO ↔ Entity                |\r\n| Liquibase       | Миграции базы данных                |\r\n| Maven           | Система сборки                      |\r\n| JUnit / Mockito | Тестирование                        |\r\n\r\n---\r\n\r\n## \uD83D\uDCCC Авторы проекта\r\n\r\n| Участник            | Контакты                           | Вклад в проект |\r\n|---------------------|------------------------------------|----------------|\r\n| Vladimir Ryzhov     | [LinkedIn](https://linkedin.com/in/) | Архитектура    |\r\n| Arkady Zon          | [LinkedIn](https://linkedin.com/in/) | -              |\r\n| Anyuta Boldt        | [LinkedIn](https://linkedin.com/in/) | -              |\r\n| Liudmyla Lermolenko | [LinkedIn](https://linkedin.com/in/) | -              |\r\n\r\n\r\n---
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/readme.md b/readme.md
+--- a/readme.md	(revision db9bd81410ee11cf1db71a4b5bd96e779f3d08d1)
++++ b/readme.md	(date 1751904173392)
+@@ -5,7 +5,7 @@
+ 
+  
+ 
+----
++
+ 
+ 
+ ## 📌 Описание проекта
+@@ -14,7 +14,7 @@
+ добавлять их в корзину, оформлять заказы и отслеживать их статус.  
+ Администраторы могут управлять товарами, категориями, скидками и получать отчёты по продажам.
+ 
+----
++
+ 
+ ## 📌 Что нужно участнику:
+ •	Принять приглашение
+@@ -30,7 +30,7 @@
+ git push origin mybranch
+ ```
+ 
+----
++
+ 
+ ## 📌 Полезные ссылки
+ 
+@@ -43,25 +43,25 @@
+ -  🚀 [Демо-версия](https://) *( appear later)*
+ 
+ 
+----
++
+ 
+ ## ⚙️ Стек технологий
+ 
+-| Технология      | Назначение                          |
+-|-----------------|-------------------------------------|
+-| Java 23         | Язык программирования               |
+-| Spring Boot     | Backend фреймворк                   |
+-| Spring Web      | Обработка HTTP-запросов             |
+-| Spring Data JPA | Работа с базой данных через ORM     |
+-| Hibernate       | Провайдер JPA                       |
+-| MySQL / H2      | Реляционная БД (prod/dev)           |
+-| Lombok          | Генерация шаблонного кода           |
+-| MapStruct       | Маппинг DTO ↔ Entity                |
+-| Liquibase       | Миграции базы данных                |
+-| Maven           | Система сборки                      |
+-| JUnit / Mockito | Тестирование                        |
++| Технология      | Назначение                      |
++|-----------------|---------------------------------|
++| Java 21         | Язык программирования           |
++| Spring Boot     | Backend фреймворк               |
++| Spring Web      | Обработка HTTP-запросов         |
++| Spring Data JPA | Работа с базой данных через ORM |
++| Hibernate       | Провайдер JPA                   |
++| PostgreSQL / H2 | Реляционная БД (prod/test)      |
++| Lombok          | Генерация шаблонного кода       |
++| MapStruct       | Маппинг DTO ↔ Entity            |
++| Liquibase       | Миграции базы данных            |
++| Maven           | Система сборки                  |
++| JUnit / Mockito | Тестирование                    |
+ 
+----
++
+ 
+ ## 📌 Авторы проекта
+ 
+@@ -70,7 +70,6 @@
+ | Vladimir Ryzhov     | [LinkedIn](https://linkedin.com/in/) | Архитектура    |
+ | Arkady Zon          | [LinkedIn](https://linkedin.com/in/) | -              |
+ | Anyuta Boldt        | [LinkedIn](https://linkedin.com/in/) | -              |
+-| Liudmyla Lermolenko | [LinkedIn](https://linkedin.com/in/) | -              |
++| Liudmyla Iermolenko | [LinkedIn](https://linkedin.com/in/) | -              |
+ 
+ 
+----
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/exception/CategoryNotFoundException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package telran.project.gardenshop.exception;\r\n\r\npublic class CategoryNotFoundException extends RuntimeException {\r\n    public CategoryNotFoundException(String message) {\r\n        super(message);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/exception/CategoryNotFoundException.java b/src/main/java/telran/project/gardenshop/exception/CategoryNotFoundException.java
+--- a/src/main/java/telran/project/gardenshop/exception/CategoryNotFoundException.java	(revision db9bd81410ee11cf1db71a4b5bd96e779f3d08d1)
++++ b/src/main/java/telran/project/gardenshop/exception/CategoryNotFoundException.java	(date 1751904173403)
+@@ -1,7 +1,13 @@
+ package telran.project.gardenshop.exception;
+ 
+ public class CategoryNotFoundException extends RuntimeException {
+-    public CategoryNotFoundException(String message) {
+-        super(message);
++    public CategoryNotFoundException(Long id) {
++        super("Category with id " + id + " not found");
+     }
++
++    public CategoryNotFoundException(String name) {
++        super("Category with name '" + name + "' not found");
++    }
++
++
+ }
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/exception/UserNotFoundException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package telran.project.gardenshop.exception;\r\n\r\npublic class UserNotFoundException extends RuntimeException {\r\n    public UserNotFoundException(Long id) {\r\n        super(\"User with id \" + id + \" not found\");\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/exception/UserNotFoundException.java b/src/main/java/telran/project/gardenshop/exception/UserNotFoundException.java
+--- a/src/main/java/telran/project/gardenshop/exception/UserNotFoundException.java	(revision db9bd81410ee11cf1db71a4b5bd96e779f3d08d1)
++++ b/src/main/java/telran/project/gardenshop/exception/UserNotFoundException.java	(date 1751904173409)
+@@ -4,4 +4,9 @@
+     public UserNotFoundException(Long id) {
+         super("User with id " + id + " not found");
+     }
+-}
+\ No newline at end of file
++
++    public UserNotFoundException(String username) {
++        super("User with username '" + username + "' not found");
++    }
++
++}
+Index: src/main/resources/db/changelog/002-data.yaml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/db/changelog/002-data.yaml b/src/main/resources/db/changelog/002-data.yaml
+new file mode 100644
+--- /dev/null	(date 1751904173425)
++++ b/src/main/resources/db/changelog/002-data.yaml	(date 1751904173425)
+@@ -0,0 +1,49 @@
++databaseChangeLog:
++  - changeSet:
++      id: 002
++      author: vlad
++      changes:
++        - sql:
++            sql: |
++              TRUNCATE TABLE favorites RESTART IDENTITY CASCADE;
++              TRUNCATE TABLE products RESTART IDENTITY CASCADE;
++              TRUNCATE TABLE categories RESTART IDENTITY CASCADE;
++              TRUNCATE TABLE app_users RESTART IDENTITY CASCADE;
++
++              INSERT INTO app_users (name, email, phone_number, password_hash, role)
++              VALUES
++                  ('Anna Petrova', 'anna.petrova@garden.ru', '+79001112233', 'pw123', 'ROLE_USER'),
++                  ('Sergey Ivanov', 'sergey.ivanov@plants.ru', '+79004567890', 'pw123', 'ROLE_USER'),
++                  ('Elena Sidorova', 'elena.sidorova@flowershop.ru', '+79007894561', 'pw123', 'ROLE_USER'),
++                  ('Dmitry Smirnov', 'dmitry.smirnov@greenzone.ru', '+79006543210', 'pw123', 'ROLE_USER');
++
++              INSERT INTO categories (name)
++              VALUES
++                  ('Удобрения и подкормки'),
++                  ('Защита растений'),
++                  ('Семена и рассада'),
++                  ('Инструменты для сада'),
++                  ('Горшки и кашпо');
++
++              INSERT INTO products (name, discount_price, price, category_id, description, image_url)
++              VALUES
++                  ('Комплексное удобрение для роз', 5.99, 8.99, 1, 'Минеральное удобрение для пышного цветения роз', 'https://example.com/images/rose_fertilizer.jpg'),
++                  ('Органическое удобрение BioGrow', 9.90, 13.50, 1, 'Подходит для всех овощей и цветов', 'https://example.com/images/biogrow.jpg'),
++                  ('Средство от тли и паутинного клеща', 6.45, 9.20, 2, 'Безопасный спрей от вредителей', 'https://example.com/images/pest_spray.jpg'),
++                  ('Гранулы от слизней', 4.99, 7.25, 2, 'Эффективная защита от слизней и улиток', 'https://example.com/images/snail_granules.jpg'),
++                  ('Семена огурцов (сорт Вязниковский)', 1.90, 2.90, 3, 'Высокая урожайность, устойчив к болезням', 'https://example.com/images/cucumber_seeds.jpg'),
++                  ('Семена петунии махровой', 2.25, 3.50, 3, 'Яркие цветы для клумб и горшков', 'https://example.com/images/petunia_seeds.jpg'),
++                  ('Ножницы садовые с усилителем', 14.90, 19.99, 4, 'Удобные ножницы для обрезки веток', 'https://example.com/images/garden_shears.jpg'),
++                  ('Лейка металлическая 5л', 9.99, 14.50, 4, 'Надёжная оцинкованная лейка', 'https://example.com/images/metal_watering_can.jpg'),
++                  ('Кашпо настенное керамическое', 11.45, 16.90, 5, 'Декоративное кашпо для подвесных растений', 'https://example.com/images/wall_pot.jpg'),
++                  ('Горшок пластиковый для орхидей', 3.99, 6.25, 5, 'Прозрачный горшок с дренажем', 'https://example.com/images/orchid_pot.jpg');
++
++              INSERT INTO favorites (user_id, product_id)
++              VALUES
++                  (1, 2),
++                  (1, 6),
++                  (2, 1),
++                  (2, 7),
++                  (3, 4),
++                  (4, 9),
++                  (4, 5);
+\ No newline at end of file
+Index: src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server.port=8082\r\nspring.application.name=gardenShop\r\n\r\nspring.datasource.url=jdbc:postgresql://localhost:5432/gardenshop\r\nspring.datasource.username=shop\r\nspring.datasource.password=shop\r\n\r\n# Hibernate\r\nspring.jpa.hibernate.ddl-auto=update\r\nspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect\r\nspring.sql.init.mode=never\r\n\r\n# SQL log\r\nspring.jpa.show-sql=true\r\nspring.jpa.properties.hibernate.format_sql=true\r\n\r\n#logs\r\nlogging.level.root=debug
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+--- a/src/main/resources/application.properties	(revision db9bd81410ee11cf1db71a4b5bd96e779f3d08d1)
++++ b/src/main/resources/application.properties	(date 1751904173422)
+@@ -6,13 +6,19 @@
+ spring.datasource.password=shop
+ 
+ # Hibernate
+-spring.jpa.hibernate.ddl-auto=update
++spring.jpa.hibernate.ddl-auto=none
+ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
++
++# Liquibase
++spring.liquibase.enabled=false
++spring.liquibase.change-log=classpath:db/changelog/db.changelog-master.yaml
++
++# SQL init disabled (you don't use schema.sql/data.sql anymore)
+ spring.sql.init.mode=never
+ 
+-# SQL log
+-spring.jpa.show-sql=true
+-spring.jpa.properties.hibernate.format_sql=true
++# SQL log (?????? ??? ???????)
++#spring.jpa.show-sql=true
++#spring.jpa.properties.hibernate.format_sql=true
+ 
+-#logs
+-logging.level.root=debug
+\ No newline at end of file
++# Logs
++#logging.level.root=debug
+\ No newline at end of file
+Index: src/main/resources/db/changelog/db.changelog-master.yaml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/db/changelog/db.changelog-master.yaml b/src/main/resources/db/changelog/db.changelog-master.yaml
+new file mode 100644
+--- /dev/null	(date 1751904173426)
++++ b/src/main/resources/db/changelog/db.changelog-master.yaml	(date 1751904173426)
+@@ -0,0 +1,5 @@
++databaseChangeLog:
++  - include:
++      file: db/changelog/001-schema.yaml
++  - include:
++      file: db/changelog/002-data.yaml
+\ No newline at end of file
+Index: src/main/resources/db/changelog/001-schema.yaml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/db/changelog/001-schema.yaml b/src/main/resources/db/changelog/001-schema.yaml
+new file mode 100644
+--- /dev/null	(date 1751904173424)
++++ b/src/main/resources/db/changelog/001-schema.yaml	(date 1751904173424)
+@@ -0,0 +1,113 @@
++databaseChangeLog:
++  - changeSet:
++      id: 001
++      author: vlad
++      changes:
++
++        - createTable:
++            tableName: app_users
++            columns:
++              - column:
++                  name: user_id
++                  type: SERIAL
++                  constraints:
++                    primaryKey: true
++              - column:
++                  name: name
++                  type: VARCHAR(255)
++                  constraints:
++                    nullable: false
++              - column:
++                  name: email
++                  type: VARCHAR(255)
++                  constraints:
++                    nullable: false
++                    unique: true
++              - column:
++                  name: phone_number
++                  type: VARCHAR(255)
++              - column:
++                  name: password_hash
++                  type: VARCHAR(255)
++                  constraints:
++                    nullable: false
++              - column:
++                  name: role
++                  type: VARCHAR(30)
++                  constraints:
++                    nullable: false
++
++        - createTable:
++            tableName: categories
++            columns:
++              - column:
++                  name: category_id
++                  type: SERIAL
++                  constraints:
++                    primaryKey: true
++              - column:
++                  name: name
++                  type: VARCHAR(255)
++
++        - createTable:
++            tableName: products
++            columns:
++              - column:
++                  name: product_id
++                  type: SERIAL
++                  constraints:
++                    primaryKey: true
++              - column:
++                  name: name
++                  type: VARCHAR(255)
++                  constraints:
++                    nullable: false
++              - column:
++                  name: discount_price
++                  type: DOUBLE PRECISION
++              - column:
++                  name: price
++                  type: DOUBLE PRECISION
++                  constraints:
++                    nullable: false
++              - column:
++                  name: category_id
++                  type: INTEGER
++                  constraints:
++                    nullable: false
++              - column:
++                  name: created_at
++                  type: TIMESTAMP
++              - column:
++                  name: updated_at
++                  type: TIMESTAMP
++              - column:
++                  name: description
++                  type: TEXT
++              - column:
++                  name: image_url
++                  type: TEXT
++
++        - createTable:
++            tableName: favorites
++            columns:
++              - column:
++                  name: favorite_id
++                  type: SERIAL
++                  constraints:
++                    primaryKey: true
++              - column:
++                  name: user_id
++                  type: INTEGER
++                  constraints:
++                    nullable: false
++              - column:
++                  name: product_id
++                  type: INTEGER
++                  constraints:
++                    nullable: false
++
++        - addUniqueConstraint:
++            tableName: favorites
++            columnNames: user_id, product_id
++            constraintName: uq_favorites_user_product
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/mapper/ProductMapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/mapper/ProductMapper.java b/src/main/java/telran/project/gardenshop/mapper/ProductMapper.java
+new file mode 100644
+--- /dev/null	(date 1751904173411)
++++ b/src/main/java/telran/project/gardenshop/mapper/ProductMapper.java	(date 1751904173411)
+@@ -0,0 +1,20 @@
++package telran.project.gardenshop.mapper;
++
++import org.mapstruct.Mapper;
++import org.mapstruct.Mapping;
++import org.mapstruct.Named;
++import telran.project.gardenshop.dto.ProductResponseDto;
++import telran.project.gardenshop.entity.Category;
++import telran.project.gardenshop.entity.Product;
++
++@Mapper(componentModel = "spring")
++public interface ProductMapper {
++
++    @Mapping(source = "category", target = "categoryName", qualifiedByName = "extractCategoryName")
++    ProductResponseDto toDto(Product product);
++
++    @Named("extractCategoryName")
++    static String extractCategoryName(Category category) {
++        return category != null ? category.getCategory() : null;
++    }
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/mapper/UserMapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/mapper/UserMapper.java b/src/main/java/telran/project/gardenshop/mapper/UserMapper.java
+new file mode 100644
+--- /dev/null	(date 1751904173413)
++++ b/src/main/java/telran/project/gardenshop/mapper/UserMapper.java	(date 1751904173413)
+@@ -0,0 +1,10 @@
++package telran.project.gardenshop.mapper;
++
++import org.mapstruct.Mapper;
++import telran.project.gardenshop.dto.UserResponseDto;
++import telran.project.gardenshop.entity.User;
++
++@Mapper(componentModel = "spring")
++public interface UserMapper {
++    UserResponseDto toDto(User user);
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/entity/Favorite.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/entity/Favorite.java b/src/main/java/telran/project/gardenshop/entity/Favorite.java
+new file mode 100644
+--- /dev/null	(date 1751904173400)
++++ b/src/main/java/telran/project/gardenshop/entity/Favorite.java	(date 1751904173400)
+@@ -0,0 +1,40 @@
++package telran.project.gardenshop.entity;
++
++import jakarta.persistence.*;
++import lombok.*;
++
++import java.time.LocalDateTime;
++
++@Entity
++@Table(name = "favorites", uniqueConstraints = {
++        @UniqueConstraint(columnNames = {"user_id", "product_id"})
++})
++@Data
++@NoArgsConstructor
++@AllArgsConstructor
++@Builder
++public class Favorite {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long id;
++
++    @ManyToOne(optional = false, fetch = FetchType.LAZY)
++    @JoinColumn(name = "user_id", nullable = false)
++    private User user;
++
++    @ManyToOne(optional = false, fetch = FetchType.LAZY)
++    @JoinColumn(name = "product_id", nullable = false)
++    private Product product;
++
++    @Column(name = "created_at", nullable = false, updatable = false)
++    @Builder.Default
++    private LocalDateTime createdAt = LocalDateTime.now();
++
++    @PrePersist
++    protected void onCreate() {
++        if (createdAt == null) {
++            createdAt = LocalDateTime.now();
++        }
++    }
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/entity/Product.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/entity/Product.java b/src/main/java/telran/project/gardenshop/entity/Product.java
+new file mode 100644
+--- /dev/null	(date 1751904173401)
++++ b/src/main/java/telran/project/gardenshop/entity/Product.java	(date 1751904173401)
+@@ -0,0 +1,25 @@
++package telran.project.gardenshop.entity;
++import jakarta.persistence.*;
++import lombok.*;
++
++@Entity
++@Table(name = "products")
++@Getter
++@Setter
++@NoArgsConstructor
++@AllArgsConstructor
++@Builder
++
++public class Product {
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long id;
++    private String name;
++    private String description;
++    private Double price;
++    private String imageUrl;
++
++    @ManyToOne
++    @JoinColumn(name = "category_id")
++    private Category category;
++}
+Index: src/main/java/telran/project/gardenshop/exception/FavoriteNotFoundException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/exception/FavoriteNotFoundException.java b/src/main/java/telran/project/gardenshop/exception/FavoriteNotFoundException.java
+new file mode 100644
+--- /dev/null	(date 1751904173405)
++++ b/src/main/java/telran/project/gardenshop/exception/FavoriteNotFoundException.java	(date 1751904173405)
+@@ -0,0 +1,13 @@
++package telran.project.gardenshop.exception;
++
++public class FavoriteNotFoundException extends RuntimeException {
++    public FavoriteNotFoundException(Long id) {
++        super("Favorite with id " + id + " not found");
++    }
++
++    public FavoriteNotFoundException(Long userId, Long productId) {
++        super("Favorite for user " + userId + " and product " + productId + " not found");
++    }
++
++
++}
+Index: src/main/java/telran/project/gardenshop/exception/GlobalExceptionHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/exception/GlobalExceptionHandler.java b/src/main/java/telran/project/gardenshop/exception/GlobalExceptionHandler.java
+new file mode 100644
+--- /dev/null	(date 1751904173406)
++++ b/src/main/java/telran/project/gardenshop/exception/GlobalExceptionHandler.java	(date 1751904173406)
+@@ -0,0 +1,73 @@
++package telran.project.gardenshop.exception;
++
++
++import org.springframework.http.HttpStatus;
++import org.springframework.web.bind.MethodArgumentNotValidException;
++import org.springframework.web.bind.annotation.ExceptionHandler;
++import org.springframework.web.bind.annotation.ResponseStatus;
++import org.springframework.web.bind.annotation.RestControllerAdvice;
++
++import java.util.HashMap;
++import java.util.Map;
++
++
++@RestControllerAdvice
++public class GlobalExceptionHandler {
++
++    @ExceptionHandler(MethodArgumentNotValidException.class)
++    @ResponseStatus(HttpStatus.BAD_REQUEST)
++    public Map<String, Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
++        Map<String, Object> response = new HashMap<>();
++        Map<String, String> errors = new HashMap<>();
++
++        ex.getBindingResult().getFieldErrors().forEach(error ->
++                errors.put(error.getField(), error.getDefaultMessage()));
++
++        response.put("status", HttpStatus.BAD_REQUEST.value());
++        response.put("code", "VALIDATION_ERROR");
++        response.put("message", "Validation failed");
++        response.put("errors", errors);
++
++        return response;
++    }
++
++    @ExceptionHandler({
++            UserNotFoundException.class,
++            ProductNotFoundException.class,
++            CategoryNotFoundException.class,
++            FavoriteNotFoundException.class
++    })
++    @ResponseStatus(HttpStatus.NOT_FOUND)
++    public Map<String, Object> handleNotFoundException(RuntimeException ex) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("status", HttpStatus.NOT_FOUND.value());
++        response.put("code", "NOT_FOUND");
++        response.put("message", ex.getMessage());
++        return response;
++    }
++
++    @ExceptionHandler({
++            UserAlreadyExistsException.class,
++            FavoriteAlreadyExistsException.class
++    })
++    @ResponseStatus(HttpStatus.CONFLICT)
++    public Map<String, Object> handleFavoriteAlreadyExistsException(FavoriteAlreadyExistsException ex) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("status", HttpStatus.CONFLICT.value());
++        response.put("code", "ALREADY_EXISTS");
++        response.put("message", ex.getMessage());
++        return response;
++    }
++
++
++    @ExceptionHandler(Exception.class)
++    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
++    public Map<String, Object> handleAllExceptions(Exception ex) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
++        response.put("code", "INTERNAL_ERROR");
++        response.put("message", "Internal server error");
++        response.put("details", ex.getMessage());
++        return response;
++    }
++}
+Index: src/main/java/telran/project/gardenshop/mapper/FavoriteMapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/mapper/FavoriteMapper.java b/src/main/java/telran/project/gardenshop/mapper/FavoriteMapper.java
+new file mode 100644
+--- /dev/null	(date 1751904173410)
++++ b/src/main/java/telran/project/gardenshop/mapper/FavoriteMapper.java	(date 1751904173410)
+@@ -0,0 +1,33 @@
++package telran.project.gardenshop.mapper;
++
++import org.mapstruct.Mapper;
++import org.mapstruct.Mapping;
++import telran.project.gardenshop.dto.FavoriteRequestDto;
++import telran.project.gardenshop.dto.FavoriteResponseDto;
++import telran.project.gardenshop.entity.Favorite;
++import telran.project.gardenshop.entity.Product;
++import telran.project.gardenshop.entity.User;
++
++import java.time.LocalDateTime;
++import java.util.List;
++
++@Mapper(componentModel = "spring")
++public interface FavoriteMapper {
++
++    @Mapping(source = "product.id", target = "productId")
++    @Mapping(source = "product.name", target = "productName")
++    @Mapping(source = "product.price", target = "price")
++    @Mapping(source = "product.imageUrl", target = "imageUrl")
++    FavoriteResponseDto toDto(Favorite favorite);
++
++    default Favorite toEntity(User user, Product product) {
++        if (user == null || product == null) {
++            return null;
++        }
++        return Favorite.builder()
++                .user(user)
++                .product(product)
++                .createdAt(LocalDateTime.now())
++                .build();
++    }
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/exception/UserAlreadyExistsException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/exception/UserAlreadyExistsException.java b/src/main/java/telran/project/gardenshop/exception/UserAlreadyExistsException.java
+new file mode 100644
+--- /dev/null	(date 1751904173408)
++++ b/src/main/java/telran/project/gardenshop/exception/UserAlreadyExistsException.java	(date 1751904173408)
+@@ -0,0 +1,13 @@
++package telran.project.gardenshop.exception;
++
++public class UserAlreadyExistsException extends RuntimeException {
++    public UserAlreadyExistsException(String username) {
++        super("User with username '" + username + "' already exists");
++    }
++
++    public UserAlreadyExistsException(String field, String value) {
++        super("User with " + field + " '" + value + "' already exists");
++    }
++
++
++}
+Index: src/main/java/telran/project/gardenshop/repository/ProductRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/repository/ProductRepository.java b/src/main/java/telran/project/gardenshop/repository/ProductRepository.java
+new file mode 100644
+--- /dev/null	(date 1751904173415)
++++ b/src/main/java/telran/project/gardenshop/repository/ProductRepository.java	(date 1751904173415)
+@@ -0,0 +1,6 @@
++package telran.project.gardenshop.repository;
++import org.springframework.data.jpa.repository.JpaRepository;
++import telran.project.gardenshop.entity.Product;
++
++public interface ProductRepository extends JpaRepository<Product, Long> {
++}
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"MavenProjectsManager\">\r\n    <option name=\"originalFiles\">\r\n      <list>\r\n        <option value=\"$PROJECT_DIR$/pom.xml\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_21_PREVIEW\" project-jdk-name=\"liberica-21\" project-jdk-type=\"JavaSDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision db9bd81410ee11cf1db71a4b5bd96e779f3d08d1)
++++ b/.idea/misc.xml	(date 1751904447607)
+@@ -8,5 +8,5 @@
+       </list>
+     </option>
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_21_PREVIEW" project-jdk-name="liberica-21" project-jdk-type="JavaSDK" />
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="liberica-21" project-jdk-type="JavaSDK" />
+ </project>
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/repository/FavoriteRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/repository/FavoriteRepository.java b/src/main/java/telran/project/gardenshop/repository/FavoriteRepository.java
+new file mode 100644
+--- /dev/null	(date 1751904173414)
++++ b/src/main/java/telran/project/gardenshop/repository/FavoriteRepository.java	(date 1751904173414)
+@@ -0,0 +1,14 @@
++package telran.project.gardenshop.repository;
++
++import org.springframework.data.jpa.repository.JpaRepository;
++import telran.project.gardenshop.entity.Favorite;
++
++import java.util.List;
++import java.util.Optional;
++
++public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
++    Optional<Favorite> findByUserIdAndProductId(Long userId, Long productId);
++    List<Favorite> findAllByUserId(Long userId);
++    void deleteByUserIdAndProductId(Long userId, Long productId);
++    boolean existsByUserIdAndProductId(Long userId, Long productId);
++}
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"CompilerConfiguration\">\r\n    <annotationProcessing>\r\n      <profile default=\"true\" name=\"Default\" enabled=\"true\" />\r\n      <profile name=\"Annotation profile for java-team-gardenshop\" enabled=\"true\">\r\n        <sourceOutputDir name=\"target/generated-sources/annotations\" />\r\n        <sourceTestOutputDir name=\"target/generated-test-sources/test-annotations\" />\r\n        <outputRelativeToContentRoot value=\"true\" />\r\n        <processorPath useClasspath=\"false\">\r\n          <entry name=\"$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar\" />\r\n          <entry name=\"$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar\" />\r\n          <entry name=\"$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar\" />\r\n          <entry name=\"$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar\" />\r\n          <entry name=\"$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar\" />\r\n          <entry name=\"$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar\" />\r\n        </processorPath>\r\n        <module name=\"gardenshop\" />\r\n      </profile>\r\n    </annotationProcessing>\r\n  </component>\r\n  <component name=\"JavacSettings\">\r\n    <option name=\"ADDITIONAL_OPTIONS_OVERRIDE\">\r\n      <module name=\"gardenshop\" options=\"-parameters\" />\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+--- a/.idea/compiler.xml	(revision db9bd81410ee11cf1db71a4b5bd96e779f3d08d1)
++++ b/.idea/compiler.xml	(date 1751904447913)
+@@ -11,9 +11,6 @@
+           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
+-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+-          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+-          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
+         </processorPath>
+         <module name="gardenshop" />
+       </profile>
+Index: src/main/java/telran/project/gardenshop/exception/ProductNotFoundException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/exception/ProductNotFoundException.java b/src/main/java/telran/project/gardenshop/exception/ProductNotFoundException.java
+new file mode 100644
+--- /dev/null	(date 1751904173407)
++++ b/src/main/java/telran/project/gardenshop/exception/ProductNotFoundException.java	(date 1751904173407)
+@@ -0,0 +1,13 @@
++package telran.project.gardenshop.exception;
++
++public class ProductNotFoundException extends RuntimeException {
++    public ProductNotFoundException(Long id) {
++        super("Product with id " + id + " not found");
++    }
++
++    public ProductNotFoundException(String name) {
++        super("Product with name '" + name + "' not found");
++    }
++
++
++}
+Index: src/main/java/telran/project/gardenshop/exception/FavoriteAlreadyExistsException.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/exception/FavoriteAlreadyExistsException.java b/src/main/java/telran/project/gardenshop/exception/FavoriteAlreadyExistsException.java
+new file mode 100644
+--- /dev/null	(date 1751904173404)
++++ b/src/main/java/telran/project/gardenshop/exception/FavoriteAlreadyExistsException.java	(date 1751904173404)
+@@ -0,0 +1,9 @@
++package telran.project.gardenshop.exception;
++
++public class FavoriteAlreadyExistsException extends RuntimeException {
++    public FavoriteAlreadyExistsException(Long userId, Long productId) {
++        super("Favorite for user " + userId + " and product " + productId + " already exists");
++    }
++
++
++}
+Index: src/main/java/telran/project/gardenshop/dto/ProductRequestDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/dto/ProductRequestDto.java b/src/main/java/telran/project/gardenshop/dto/ProductRequestDto.java
+new file mode 100644
+--- /dev/null	(date 1751904173398)
++++ b/src/main/java/telran/project/gardenshop/dto/ProductRequestDto.java	(date 1751904173398)
+@@ -0,0 +1,15 @@
++package telran.project.gardenshop.dto;
++import lombok.*;
++
++@Getter
++@Setter
++@AllArgsConstructor
++@NoArgsConstructor
++@Builder
++public class ProductRequestDto {
++    private String name;
++    private String description;
++    private Double price;
++    private String imageUrl;
++    private Long categoryId;
++}
+Index: src/main/java/telran/project/gardenshop/dto/FavoriteRequestDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/dto/FavoriteRequestDto.java b/src/main/java/telran/project/gardenshop/dto/FavoriteRequestDto.java
+new file mode 100644
+--- /dev/null	(date 1751904173396)
++++ b/src/main/java/telran/project/gardenshop/dto/FavoriteRequestDto.java	(date 1751904173396)
+@@ -0,0 +1,18 @@
++package telran.project.gardenshop.dto;
++import jakarta.validation.constraints.NotNull;
++import lombok.AllArgsConstructor;
++import lombok.Builder;
++import lombok.Data;
++import lombok.NoArgsConstructor;
++
++@Data
++@AllArgsConstructor
++@NoArgsConstructor
++@Builder
++public class FavoriteRequestDto {
++    @NotNull(message = "User ID is required")
++    private Long userId;
++
++    @NotNull(message = "Product ID is required")
++    private Long productId;
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/dto/FavoriteResponseDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/dto/FavoriteResponseDto.java b/src/main/java/telran/project/gardenshop/dto/FavoriteResponseDto.java
+new file mode 100644
+--- /dev/null	(date 1751904173397)
++++ b/src/main/java/telran/project/gardenshop/dto/FavoriteResponseDto.java	(date 1751904173397)
+@@ -0,0 +1,17 @@
++package telran.project.gardenshop.dto;
++
++import lombok.AllArgsConstructor;
++import lombok.Builder;
++import lombok.Data;
++import lombok.NoArgsConstructor;
++
++@Data
++@AllArgsConstructor
++@NoArgsConstructor
++@Builder
++public class FavoriteResponseDto {
++    private Long productId;
++    private String productName;
++    private double price;
++    private String imageUrl;
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/dto/ProductResponseDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/dto/ProductResponseDto.java b/src/main/java/telran/project/gardenshop/dto/ProductResponseDto.java
+new file mode 100644
+--- /dev/null	(date 1751904173399)
++++ b/src/main/java/telran/project/gardenshop/dto/ProductResponseDto.java	(date 1751904173399)
+@@ -0,0 +1,16 @@
++package telran.project.gardenshop.dto;
++import lombok.*;
++
++@Getter
++@Setter
++@NoArgsConstructor
++@AllArgsConstructor
++@Builder
++public class ProductResponseDto {
++    private Long id;
++    private String name;
++    private String description;
++    private Double price;
++    private String imageUrl;
++    private String categoryName;
++}
+Index: src/main/java/telran/project/gardenshop/service/ProductService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/service/ProductService.java b/src/main/java/telran/project/gardenshop/service/ProductService.java
+new file mode 100644
+--- /dev/null	(date 1751904173418)
++++ b/src/main/java/telran/project/gardenshop/service/ProductService.java	(date 1751904173418)
+@@ -0,0 +1,12 @@
++package telran.project.gardenshop.service;
++import java.util.List;
++import telran.project.gardenshop.dto.ProductRequestDto;
++import telran.project.gardenshop.dto.ProductResponseDto;
++
++public interface ProductService {
++    ProductResponseDto createProduct(ProductRequestDto requestDto);
++    ProductResponseDto getProductById(Long id);
++    List<ProductResponseDto> getAllProducts();
++    ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto);
++    void deleteProduct(Long id);
++}
+Index: src/main/java/telran/project/gardenshop/service/FavoriteServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/service/FavoriteServiceImpl.java b/src/main/java/telran/project/gardenshop/service/FavoriteServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1751904173417)
++++ b/src/main/java/telran/project/gardenshop/service/FavoriteServiceImpl.java	(date 1751904173417)
+@@ -0,0 +1,63 @@
++package telran.project.gardenshop.service;
++
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++import telran.project.gardenshop.dto.FavoriteResponseDto;
++import telran.project.gardenshop.entity.Favorite;
++import telran.project.gardenshop.entity.Product;
++import telran.project.gardenshop.entity.User;
++import telran.project.gardenshop.exception.FavoriteAlreadyExistsException;
++import telran.project.gardenshop.exception.FavoriteNotFoundException;
++import telran.project.gardenshop.exception.ProductNotFoundException;
++import telran.project.gardenshop.exception.UserNotFoundException;
++import telran.project.gardenshop.mapper.FavoriteMapper;
++import telran.project.gardenshop.repository.FavoriteRepository;
++import telran.project.gardenshop.repository.ProductRepository;
++import telran.project.gardenshop.repository.UserRepository;
++
++import java.util.List;
++
++@Service
++@RequiredArgsConstructor
++public class FavoriteServiceImpl implements FavoriteService {
++
++    private final FavoriteRepository favoriteRepository;
++    private final UserRepository userRepository;
++    private final ProductRepository productRepository;
++    private final FavoriteMapper favoriteMapper;
++
++    @Override
++    public void addToFavorites(Long userId, Long productId) {
++        if (favoriteRepository.existsByUserIdAndProductId(userId, productId)) {
++            throw new FavoriteAlreadyExistsException(userId, productId);
++        }
++
++        User user = userRepository.findById(userId)
++                .orElseThrow(() -> new UserNotFoundException(userId));
++        Product product = productRepository.findById(productId)
++                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
++
++        Favorite favorite = favoriteMapper.toEntity(user, product);
++        favoriteRepository.save(favorite);
++    }
++
++    @Override
++    public void removeFromFavorites(Long userId, Long productId) {
++        if (!favoriteRepository.existsByUserIdAndProductId(userId, productId)) {
++            throw new FavoriteNotFoundException(userId, productId);
++        }
++        favoriteRepository.deleteByUserIdAndProductId(userId, productId);
++    }
++
++    @Override
++    public List<FavoriteResponseDto> getFavoritesByUserId(Long userId) {
++        return favoriteRepository.findAllByUserId(userId).stream()
++                .map(favoriteMapper::toDto)
++                .toList();
++    }
++
++    @Override
++    public boolean isFavorite(Long userId, Long productId) {
++        return favoriteRepository.existsByUserIdAndProductId(userId, productId);
++    }
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/service/ProductServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/service/ProductServiceImpl.java b/src/main/java/telran/project/gardenshop/service/ProductServiceImpl.java
+new file mode 100644
+--- /dev/null	(date 1751904173419)
++++ b/src/main/java/telran/project/gardenshop/service/ProductServiceImpl.java	(date 1751904173419)
+@@ -0,0 +1,83 @@
++package telran.project.gardenshop.service;
++
++import telran.project.gardenshop.mapper.ProductMapper;
++
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++import telran.project.gardenshop.dto.ProductRequestDto;
++import telran.project.gardenshop.dto.ProductResponseDto;
++import telran.project.gardenshop.entity.Category;
++import telran.project.gardenshop.entity.Product;
++import telran.project.gardenshop.exception.CategoryNotFoundException;
++import telran.project.gardenshop.exception.ProductNotFoundException;
++import telran.project.gardenshop.repository.CategoryRepository;
++import telran.project.gardenshop.repository.ProductRepository;
++
++import java.util.List;
++import java.util.stream.Collectors;
++
++@Service
++@RequiredArgsConstructor
++public class ProductServiceImpl implements ProductService {
++
++    private final ProductRepository productRepository;
++    private final CategoryRepository categoryRepository;
++    private final ProductMapper productMapper;
++
++    @Override
++    public ProductResponseDto createProduct(ProductRequestDto requestDto) {
++        Category category = categoryRepository.findById(requestDto.getCategoryId())
++                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
++
++        Product product = Product.builder()
++                .name(requestDto.getName())
++                .description(requestDto.getDescription())
++                .price(requestDto.getPrice())
++                .imageUrl(requestDto.getImageUrl())
++                .category(category)
++                .build();
++
++        productRepository.save(product);
++        return productMapper.toDto(product);
++    }
++
++    @Override
++    public ProductResponseDto getProductById(Long id) {
++        Product product = productRepository.findById(id)
++                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
++        return productMapper.toDto(product);
++    }
++
++    @Override
++    public List<ProductResponseDto> getAllProducts() {
++        return productRepository.findAll().stream()
++                .map(productMapper::toDto)
++                .collect(Collectors.toList());
++    }
++
++    @Override
++    public ProductResponseDto updateProduct(Long id, ProductRequestDto requestDto) {
++        Product product = productRepository.findById(id)
++                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
++
++        Category category = categoryRepository.findById(requestDto.getCategoryId())
++                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
++
++        product.setName(requestDto.getName());
++        product.setDescription(requestDto.getDescription());
++        product.setPrice(requestDto.getPrice());
++        product.setImageUrl(requestDto.getImageUrl());
++        product.setCategory(category);
++
++        productRepository.save(product);
++        return productMapper.toDto(product);
++    }
++
++    @Override
++    public void deleteProduct(Long id) {
++        Product product = productRepository.findById(id)
++                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
++        productRepository.delete(product);
++    }
++
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/service/FavoriteService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/service/FavoriteService.java b/src/main/java/telran/project/gardenshop/service/FavoriteService.java
+new file mode 100644
+--- /dev/null	(date 1751904173415)
++++ b/src/main/java/telran/project/gardenshop/service/FavoriteService.java	(date 1751904173415)
+@@ -0,0 +1,12 @@
++package telran.project.gardenshop.service;
++
++import telran.project.gardenshop.dto.FavoriteResponseDto;
++
++import java.util.List;
++
++public interface FavoriteService {
++    void addToFavorites(Long userId, Long productId);
++    void removeFromFavorites(Long userId, Long productId);
++    List<FavoriteResponseDto> getFavoritesByUserId(Long userId);
++    boolean isFavorite(Long userId, Long productId);
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/controller/ProductController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/controller/ProductController.java b/src/main/java/telran/project/gardenshop/controller/ProductController.java
+new file mode 100644
+--- /dev/null	(date 1751904173395)
++++ b/src/main/java/telran/project/gardenshop/controller/ProductController.java	(date 1751904173395)
+@@ -0,0 +1,59 @@
++package telran.project.gardenshop.controller;
++
++import io.swagger.v3.oas.annotations.Operation;
++import io.swagger.v3.oas.annotations.security.SecurityRequirement;
++import lombok.RequiredArgsConstructor;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.*;
++import telran.project.gardenshop.dto.ProductRequestDto;
++import telran.project.gardenshop.dto.ProductResponseDto;
++import telran.project.gardenshop.mapper.ProductMapper;
++import telran.project.gardenshop.service.ProductService;
++
++import java.util.List;
++import java.util.stream.Collectors;
++
++@RestController
++@RequestMapping("/api/products")
++@RequiredArgsConstructor
++@SecurityRequirement(name = "bearerAuth")
++public class ProductController {
++
++    private final ProductService productService;
++    private final ProductMapper productMapper;
++
++    @Operation(summary = "Добавить новый товар")
++    @PostMapping
++    public ResponseEntity<ProductResponseDto> create(@RequestBody ProductRequestDto dto) {
++        var responseDto = productService.createProduct(dto);
++        return ResponseEntity.status(201).body(responseDto);
++    }
++
++    @Operation(summary = "Получить товар по ID")
++    @GetMapping("/{id}")
++    public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
++        var responseDto = productService.getProductById(id);
++        return ResponseEntity.ok(responseDto);
++    }
++
++    @Operation(summary = "Получить все товары")
++    @GetMapping
++    public ResponseEntity<List<ProductResponseDto>> getAll() {
++        return ResponseEntity.ok(productService.getAllProducts());
++    }
++
++    @Operation(summary = "Обновить товар")
++    @PutMapping("/{id}")
++    public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
++                                                     @RequestBody ProductRequestDto dto) {
++        var responseDto = productService.updateProduct(id, dto);
++        return ResponseEntity.ok(responseDto);
++    }
++
++    @Operation(summary = "Удалить товар")
++    @DeleteMapping("/{id}")
++    public ResponseEntity<Void> delete(@PathVariable Long id) {
++        productService.deleteProduct(id);
++        return ResponseEntity.noContent().build();
++    }
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/GardenShopApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package telran.project.gardenshop;\r\n\r\nimport org.springframework.boot.SpringApplication;\r\nimport org.springframework.boot.autoconfigure.SpringBootApplication;\r\n\r\n@SpringBootApplication\r\npublic class GardenShopApplication {\r\n\r\n\tpublic static void main(String[] args) {\r\n\t\tSpringApplication.run(GardenShopApplication.class, args);\r\n\t}\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/GardenShopApplication.java b/src/main/java/telran/project/gardenshop/GardenShopApplication.java
+--- a/src/main/java/telran/project/gardenshop/GardenShopApplication.java	(revision db9bd81410ee11cf1db71a4b5bd96e779f3d08d1)
++++ b/src/main/java/telran/project/gardenshop/GardenShopApplication.java	(date 1751904173393)
+@@ -10,4 +10,4 @@
+ 		SpringApplication.run(GardenShopApplication.class, args);
+ 	}
+ 
+-}
++}
+\ No newline at end of file
+Index: src/main/java/telran/project/gardenshop/service/UserServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package telran.project.gardenshop.service;\r\n\r\nimport lombok.RequiredArgsConstructor;\r\nimport org.springframework.security.crypto.password.PasswordEncoder;\r\nimport org.springframework.stereotype.Service;\r\nimport telran.project.gardenshop.dto.UserRequestDto;\r\nimport telran.project.gardenshop.dto.UserResponseDto;\r\nimport telran.project.gardenshop.entity.User;\r\nimport telran.project.gardenshop.enums.Role;\r\nimport telran.project.gardenshop.exception.UserNotFoundException;\r\nimport telran.project.gardenshop.repository.UserRepository;\r\nimport telran.project.gardenshop.service.UserService;\r\n\r\nimport java.util.List;\r\nimport java.util.stream.Collectors;\r\n\r\n@Service\r\n@RequiredArgsConstructor\r\npublic class UserServiceImpl implements UserService {\r\n    private final UserRepository repository;\r\n    private final PasswordEncoder passwordEncoder;\r\n\r\n    @Override\r\n    public UserResponseDto create(UserRequestDto dto) {\r\n\r\n        User user = User.builder()\r\n                .email(dto.getEmail())\r\n                .passwordHash(passwordEncoder.encode(dto.getPassword()))\r\n                .fullName(dto.getFullName())\r\n                .phoneNumber(dto.getPhoneNumber())\r\n                .role(dto.getRole() != null ? dto.getRole() : Role.USER)\r\n                .build();\r\n        return toDto(repository.save(user));\r\n    }\r\n\r\n    @Override\r\n    public List<UserResponseDto> getAll() {\r\n        return repository.findAll()\r\n                .stream()\r\n                .map(this::toDto)\r\n                .collect(Collectors.toList());\r\n    }\r\n\r\n    @Override\r\n    public UserResponseDto getById(Long id) {\r\n        User user = repository.findById(id)\r\n                .orElseThrow(() -> new UserNotFoundException(id));\r\n        return toDto(user);\r\n    }\r\n\r\n    @Override\r\n    public void delete(Long id) {\r\n        if (!repository.existsById(id)) {\r\n            throw new UserNotFoundException(id);\r\n        }\r\n        repository.deleteById(id);\r\n    }\r\n\r\n    private UserResponseDto toDto(User user) {\r\n        UserResponseDto dto = new UserResponseDto();\r\n        dto.setId(user.getId());\r\n        dto.setEmail(user.getEmail());\r\n        dto.setFullName(user.getFullName());\r\n        dto.setPhoneNumber(user.getPhoneNumber());\r\n        dto.setRole(user.getRole());\r\n        return dto;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/telran/project/gardenshop/service/UserServiceImpl.java b/src/main/java/telran/project/gardenshop/service/UserServiceImpl.java
+--- a/src/main/java/telran/project/gardenshop/service/UserServiceImpl.java	(revision db9bd81410ee11cf1db71a4b5bd96e779f3d08d1)
++++ b/src/main/java/telran/project/gardenshop/service/UserServiceImpl.java	(date 1751904173420)
+@@ -10,6 +10,7 @@
+ import telran.project.gardenshop.exception.UserNotFoundException;
+ import telran.project.gardenshop.repository.UserRepository;
+ import telran.project.gardenshop.service.UserService;
++import telran.project.gardenshop.mapper.UserMapper;
+ 
+ import java.util.List;
+ import java.util.stream.Collectors;
+@@ -19,6 +20,7 @@
+ public class UserServiceImpl implements UserService {
+     private final UserRepository repository;
+     private final PasswordEncoder passwordEncoder;
++    private final UserMapper userMapper;
+ 
+     @Override
+     public UserResponseDto create(UserRequestDto dto) {
+@@ -30,14 +32,14 @@
+                 .phoneNumber(dto.getPhoneNumber())
+                 .role(dto.getRole() != null ? dto.getRole() : Role.USER)
+                 .build();
+-        return toDto(repository.save(user));
++        return userMapper.toDto(repository.save(user));
+     }
+ 
+     @Override
+     public List<UserResponseDto> getAll() {
+         return repository.findAll()
+                 .stream()
+-                .map(this::toDto)
++                .map(userMapper::toDto)
+                 .collect(Collectors.toList());
+     }
+ 
+@@ -45,7 +47,7 @@
+     public UserResponseDto getById(Long id) {
+         User user = repository.findById(id)
+                 .orElseThrow(() -> new UserNotFoundException(id));
+-        return toDto(user);
++        return userMapper.toDto(user);
+     }
+ 
+     @Override
+@@ -56,13 +58,7 @@
+         repository.deleteById(id);
+     }
+ 
+-    private UserResponseDto toDto(User user) {
+-        UserResponseDto dto = new UserResponseDto();
+-        dto.setId(user.getId());
+-        dto.setEmail(user.getEmail());
+-        dto.setFullName(user.getFullName());
+-        dto.setPhoneNumber(user.getPhoneNumber());
+-        dto.setRole(user.getRole());
+-        return dto;
+-    }
++
++
++
+ }

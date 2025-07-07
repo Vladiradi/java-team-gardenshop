@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="
-      http://www.liquibase.org/xml/ns/dbchangelog
-      https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="001" author="vlad">
+    <changeSet id="001" author="anna">
+
         <createTable tableName="app_users">
             <column name="user_id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -65,10 +64,9 @@
             </column>
         </createTable>
 
-        <addUniqueConstraint
-                tableName="favorites"
-                columnNames="user_id, product_id"
-                constraintName="uq_favorites_user_product"/>
+        <addUniqueConstraint tableName="favorites"
+                             columnNames="user_id, product_id"
+                             constraintName="uq_favorites_user_product"/>
     </changeSet>
 
 </databaseChangeLog>

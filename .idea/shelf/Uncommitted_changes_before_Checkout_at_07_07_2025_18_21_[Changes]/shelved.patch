@@ -1,0 +1,63 @@
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"MavenProjectsManager\">\r\n    <option name=\"originalFiles\">\r\n      <list>\r\n        <option value=\"$PROJECT_DIR$/pom.xml\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_23\" default=\"true\" project-jdk-name=\"23\" project-jdk-type=\"JavaSDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 0d04f43df5d10ea5e658c798984044ec7ae452f5)
++++ b/.idea/misc.xml	(date 1751905286462)
+@@ -8,5 +8,6 @@
+       </list>
+     </option>
+   </component>
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="liberica-21" project-jdk-type="JavaSDK" />
+   <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="23" project-jdk-type="JavaSDK" />
+ </project>
+\ No newline at end of file
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n\t<modelVersion>4.0.0</modelVersion>\r\n\t<parent>\r\n\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t<artifactId>spring-boot-starter-parent</artifactId>\r\n\t\t<version>3.5.3</version>\r\n\t\t<relativePath/>\r\n\t</parent>\r\n\t<groupId>telran.project</groupId>\r\n\t<artifactId>gardenshop</artifactId>\r\n\t<version>0.0.1-SNAPSHOT</version>\r\n\t<name>java-team-gardenshop</name>\r\n\t<description>java-team-gardenshop</description>\r\n\t<url/>\r\n\t<licenses>\r\n\t\t<license/>\r\n\t</licenses>\r\n\t<developers>\r\n\t\t<developer/>\r\n\t</developers>\r\n\t<scm>\r\n\t\t<connection/>\r\n\t\t<developerConnection/>\r\n\t\t<tag/>\r\n\t\t<url/>\r\n\t</scm>\r\n\t<properties>\r\n\t\t<java.version>21</java.version>\r\n\t</properties>\r\n\t<dependencies>\r\n\r\n\t\t<!-- Spring Boot Starter Data JPA -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-data-jpa</artifactId>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-web</artifactId>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-devtools</artifactId>\r\n\t\t\t<scope>runtime</scope>\r\n\t\t\t<optional>true</optional>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.postgresql</groupId>\r\n\t\t\t<artifactId>postgresql</artifactId>\r\n\t\t\t<scope>runtime</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- Lombok -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.projectlombok</groupId>\r\n\t\t\t<artifactId>lombok</artifactId>\r\n\t\t\t<optional>true</optional>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- ForTests -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-test</artifactId>\r\n\t\t\t<scope>test</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- ForTests H2 DB-->\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.h2database</groupId>\r\n\t\t\t<artifactId>h2</artifactId>\r\n\t\t\t<scope>test</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- MapStruct -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.mapstruct</groupId>\r\n\t\t\t<artifactId>mapstruct</artifactId>\r\n\t\t\t<version>1.5.5.Final</version>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- Swagger -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springdoc</groupId>\r\n\t\t\t<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>\r\n\t\t\t<version>2.6.0</version>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- Validation -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>jakarta.validation</groupId>\r\n\t\t\t<artifactId>jakarta.validation-api</artifactId>\r\n\t\t\t<version>3.0.2</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.hibernate.validator</groupId>\r\n\t\t\t<artifactId>hibernate-validator</artifactId>\r\n\t\t</dependency>\r\n\r\n\t\t<!-- Security  -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-security</artifactId>\r\n\t\t</dependency>\r\n\r\n        <!-- Liquibase -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springdoc</groupId>\r\n\t\t\t<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>\r\n\t\t\t<version>2.2.0</version>\r\n\t\t</dependency>\r\n\r\n\t</dependencies>\r\n\r\n\t<build>\r\n\t\t<plugins>\r\n\r\n\t\t\t<plugin>\r\n\t\t\t\t<groupId>org.apache.maven.plugins</groupId>\r\n\t\t\t\t<artifactId>maven-compiler-plugin</artifactId>\r\n\t\t\t\t<version>3.10.1</version>\r\n\t\t\t\t<configuration>\r\n\t\t\t\t\t<source>${java.version}</source>\r\n\t\t\t\t\t<target>${java.version}</target>\r\n\t\t\t\t\t<annotationProcessorPaths>\r\n\t\t\t\t\t\t<!-- Lombok -->\r\n\t\t\t\t\t\t<path>\r\n\t\t\t\t\t\t\t<groupId>org.projectlombok</groupId>\r\n\t\t\t\t\t\t\t<artifactId>lombok</artifactId>\r\n\t\t\t\t\t\t\t<version>1.18.30</version>\r\n\t\t\t\t\t\t</path>\r\n\t\t\t\t\t\t<!-- MapStruct -->\r\n\t\t\t\t\t\t<path>\r\n\t\t\t\t\t\t\t<groupId>org.mapstruct</groupId>\r\n\t\t\t\t\t\t\t<artifactId>mapstruct-processor</artifactId>\r\n\t\t\t\t\t\t\t<version>1.5.5.Final</version>\r\n\t\t\t\t\t\t</path>\r\n\t\t\t\t\t</annotationProcessorPaths>\r\n\t\t\t\t</configuration>\r\n\t\t\t</plugin>\r\n\r\n\t\t\t<plugin>\r\n\t\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t\t<artifactId>spring-boot-maven-plugin</artifactId>\r\n\t\t\t</plugin>\r\n\t\t</plugins>\r\n\t</build>\r\n\r\n</project>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+--- a/pom.xml	(revision 0d04f43df5d10ea5e658c798984044ec7ae452f5)
++++ b/pom.xml	(date 1751905279374)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
++		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+ 	<modelVersion>4.0.0</modelVersion>
+ 	<parent>
+ 		<groupId>org.springframework.boot</groupId>
+@@ -90,6 +90,7 @@
+ 			<version>2.6.0</version>
+ 		</dependency>
+ 
++
+ 		<!-- Validation -->
+ 		<dependency>
+ 			<groupId>jakarta.validation</groupId>
+@@ -113,6 +114,11 @@
+ 			<groupId>org.springdoc</groupId>
+ 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+ 			<version>2.2.0</version>
++		<!-- Liquibase -->
++		<dependency>
++			<groupId>org.springdoc</groupId>
++			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
++			<version>2.2.0</version>
+ 		</dependency>
+ 
+ 	</dependencies>
+@@ -151,4 +157,4 @@
+ 		</plugins>
+ 	</build>
+ 
+-</project>
++</project>
+\ No newline at end of file

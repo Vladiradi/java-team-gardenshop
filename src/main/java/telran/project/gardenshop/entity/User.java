@@ -1,5 +1,7 @@
 package telran.project.gardenshop.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 import telran.project.gardenshop.enums.Role;
@@ -25,4 +27,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favorite> favorites;
 }

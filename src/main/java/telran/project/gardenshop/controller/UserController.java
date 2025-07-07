@@ -11,7 +11,6 @@ import telran.project.gardenshop.dto.UserResponseDto;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.mapper.UserMapper;
 import telran.project.gardenshop.service.UserService;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

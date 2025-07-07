@@ -1,6 +1,9 @@
 package telran.project.gardenshop.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
+import java.util.ArrayList;
+import telran.project.gardenshop.entity.Favorite;
 
 @Entity
 @Table(name = "products")
@@ -22,4 +25,7 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 }

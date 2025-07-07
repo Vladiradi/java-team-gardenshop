@@ -11,7 +11,6 @@ import telran.project.gardenshop.dto.CategoryResponseDto;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.mapper.CategoryMapper;
 import telran.project.gardenshop.service.CategoryService;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

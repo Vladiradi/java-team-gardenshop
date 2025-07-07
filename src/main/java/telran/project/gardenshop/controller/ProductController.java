@@ -10,10 +10,8 @@ import telran.project.gardenshop.dto.ProductResponseDto;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.mapper.ProductMapper;
 import telran.project.gardenshop.service.ProductService;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 import jakarta.validation.Valid;
 
 @RestController

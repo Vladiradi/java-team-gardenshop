@@ -14,6 +14,8 @@ import telran.project.gardenshop.service.ProductService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
@@ -25,7 +27,7 @@ public class ProductController {
 
     @PostMapping
     @Operation(summary = "Добавить новый товар")
-    public ResponseEntity<ProductResponseDto> create(@RequestBody ProductRequestDto dto) {
+    public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
         Product saved = productService.createProduct(entity);
         return ResponseEntity.status(201).body(productMapper.toDto(saved));
@@ -51,7 +53,7 @@ public class ProductController {
     @PutMapping("/{id}")
     @Operation(summary = "Обновить товар")
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
-                                                     @RequestBody ProductRequestDto dto) {
+                                                     @Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
         entity.setId(id);
         Product updated = productService.updateProduct(id, entity);

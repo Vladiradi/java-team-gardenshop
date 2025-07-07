@@ -1,6 +1,7 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> create(@RequestBody UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> create(@Valid @RequestBody UserRequestDto dto) {
         User user = userMapper.toEntity(dto);
         User saved = userService.createUser(user);
         return ResponseEntity.status(201).body(userMapper.toDto(saved));
@@ -44,7 +45,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> update(@PathVariable Long id,
-                                                  @RequestBody UserRequestDto dto) {
+                                                  @Valid @RequestBody UserRequestDto dto) {
         User updated = userMapper.toEntity(dto);
         User saved = userService.updateUser(id, updated);
         return ResponseEntity.ok(userMapper.toDto(saved));

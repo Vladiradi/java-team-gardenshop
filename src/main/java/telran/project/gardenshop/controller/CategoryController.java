@@ -2,6 +2,7 @@ package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CategoryController {
 
     @PostMapping
     @Operation(summary = "Создать категорию")
-    public ResponseEntity<CategoryResponseDto> create(@RequestBody CategoryRequestDto dto) {
+    public ResponseEntity<CategoryResponseDto> create(@Valid @RequestBody CategoryRequestDto dto) {
         Category category = categoryMapper.toEntity(dto);
         Category saved = categoryService.createCategory(category);
         return ResponseEntity.status(201).body(categoryMapper.toDto(saved));
@@ -52,7 +53,7 @@ public class CategoryController {
     @PutMapping("/{id}")
     @Operation(summary = "Обновить категорию")
     public ResponseEntity<CategoryResponseDto> update(@PathVariable Long id,
-                                                      @RequestBody CategoryRequestDto dto) {
+                                                      @Valid @RequestBody CategoryRequestDto dto) {
         Category updated = categoryMapper.toEntity(dto);
         Category saved = categoryService.updateCategory(id, updated);
         return ResponseEntity.ok(categoryMapper.toDto(saved));

@@ -1,6 +1,7 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class FavoriteController {
     private final FavoriteMapper favoriteMapper;
 
     @PostMapping
-    public ResponseEntity<FavoriteResponseDto> add(@RequestBody FavoriteRequestDto dto) {
+    public ResponseEntity<FavoriteResponseDto> add(@Valid @RequestBody FavoriteRequestDto dto) {
         Favorite favorite = Favorite.builder()
                 .user(User.builder().id(dto.getUserId()).build())
                 .product(Product.builder().id(dto.getProductId()).build())

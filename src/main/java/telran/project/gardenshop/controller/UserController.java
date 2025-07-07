@@ -1,5 +1,6 @@
 package telran.project.gardenshop.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     @PostMapping
+    @Operation(summary = "Create a new user")
     public ResponseEntity<UserResponseDto> create(@Valid @RequestBody UserRequestDto dto) {
         User user = userMapper.toEntity(dto);
         User saved = userService.createUser(user);
@@ -31,11 +33,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get user by ID")
     public ResponseEntity<UserResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(userMapper.toDto(userService.getUserById(id)));
     }
 
     @GetMapping
+    @Operation(summary = "Get all users")
     public ResponseEntity<List<UserResponseDto>> getAll() {
         return ResponseEntity.ok(
                 userService.getAllUsers().stream()
@@ -44,6 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update user")
     public ResponseEntity<UserResponseDto> update(@PathVariable Long id,
                                                   @Valid @RequestBody UserRequestDto dto) {
         User updated = userMapper.toEntity(dto);
@@ -52,6 +57,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete user")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();

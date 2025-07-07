@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="487d7fca-259f-4690-bf01-c75aa6dc7538" name="Changes" comment="task 1 &#10;&#10;Testing">
+      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/controller/CategoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/dto/CategoryResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/dto/CategoryResponseDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/entity/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/entity/Category.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/mapper/CategoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/mapper/CategoryMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/service/CategoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/service/CategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/telran/project/gardenshop/service/CategoryServiceImpl.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="task1" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SET_USER_NAME_GLOBALLY" value="false" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
+    {
+      &quot;state&quot;: &quot;OPEN&quot;,
+      &quot;assignee&quot;: &quot;annaboldt&quot;,
+      &quot;author&quot;: &quot;annaboldt&quot;
+    }
+  ],
+  &quot;lastFilter&quot;: {}
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Vladiradi/java-team-gardenshop.git&quot;,
+    &quot;accountId&quot;: &quot;6aeb04ad-d374-41e1-9fcb-78bf35c05531&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2zBqqZCaCYYzAsHcKaDuUm5Sls0" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.CategoryControllerTest.executor": "Run",
+    "JUnit.CategoryControllerTest.testCreate.executor": "Run",
+    "JUnit.CategoryControllerTest.testDelete.executor": "Run",
+    "JUnit.CategoryControllerTest.testGetAll.executor": "Run",
+    "JUnit.CategoryServiceImplTest.executor": "Run",
+    "JUnit.UserControllerTest.createUser_ReturnsCreatedUser.executor": "Run",
+    "JUnit.UserControllerTest.executor": "Run",
+    "JUnit.UserControllerTest.getById_ReturnsUser.executor": "Run",
+    "JUnit.UserServiceImplTest.executor": "Run",
+    "JUnit.UserServiceImplTest.testCreateUser.executor": "Run",
+    "JUnit.UserServiceImplTest.testDelete_NotFound.executor": "Run",
+    "JUnit.UserServiceImplTest.testDelete_Success.executor": "Run",
+    "JUnit.UserServiceImplTest.testGetAllUsers.executor": "Run",
+    "JUnit.UserServiceImplTest.testGetById_NotFound.executor": "Run",
+    "JUnit.UserServiceImplTest.testGetById_Success.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "task2",
+    "ignore.preview.features.used": "true",
+    "last_opened_file_path": "C:/Users/phili/IdeaProjects/java-team-gardenshop",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "project.propVCSSupport.Mappings",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "ChangesTree.GroupingKeys": [
+      "directory",
+      "module",
+      "repository"
+    ],
+    "DatabaseDriversLRU": [
+      "h2",
+      "postgresql"
+    ]
+  }
+}]]></component>
+  <component name="RunManager" selected="JUnit.UserServiceImplTest">
+    <configuration name="CategoryControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gardenshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="telran.project.gardenshop.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="telran.project.gardenshop.controller" />
+      <option name="MAIN_CLASS_NAME" value="telran.project.gardenshop.controller.CategoryControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gardenshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="telran.project.gardenshop.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="telran.project.gardenshop.controller" />
+      <option name="MAIN_CLASS_NAME" value="telran.project.gardenshop.controller.UserControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserControllerTest.createUser_ReturnsCreatedUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gardenshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="telran.project.gardenshop.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="telran.project.gardenshop.controller" />
+      <option name="MAIN_CLASS_NAME" value="telran.project.gardenshop.controller.UserControllerTest" />
+      <option name="METHOD_NAME" value="createUser_ReturnsCreatedUser" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-javaagent:&quot;C:\Users\phili\.m2\repository\org\mockito\mockito-inline\5.4.0\mockito-inline-5.4.0.jar&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserControllerTest.getById_ReturnsUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gardenshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="telran.project.gardenshop.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="telran.project.gardenshop.controller" />
+      <option name="MAIN_CLASS_NAME" value="telran.project.gardenshop.controller.UserControllerTest" />
+      <option name="METHOD_NAME" value="getById_ReturnsUser" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gardenshop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="telran.project.gardenshop.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="telran.project.gardenshop.service" />
+      <option name="MAIN_CLASS_NAME" value="telran.project.gardenshop.service.UserServiceImplTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GardenShopApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="gardenshop" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="telran.project.gardenshop.GardenShopApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.CategoryControllerTest" />
+      <item itemvalue="JUnit.UserControllerTest" />
+      <item itemvalue="JUnit.UserControllerTest.createUser_ReturnsCreatedUser" />
+      <item itemvalue="JUnit.UserControllerTest.getById_ReturnsUser" />
+      <item itemvalue="JUnit.UserServiceImplTest" />
+      <item itemvalue="Spring Boot.GardenShopApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.UserServiceImplTest" />
+        <item itemvalue="JUnit.UserControllerTest.createUser_ReturnsCreatedUser" />
+        <item itemvalue="JUnit.UserControllerTest.getById_ReturnsUser" />
+        <item itemvalue="JUnit.UserControllerTest" />
+        <item itemvalue="JUnit.CategoryControllerTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26927.53" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.26927.53" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="487d7fca-259f-4690-bf01-c75aa6dc7538" name="Changes" comment="" />
+      <created>1751215008154</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1751215008154</updated>
+      <workItem from="1751215016863" duration="19540000" />
+      <workItem from="1751382128348" duration="699000" />
+      <workItem from="1751382897392" duration="112000" />
+      <workItem from="1751383054968" duration="14437000" />
+      <workItem from="1751882931781" duration="9863000" />
+    </task>
+    <task id="LOCAL-00001" summary="task 1 &#10;&#10;Adding dependencies and annotations">
+      <option name="closed" value="true" />
+      <created>1751396519463</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1751396519463</updated>
+    </task>
+    <task id="LOCAL-00002" summary="task 1 &#10;&#10;Testing">
+      <option name="closed" value="true" />
+      <created>1751396694465</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1751396694466</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="task 1 &#10;&#10;Adding dependencies and annotations" />
+    <MESSAGE value="task 1" />
+    <MESSAGE value="task 1 &#10;&#10;Testing" />
+    <option name="LAST_COMMIT_MESSAGE" value="task 1 &#10;&#10;Testing" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/telran/project/gardenshop/controller/CategoryControllerTest.java</url>
+          <line>22</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

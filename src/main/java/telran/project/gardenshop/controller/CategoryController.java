@@ -1,16 +1,11 @@
 package telran.project.gardenshop.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 import java.util.List;
+import telran.project.gardenshop.dto.CategoryEditDto;
 import telran.project.gardenshop.dto.CategoryRequestDto;
 import telran.project.gardenshop.dto.CategoryResponseDto;
 import telran.project.gardenshop.service.CategoryService;
@@ -40,6 +35,11 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         categoryService.delete(id);
+    }
+
+    @PutMapping("/{id}")
+    public CategoryResponseDto update(@PathVariable Long id, @RequestBody CategoryEditDto dto) {
+        return categoryService.update(id, dto);
     }
 
 }

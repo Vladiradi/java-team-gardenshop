@@ -1,5 +1,6 @@
 package telran.project.gardenshop.service;
 
+import telran.project.gardenshop.dto.CategoryEditDto;
 import telran.project.gardenshop.dto.CategoryRequestDto;
 import telran.project.gardenshop.dto.CategoryResponseDto;
 import telran.project.gardenshop.entity.Category;
@@ -45,6 +46,18 @@ public class CategoryServiceImpl implements CategoryService{
             throw new CategoryNotFoundException("Category not found");
         }
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public CategoryResponseDto update(Long id, CategoryEditDto dto) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+
+        categoryMapper.updateCategoryFromEditDto(dto, category);
+
+        category = categoryRepository.save(category);
+
+        return categoryMapper.toDto(category);
     }
 
 }

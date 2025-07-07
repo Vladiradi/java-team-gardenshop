@@ -16,6 +16,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
-
+    @Column(name = "category")
     private String name;
 }

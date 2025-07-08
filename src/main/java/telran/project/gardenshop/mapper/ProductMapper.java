@@ -13,6 +13,7 @@ public interface ProductMapper {
 
     // Product → DTO
     @Mapping(source = "category", target = "categoryName", qualifiedByName = "extractCategoryName")
+    @Mapping(target = "hasDiscount", expression = "java(product.getDiscountPrice() != null)")
     ProductResponseDto toDto(Product product);
 
     // DTO → Product (create/update)

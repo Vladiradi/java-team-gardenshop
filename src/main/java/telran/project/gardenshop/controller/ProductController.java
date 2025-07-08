@@ -3,8 +3,11 @@ package telran.project.gardenshop.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import telran.project.gardenshop.utilities.ProductSpecification;
+import telran.project.gardenshop.repository.ProductRepository;
 import telran.project.gardenshop.dto.ProductRequestDto;
 import telran.project.gardenshop.dto.ProductResponseDto;
 import telran.project.gardenshop.entity.Product;
@@ -24,6 +27,7 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductMapper productMapper;
+    private final ProductRepository productRepository;
 
     @PostMapping
     @Operation(summary = "Добавить новый товар")
@@ -65,5 +69,25 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<ProductResponseDto>> filterProducts(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Boolean hasDiscount,
+            @RequestParam(required = false) String sort
+    ) {
+        Specification<Product> spec = ProductSpecification.filterProducts(
+                categoryId, minPrice, maxPrice, hasDiscount, sort
+        );
+
+        List<Product> products = productRepository.findAll(spec);
+        List<ProductResponseDto> dtos = products.stream()
+                .map(productMapper::toDto)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
     }
 }

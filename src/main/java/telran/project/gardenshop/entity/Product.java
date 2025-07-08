@@ -18,6 +18,7 @@ public class Product {
     private String description;
     private Double price;
     private String imageUrl;
+    private Double discountPrice;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

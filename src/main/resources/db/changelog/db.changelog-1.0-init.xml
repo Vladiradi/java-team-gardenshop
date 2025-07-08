@@ -6,7 +6,13 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="001" author="anna">
+
         <!-- Users -->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
         <createTable tableName="users">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -27,6 +33,11 @@
         </createTable>
 
         <!-- Categories -->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="categories"/>
+            </not>
+        </preConditions>
         <createTable tableName="categories">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -35,6 +46,11 @@
         </createTable>
 
         <!-- Products -->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="products"/>
+            </not>
+        </preConditions>
         <createTable tableName="products">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -53,6 +69,11 @@
         </createTable>
 
         <!-- Favorites -->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="favorites"/>
+            </not>
+        </preConditions>
         <createTable tableName="favorites">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -67,6 +88,11 @@
         </createTable>
 
         <!-- Constraints -->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <uniqueConstraintExists tableName="favorites" constraintName="uq_favorites_user_product"/>
+            </not>
+        </preConditions>
         <addUniqueConstraint tableName="favorites"
                              columnNames="user_id, product_id"
                              constraintName="uq_favorites_user_product"/>

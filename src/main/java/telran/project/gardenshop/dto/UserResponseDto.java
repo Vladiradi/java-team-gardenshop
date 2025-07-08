@@ -2,6 +2,8 @@ package telran.project.gardenshop.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class UserResponseDto {
     private Long id;
@@ -9,4 +11,6 @@ public class UserResponseDto {
     private String email;
     private String phoneNumber;
     private String role;
+
+    private List<FavoriteResponseDto> favorites;
 }

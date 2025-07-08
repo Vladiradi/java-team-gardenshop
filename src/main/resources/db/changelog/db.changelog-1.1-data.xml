@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <changeSet id="002-insert-initial-data" author="white" runAlways="true">
 
-    <changeSet id="002-insert-initial-data" author="anna" runAlways="true">
-
-        <!-- users -->
+        <!-- Users -->
         <insert tableName="users">
-            <column name="name" value="Anna Petrova"/>
             <column name="email" value="anna.petrova@garden.ru"/>
+            <column name="full_name" value="Anna Petrova"/>
             <column name="phone_number" value="+79001112233"/>
-            <column name="password_hash" value="pw123"/>
+            <column name="password" value="pw123"/>
             <column name="role" value="USER"/>
         </insert>
-        <insert tableName="app_users">
-            <column name="name" value="Sergey Ivanov"/>
+        <insert tableName="users">
             <column name="email" value="sergey.ivanov@plants.ru"/>
+            <column name="full_name" value="Sergey Ivanov"/>
             <column name="phone_number" value="+79004567890"/>
-            <column name="password_hash" value="pw123"/>
+            <column name="password" value="pw123"/>
             <column name="role" value="USER"/>
         </insert>
-        <insert tableName="app_users">
-            <column name="name" value="Elena Sidorova"/>
+        <insert tableName="users">
             <column name="email" value="elena.sidorova@flowershop.ru"/>
+            <column name="full_name" value="Elena Sidorova"/>
             <column name="phone_number" value="+79007894561"/>
-            <column name="password_hash" value="pw123"/>
+            <column name="password" value="pw123"/>
             <column name="role" value="USER"/>
         </insert>
-        <insert tableName="app_users">
-            <column name="name" value="Dmitry Smirnov"/>
+        <insert tableName="users">
             <column name="email" value="dmitry.smirnov@greenzone.ru"/>
+            <column name="full_name" value="Dmitry Smirnov"/>
             <column name="phone_number" value="+79006543210"/>
-            <column name="password_hash" value="pw123"/>
+            <column name="password" value="pw123"/>
             <column name="role" value="USER"/>
         </insert>
 
-        <!-- categories -->
+        <!-- Categories -->
         <insert tableName="categories">
             <column name="name" value="Fertilizers and plant food"/>
         </insert>
@@ -54,279 +54,57 @@
             <column name="name" value="Pots and planters"/>
         </insert>
 
-        <!-- products -->
+        <!-- Products -->
         <insert tableName="products">
             <column name="name" value="Complete fertilizer for roses"/>
-            <column name="discount_price" value="5.99"/>
-            <column name="price" value="8.99"/>
-            <column name="category_id" value="1"/>
             <column name="description" value="Mineral fertilizer for lush rose blooms"/>
+            <column name="price" value="8.99"/>
             <column name="image_url" value="https://example.com/images/rose_fertilizer.jpg"/>
+            <column name="category_id" value="1"/>
         </insert>
         <insert tableName="products">
             <column name="name" value="Organic fertilizer BioGrow"/>
-            <column name="discount_price" value="9.90"/>
-            <column name="price" value="13.50"/>
-            <column name="category_id" value="1"/>
             <column name="description" value="Suitable for all vegetables and flowers"/>
+            <column name="price" value="13.50"/>
             <column name="image_url" value="https://example.com/images/biogrow.jpg"/>
+            <column name="category_id" value="1"/>
         </insert>
         <insert tableName="products">
             <column name="name" value="Aphid and spider mite spray"/>
-            <column name="discount_price" value="6.45"/>
-            <column name="price" value="9.20"/>
-            <column name="category_id" value="2"/>
             <column name="description" value="Safe pest control spray"/>
+            <column name="price" value="9.20"/>
             <column name="image_url" value="https://example.com/images/pest_spray.jpg"/>
+            <column name="category_id" value="2"/>
         </insert>
         <insert tableName="products">
             <column name="name" value="Slug control granules"/>
-            <column name="discount_price" value="4.99"/>
-            <column name="price" value="7.25"/>
-            <column name="category_id" value="2"/>
             <column name="description" value="Effective protection against slugs and snails"/>
-            <column name="image_url" value="https://example.com/images/snail_granules.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Cucumber seeds (Vyaznikovsky variety)"/>
-            <column name="discount_price" value="1.90"/>
-            <column name="price" value="2.90"/>
-            <column name="category_id" value="3"/>
-            <column name="description" value="High yield, disease resistant"/>
-            <column name="image_url" value="https://example.com/images/cucumber_seeds.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Double-flowered petunia seeds"/>
-            <column name="discount_price" value="2.25"/>
-            <column name="price" value="3.50"/>
-            <column name="category_id" value="3"/>
-            <column name="description" value="Bright flowers for beds and pots"/>
-            <column name="image_url" value="https://example.com/images/petunia_seeds.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Garden shears with power assist"/>
-            <column name="discount_price" value="14.90"/>
-            <column name="price" value="19.99"/>
-            <column name="category_id" value="4"/>
-            <column name="description" value="Comfortable shears for cutting branches"/>
-            <column name="image_url" value="https://example.com/images/garden_shears.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Metal watering can 5L"/>
-            <column name="discount_price" value="9.99"/>
-            <column name="price" value="14.50"/>
-            <column name="category_id" value="4"/>
-            <column name="description" value="Reliable galvanized watering can"/>
-            <column name="image_url" value="https://example.com/images/metal_watering_can.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Wall-mounted ceramic planter"/>
-            <column name="discount_price" value="11.45"/>
-            <column name="price" value="16.90"/>
-            <column name="category_id" value="5"/>
-            <column name="description" value="Decorative planter for hanging plants"/>
-            <column name="image_url" value="https://example.com/images/wall_pot.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Plastic orchid pot"/>
-            <column name="discount_price" value="3.99"/>
-            <column name="price" value="6.25"/>
-            <column name="category_id" value="5"/>
-            <column name="description" value="Transparent pot with drainage"/>
-            <column name="image_url" value="https://example.com/images/orchid_pot.jpg"/>
-        </insert>
-
-        <!-- favorites -->
-        <insert tableName="favorites">
-            <column name="user_id" value="1"/>
-            <column name="product_id" value="2"/>
-        </insert>
-        <insert tableName="favorites">
-            <column name="user_id" value="1"/>
-            <column name="product_id" value="6"/>
-        </insert>
-        <insert tableName="favorites">
-            <column name="user_id" value="2"/>
-            <column name="product_id" value="1"/>
-        </insert>
-        <insert tableName="favorites">
-            <column name="user_id" value="2"/>
-            <column name="product_id" value="7"/>
-        </insert>
-        <insert tableName="favorites">
-            <column name="user_id" value="3"/>
-            <column name="product_id" value="4"/>
-        </insert>
-        <insert tableName="favorites">
-            <column name="user_id" value="4"/>
-            <column name="product_id" value="9"/>
-        </insert>
-        <insert tableName="favorites">
-            <column name="user_id" value="4"/>
-            <column name="product_id" value="5"/>
-        </insert>
-
-=======
-    <changeSet id="002-insert-initial-data" author="anna" runAlways="true">
-        <!-- users -->
-        <insert tableName="users">
-            <column name="name" value="Anna Petrova"/>
-            <column name="email" value="anna.petrova@garden.ru"/>
-            <column name="phone_number" value="+79001112233"/>
-            <column name="password_hash" value="pw123"/>
-            <column name="role" value="ROLE_USER"/>
-        </insert>
-        <insert tableName="users">
-            <column name="name" value="Sergey Ivanov"/>
-            <column name="email" value="sergey.ivanov@plants.ru"/>
-            <column name="phone_number" value="+79004567890"/>
-            <column name="password_hash" value="pw123"/>
-            <column name="role" value="USER"/>
-        </insert>
-        <insert tableName="users">
-            <column name="name" value="Elena Sidorova"/>
-            <column name="email" value="elena.sidorova@flowershop.ru"/>
-            <column name="phone_number" value="+79007894561"/>
-            <column name="password_hash" value="pw123"/>
-            <column name="role" value="ROLE_USER"/>
-        </insert>
-        <insert tableName="users">
-            <column name="name" value="Dmitry Smirnov"/>
-            <column name="email" value="dmitry.smirnov@greenzone.ru"/>
-            <column name="phone_number" value="+79006543210"/>
-            <column name="password_hash" value="pw123"/>
-            <column name="role" value="ROLE_USER"/>
-        </insert>
-
-        <!-- categories -->
-        <insert tableName="categories">
-            <column name="name" value="Удобрения и подкормки"/>
-        </insert>
-        <insert tableName="categories">
-            <column name="name" value="Защита растений"/>
-        </insert>
-        <insert tableName="categories">
-            <column name="name" value="Семена и рассада"/>
-        </insert>
-        <insert tableName="categories">
-            <column name="name" value="Инструменты для сада"/>
-        </insert>
-        <insert tableName="categories">
-            <column name="name" value="Горшки и кашпо"/>
-        </insert>
-
-        <!-- products -->
-        <insert tableName="products">
-            <column name="name" value="Комплексное удобрение для роз"/>
-            <column name="discount_price" value="5.99"/>
-            <column name="price" value="8.99"/>
-            <column name="category_id" value="1"/>
-            <column name="description" value="Минеральное удобрение для пышного цветения роз"/>
-            <column name="image_url" value="https://example.com/images/rose_fertilizer.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Органическое удобрение BioGrow"/>
-            <column name="discount_price" value="9.90"/>
-            <column name="price" value="13.50"/>
-            <column name="category_id" value="1"/>
-            <column name="description" value="Подходит для всех овощей и цветов"/>
-            <column name="image_url" value="https://example.com/images/biogrow.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Средство от тли и паутинного клеща"/>
-            <column name="discount_price" value="6.45"/>
-            <column name="price" value="9.20"/>
-            <column name="category_id" value="2"/>
-            <column name="description" value="Безопасный спрей от вредителей"/>
-            <column name="image_url" value="https://example.com/images/pest_spray.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Гранулы от слизней"/>
-            <column name="discount_price" value="4.99"/>
             <column name="price" value="7.25"/>
-            <column name="category_id" value="2"/>
-            <column name="description" value="Эффективная защита от слизней и улиток"/>
             <column name="image_url" value="https://example.com/images/snail_granules.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Семена огурцов (сорт Вязниковский)"/>
-            <column name="discount_price" value="1.90"/>
-            <column name="price" value="2.90"/>
-            <column name="category_id" value="3"/>
-            <column name="description" value="Высокая урожайность, устойчив к болезням"/>
-            <column name="image_url" value="https://example.com/images/cucumber_seeds.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Семена петунии махровой"/>
-            <column name="discount_price" value="2.25"/>
-            <column name="price" value="3.50"/>
-            <column name="category_id" value="3"/>
-            <column name="description" value="Яркие цветы для клумб и горшков"/>
-            <column name="image_url" value="https://example.com/images/petunia_seeds.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Ножницы садовые с усилителем"/>
-            <column name="discount_price" value="14.90"/>
-            <column name="price" value="19.99"/>
-            <column name="category_id" value="4"/>
-            <column name="description" value="Удобные ножницы для обрезки веток"/>
-            <column name="image_url" value="https://example.com/images/garden_shears.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Лейка металлическая 5л"/>
-            <column name="discount_price" value="9.99"/>
-            <column name="price" value="14.50"/>
-            <column name="category_id" value="4"/>
-            <column name="description" value="Надёжная оцинкованная лейка"/>
-            <column name="image_url" value="https://example.com/images/metal_watering_can.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Кашпо настенное керамическое"/>
-            <column name="discount_price" value="11.45"/>
-            <column name="price" value="16.90"/>
-            <column name="category_id" value="5"/>
-            <column name="description" value="Декоративное кашпо для подвесных растений"/>
-            <column name="image_url" value="https://example.com/images/wall_pot.jpg"/>
-        </insert>
-        <insert tableName="products">
-            <column name="name" value="Горшок пластиковый для орхидей"/>
-            <column name="discount_price" value="3.99"/>
-            <column name="price" value="6.25"/>
-            <column name="category_id" value="5"/>
-            <column name="description" value="Прозрачный горшок с дренажем"/>
-            <column name="image_url" value="https://example.com/images/orchid_pot.jpg"/>
+            <column name="category_id" value="2"/>
         </insert>
 
-        <!-- favorites -->
+        <!-- Favorites -->
         <insert tableName="favorites">
             <column name="user_id" value="1"/>
             <column name="product_id" value="2"/>
+            <column name="created_at" valueDate="2024-06-01T10:00:00"/>
         </insert>
         <insert tableName="favorites">
             <column name="user_id" value="1"/>
-            <column name="product_id" value="6"/>
+            <column name="product_id" value="3"/>
+            <column name="created_at" valueDate="2024-06-02T12:00:00"/>
         </insert>
         <insert tableName="favorites">
             <column name="user_id" value="2"/>
             <column name="product_id" value="1"/>
-        </insert>
-        <insert tableName="favorites">
-            <column name="user_id" value="2"/>
-            <column name="product_id" value="7"/>
+            <column name="created_at" valueDate="2024-06-03T14:30:00"/>
         </insert>
         <insert tableName="favorites">
             <column name="user_id" value="3"/>
-            <column name="product_id" value="4"/>
+            <column name="product_id" value="2"/>
+            <column name="created_at" valueDate="2024-06-04T09:15:00"/>
         </insert>
-        <insert tableName="favorites">
-            <column name="user_id" value="4"/>
-            <column name="product_id" value="9"/>
-        </insert>
-        <insert tableName="favorites">
-            <column name="user_id" value="4"/>
-            <column name="product_id" value="5"/>
-        </insert>
-
     </changeSet>
 
 </databaseChangeLog>

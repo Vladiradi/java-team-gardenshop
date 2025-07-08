@@ -2,7 +2,9 @@ package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import telran.project.gardenshop.dto.CategoryEditDto;
 import telran.project.gardenshop.entity.Category;
+import telran.project.gardenshop.mapper.CategoryMapper;
 import telran.project.gardenshop.repository.CategoryRepository;
 import telran.project.gardenshop.exception.CategoryNotFoundException;
 
@@ -13,6 +15,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public Category createCategory(Category category) {
@@ -20,10 +23,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Long id, Category updatedCategory) {
+    public Category updateCategory(Long id, CategoryEditDto dto) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
-        category.setName(updatedCategory.getName());
+        categoryMapper.updateEntityFromDto(dto, category);
         return categoryRepository.save(category);
     }
 

@@ -19,6 +19,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     @EqualsAndHashCode.Include
     private Long id;
 
@@ -32,6 +33,7 @@ public class User {
     private String phoneNumber;
 
     @Column(nullable = false)
+    @Column(name = "password_hash")
     private String password;
 
     @Enumerated(EnumType.STRING)

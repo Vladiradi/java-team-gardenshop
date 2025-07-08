@@ -19,6 +19,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
+    @Column(name = "category_id")
     private Long id;
 
     @Column(nullable = false)

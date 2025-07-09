@@ -9,9 +9,12 @@ import telran.project.gardenshop.entity.Category;
 
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
+
     Category toEntity(CategoryRequestDto dto);
+
     CategoryResponseDto toDto(Category category);
 
     Category toEntity(CategoryEditDto dto);
+
     void updateEntityFromDto(CategoryEditDto dto, @MappingTarget Category entity);
 }

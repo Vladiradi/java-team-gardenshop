@@ -5,14 +5,8 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="001" author="anna">
-
-        <!-- Users -->
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="users"/>
-            </not>
-        </preConditions>
+    <changeSet id="001-create-table-users" author="anna">
+        <comment>Create table users</comment>
         <createTable tableName="users">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -31,26 +25,22 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="002-create-table-category" author="anna">
+        <comment>Create table category</comment>
 
         <!-- Categories -->
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="categories"/>
-            </not>
-        </preConditions>
         <createTable tableName="categories">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
+    </changeSet>
 
-        <!-- Products -->
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="products"/>
-            </not>
-        </preConditions>
+    <changeSet id="003-create-table-products" author="anna">
+        <comment>Create table product</comment>
         <createTable tableName="products">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -67,13 +57,10 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
 
-        <!-- Favorites -->
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="favorites"/>
-            </not>
-        </preConditions>
+    <changeSet id="004-create-table-favorites" author="anna">
+        <comment>Create table favorites</comment>
         <createTable tableName="favorites">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true"/>
@@ -86,16 +73,14 @@
             </column>
             <column name="created_at" type="TIMESTAMP"/>
         </createTable>
+    </changeSet>
 
-        <!-- Constraints -->
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <uniqueConstraintExists tableName="favorites" constraintName="uq_favorites_user_product"/>
-            </not>
-        </preConditions>
+    <!-- Constraints -->
+    <changeSet id="005-add-fk-favorite" author="anna">
         <addUniqueConstraint tableName="favorites"
                              columnNames="user_id, product_id"
                              constraintName="uq_favorites_user_product"/>
+
     </changeSet>
 
 </databaseChangeLog>

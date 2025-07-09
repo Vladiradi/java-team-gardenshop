@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 public class ProductController {
 
     private final ProductService productService;
+
     private final ProductMapper productMapper;
 
     @PostMapping
@@ -54,7 +55,7 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
                                                      @Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
-        entity.setId(id);
+      //  entity.setId(id);
         Product updated = productService.updateProduct(id, entity);
         return ResponseEntity.ok(productMapper.toDto(updated));
     }

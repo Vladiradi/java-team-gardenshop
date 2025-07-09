@@ -19,7 +19,7 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    @Column(name = "favorite_id")
+    //@Column(name = "favorite_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

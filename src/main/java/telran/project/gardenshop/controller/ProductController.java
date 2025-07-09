@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
+//@SecurityRequirement(name = "bearerAuth")
 public class ProductController {
 
     private final ProductService productService;

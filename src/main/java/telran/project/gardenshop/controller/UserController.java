@@ -41,22 +41,26 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toDto(userService.getUserById(id)));
     }
 
-    @GetMapping
-    @Operation(summary = "Get all users")
-    public ResponseEntity<List<UserResponseDto>> getAll() {
-        return ResponseEntity.ok(
-                userService.getAllUsers().stream()
-                        .map(userMapper::toDto)
-                        .collect(Collectors.toList()));
-    }
-
     @PutMapping("/{id}/admin-update")
     @Operation(summary = "Update user")
-    public ResponseEntity<UserResponseDto> update(@PathVariable Long id,
-                                                  @Valid @RequestBody UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> updateAdmin(@PathVariable Long id,
+                                                       @Valid @RequestBody UserRequestDto dto) {
         User updated = userMapper.toEntity(dto);
         User saved = userService.updateUser(id, updated);
-        return ResponseEntity.ok(userMapper.toDto(saved));
+        UserResponseDto responseDto = userMapper.toDto(saved);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    // Обновление пользователя (PUT) для самого пользователя
+    @PutMapping("/{id}/self-update")
+    @Operation(summary = "Update user")
+    public ResponseEntity<UserResponseDto> updateSelf(@PathVariable Long id,
+                                                      @Valid @RequestBody UserEditDto dto,
+                                                      Principal principal) {
+        userService.editUser(id, dto, principal);
+        User saved = userService.getUserById(id);
+        UserResponseDto responseDto = userMapper.toDto(saved);
+        return ResponseEntity.ok(responseDto);
     }
 
     // Обновление пользователя (PUT)

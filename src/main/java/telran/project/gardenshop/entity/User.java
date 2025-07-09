@@ -1,5 +1,6 @@
 package telran.project.gardenshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +20,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    //@Column(name = "user_id")
     @EqualsAndHashCode.Include
     private Long id;
 
@@ -32,8 +33,8 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @JsonIgnore
     @Column(nullable = false)
-    @Column(name = "password_hash")
     private String password;
 
     @Enumerated(EnumType.STRING)

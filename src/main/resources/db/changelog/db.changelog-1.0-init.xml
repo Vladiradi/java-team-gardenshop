@@ -83,4 +83,34 @@
 
     </changeSet>
 
+    <changeSet id="006-add-fk-products-category" author="anna">
+        <addForeignKeyConstraint
+                baseTableName="products"
+                baseColumnNames="category_id"
+                constraintName="fk_products_category"
+                referencedTableName="categories"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="007-add-fk-favorites-user" author="anna">
+        <addForeignKeyConstraint
+                baseTableName="favorites"
+                baseColumnNames="user_id"
+                constraintName="fk_favorites_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="008-add-fk-favorites-product" author="anna">
+        <addForeignKeyConstraint
+                baseTableName="favorites"
+                baseColumnNames="product_id"
+                constraintName="fk_favorites_product"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
 </databaseChangeLog>

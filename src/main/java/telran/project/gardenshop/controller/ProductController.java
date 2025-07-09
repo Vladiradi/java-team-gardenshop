@@ -11,9 +11,9 @@ import telran.project.gardenshop.dto.ProductResponseDto;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.mapper.ProductMapper;
 import telran.project.gardenshop.service.ProductService;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/products")
@@ -25,22 +25,22 @@ public class ProductController {
     private final ProductMapper productMapper;
 
     @PostMapping
-    @Operation(summary = "Добавить новый товар")
-    public ResponseEntity<ProductResponseDto> create(@RequestBody ProductRequestDto dto) {
+    @Operation(summary = "Add new product")
+    public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
         Product saved = productService.createProduct(entity);
         return ResponseEntity.status(201).body(productMapper.toDto(saved));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Получить товар по ID")
+    @Operation(summary = "Get product by ID")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
         Product product = productService.getProductById(id);
         return ResponseEntity.ok(productMapper.toDto(product));
     }
 
     @GetMapping
-    @Operation(summary = "Получить все товары")
+    @Operation(summary = "Get all products")
     public ResponseEntity<List<ProductResponseDto>> getAll() {
         List<Product> products = productService.getAllProducts();
         List<ProductResponseDto> dtoList = products.stream()
@@ -50,9 +50,9 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Обновить товар")
+    @Operation(summary = "Update product")
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
-                                                     @RequestBody ProductRequestDto dto) {
+                                                     @Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
         entity.setId(id);
         Product updated = productService.updateProduct(id, entity);
@@ -70,7 +70,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Удалить товар")
+    @Operation(summary = "Delete product")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

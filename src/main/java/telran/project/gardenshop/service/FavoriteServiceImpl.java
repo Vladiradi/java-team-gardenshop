@@ -2,10 +2,12 @@ package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import telran.project.gardenshop.common.fetcher.EntityFetcher;
 import telran.project.gardenshop.entity.Favorite;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
+import telran.project.gardenshop.exception.FavoriteNotFoundException;
+import telran.project.gardenshop.exception.ProductNotFoundException;
+import telran.project.gardenshop.exception.UserNotFoundException;
 import telran.project.gardenshop.repository.FavoriteRepository;
 import telran.project.gardenshop.repository.ProductRepository;
 import telran.project.gardenshop.repository.UserRepository;
@@ -19,15 +21,16 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-    private final EntityFetcher fetcher;
 
     @Override
     public Favorite addToFavorites(Favorite favorite) {
         Long userId = favorite.getUser().getId();
         Long productId = favorite.getProduct().getId();
 
-        User user = fetcher.fetchOrThrow(userRepository, userId, "User");
-        Product product = fetcher.fetchOrThrow(productRepository, productId, "Product");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
 
         favorite.setUser(user);
         favorite.setProduct(product);
@@ -37,7 +40,8 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Override
     public void removeFromFavorites(Long id) {
-        Favorite favorite = fetcher.fetchOrThrow(favoriteRepository, id, "Favorite");
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new FavoriteNotFoundException(id));
         favoriteRepository.delete(favorite);
     }
 

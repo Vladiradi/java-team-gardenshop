@@ -2,9 +2,9 @@ package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import telran.project.gardenshop.common.fetcher.EntityFetcher;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.repository.CategoryRepository;
+import telran.project.gardenshop.exception.CategoryNotFoundException;
 
 import java.util.List;
 
@@ -13,7 +13,6 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final EntityFetcher fetcher;
 
     @Override
     public Category createCategory(Category category) {
@@ -22,14 +21,16 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category updateCategory(Long id, Category updatedCategory) {
-        Category category = fetcher.fetchOrThrow(categoryRepository, id, "Category");
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(id));
         category.setName(updatedCategory.getName());
         return categoryRepository.save(category);
     }
 
     @Override
     public Category getCategoryById(Long id) {
-        return fetcher.fetchOrThrow(categoryRepository, id, "Category");
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(id));
     }
 
     @Override
@@ -39,7 +40,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long id) {
-        Category category = fetcher.fetchOrThrow(categoryRepository, id, "Category");
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(id));
         categoryRepository.delete(category);
     }
 }

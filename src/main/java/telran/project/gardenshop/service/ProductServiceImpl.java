@@ -1,7 +1,9 @@
 package telran.project.gardenshop.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import telran.project.gardenshop.dto.ProductEditDto;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.exception.CategoryNotFoundException;
@@ -46,6 +48,19 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(updatedProduct.getPrice());
         product.setImageUrl(updatedProduct.getImageUrl());
         product.setCategory(category);
+
+        return productRepository.save(product);
+    }
+    @Override
+    public Product updateProduct(Long id, ProductEditDto dto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with id " + id));
+
+        product.setName(dto.getTitle());       // может быть null — сбросится
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+
+        // Не трогаем category и imageUrl, чтобы не ломать ограничения БД
 
         return productRepository.save(product);
     }

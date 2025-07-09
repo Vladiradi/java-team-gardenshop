@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import telran.project.gardenshop.dto.CategoryEditDto;
 import telran.project.gardenshop.dto.CategoryRequestDto;
 import telran.project.gardenshop.dto.CategoryResponseDto;
 import telran.project.gardenshop.entity.Category;
@@ -52,9 +53,8 @@ public class CategoryController {
     @PutMapping("/{id}")
     @Operation(summary = "Update category")
     public ResponseEntity<CategoryResponseDto> update(@PathVariable Long id,
-                                                      @Valid @RequestBody CategoryRequestDto dto) {
-        Category updated = categoryMapper.toEntity(dto);
-        Category saved = categoryService.updateCategory(id, updated);
+                                                      @Valid @RequestBody CategoryEditDto dto) {
+        Category saved = categoryService.updateCategory(id, dto);
         return ResponseEntity.ok(categoryMapper.toDto(saved));
     }
 

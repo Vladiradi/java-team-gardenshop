@@ -15,6 +15,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+
     private final CategoryMapper categoryMapper;
 
     @Override
@@ -24,8 +25,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category updateCategory(Long id, CategoryEditDto dto) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException(id));
+        Category category = getCategoryById(id);
         categoryMapper.updateEntityFromDto(dto, category);
         return categoryRepository.save(category);
     }
@@ -43,8 +43,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException(id));
-        categoryRepository.delete(category);
+        categoryRepository.delete(getCategoryById(id));
     }
 }

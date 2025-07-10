@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
+
     private final FavoriteMapper favoriteMapper;
 
     @Operation(summary = "Add product to user's favorites")

@@ -3,10 +3,12 @@ package telran.project.gardenshop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import telran.project.gardenshop.dto.UserEditDto;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.enums.Role;
 import telran.project.gardenshop.exception.UserNotFoundException;
 import telran.project.gardenshop.exception.UserWithEmailAlreadyExistsException;
+import telran.project.gardenshop.mapper.UserMapper;
 import telran.project.gardenshop.repository.UserRepository;
 
 import java.util.List;
@@ -18,6 +20,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Override
     public User createUser(User user) {
@@ -39,16 +42,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long id, User updated) {
-        User user = getUserById(id);
 
-        if (!user.getEmail().equals(updated.getEmail())) {
-            emailCheck(updated.getEmail());
+    public User updateUser(Long id, UserEditDto dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        if (!user.getEmail().equals(dto.getEmail())) {
+            emailCheck(dto.getEmail());
         }
 
-        user.setFullName(updated.getFullName());
-        user.setPhoneNumber(updated.getPhoneNumber());
-        user.setEmail(updated.getEmail());
+        userMapper.updateUserFromDto(dto, user);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
         return userRepository.save(user);
     }
 

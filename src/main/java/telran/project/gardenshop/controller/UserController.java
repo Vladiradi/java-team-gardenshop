@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import telran.project.gardenshop.dto.UserEditDto;
 import telran.project.gardenshop.dto.UserRequestDto;
 import telran.project.gardenshop.dto.UserResponseDto;
 import telran.project.gardenshop.entity.User;
@@ -47,12 +48,10 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update user")
-    public ResponseEntity<UserResponseDto> update(@PathVariable Long id,
-                                                  @Valid @RequestBody UserRequestDto dto) {
-        User updated = userMapper.toEntity(dto);
-        User saved = userService.updateUser(id, updated);
-        return ResponseEntity.ok(userMapper.toDto(saved));
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id,
+                                                      @Valid @RequestBody UserEditDto dto) {
+        User updatedUser = userService.updateUser(id, dto);
+        return ResponseEntity.ok(userMapper.toDto(updatedUser));
     }
 
     @DeleteMapping("/{id}")

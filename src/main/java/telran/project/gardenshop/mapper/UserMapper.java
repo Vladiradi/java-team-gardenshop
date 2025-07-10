@@ -2,6 +2,7 @@ package telran.project.gardenshop.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import telran.project.gardenshop.dto.*;
 import telran.project.gardenshop.entity.*;
@@ -17,6 +18,8 @@ public interface UserMapper {
     @Mapping(source = "role", target = "role")
     @Mapping(source = "favorites", target = "favorites", qualifiedByName = "mapFavorites")
     UserResponseDto toDto(User user);
+
+    void updateUserFromDto(UserEditDto dto, @MappingTarget User user);
 
     @Named("mapFavorites")
     static List<FavoriteResponseDto> mapFavorites(List<Favorite> favorites) {

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import telran.project.gardenshop.dto.ProductEditDto;
 import telran.project.gardenshop.dto.ProductRequestDto;
 import telran.project.gardenshop.dto.ProductResponseDto;
 import telran.project.gardenshop.entity.Product;
@@ -17,10 +18,11 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
+//@SecurityRequirement(name = "bearerAuth")
 public class ProductController {
 
     private final ProductService productService;
+
     private final ProductMapper productMapper;
 
     @PostMapping
@@ -53,8 +55,18 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
                                                      @Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
-        entity.setId(id);
+      //  entity.setId(id);
         Product updated = productService.updateProduct(id, entity);
+        return ResponseEntity.ok(productMapper.toDto(updated));
+    }
+
+    @PutMapping("/{id}/edit")
+    @Operation(summary = "Полное редактирование товара (title, description, price)")
+    public ResponseEntity<ProductResponseDto> editProduct(
+            @PathVariable Long id,
+            @RequestBody ProductEditDto dto) {
+
+        Product updated = productService.updateProduct(id, dto);
         return ResponseEntity.ok(productMapper.toDto(updated));
     }
 

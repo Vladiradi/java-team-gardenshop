@@ -22,7 +22,7 @@ public class Category {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "category", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     private String description;

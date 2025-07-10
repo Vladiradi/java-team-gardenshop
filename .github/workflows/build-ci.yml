@@ -1,4 +1,4 @@
-name: Java GardenShop CI
+name: GardenShop CI (dev)
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [dev]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,5 +20,15 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Build with Maven without tests
-        run: ./mvnw clean install -DskipTests
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+
+      - name: Compile without tests
+        run: ./mvnw clean compile
+
+      - name: Run Spring Context Test (profile=test)
+        run: ./mvnw test -Dspring.profiles.active=test -Dtest=JavaTeamGardenshopApplicationTests

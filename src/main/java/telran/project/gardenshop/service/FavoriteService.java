@@ -8,7 +8,7 @@ public interface FavoriteService {
 
     Favorite addToFavorites(Favorite favorite);
 
-    void removeFromFavorites(Long id);
+    void removeFromFavorites(Long productId, Long userId);
 
     List<Favorite> getAllByUserId(Long userId);
 }

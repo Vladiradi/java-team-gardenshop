@@ -24,15 +24,15 @@ public class UserRequestDto {
     )
     private String phoneNumber;
 
-    @NotNull(message = "Password must not be null")
-    @NotBlank(message = "Password must not be blank")
-    @Pattern(
-        regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{5,}$",
-        message = "Password must be at least 5 characters and contain letters and digits"
-    )
+//    @NotNull(message = "Password must not be null")
+//    @NotBlank(message = "Password must not be blank")
+//    @Pattern(
+//        regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{5,}$",
+//        message = "Password must be at least 5 characters and contain letters and digits"
+//    )
     private String password;
 
-    @NotNull(message = "Role must not be null (USER or ADMIN)")
-    @NotBlank(message = "Role must not be blank (USER or ADMIN)")
-    private String role;
+//    @NotNull(message = "Role must not be null (USER or ADMIN)")
+//    @NotBlank(message = "Role must not be blank (USER or ADMIN)")
+//    private String role;
 }

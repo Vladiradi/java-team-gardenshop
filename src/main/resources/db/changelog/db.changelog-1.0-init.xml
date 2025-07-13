@@ -120,4 +120,11 @@
                 onDelete="CASCADE"/>
     </changeSet>
 
+    <changeSet id="1752229816567-1" author="anna">
+        <comment>add discount price</comment>
+        <addColumn tableName="products">
+            <column name="discount_price" type="decimal"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

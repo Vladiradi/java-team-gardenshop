@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.UserEditDto;
 import telran.project.gardenshop.dto.UserRequestDto;
@@ -22,11 +23,15 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
+
     private final UserMapper userMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping
     @Operation(summary = "Create a new user")
     public ResponseEntity<UserResponseDto> create(@Valid @RequestBody UserRequestDto dto) {
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         User user = userMapper.toEntity(dto);
         User saved = userService.createUser(user);
         return ResponseEntity.status(201).body(userMapper.toDto(saved));

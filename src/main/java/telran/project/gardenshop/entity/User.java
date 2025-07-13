@@ -17,6 +17,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -36,7 +37,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private Role role =  Role.USER;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

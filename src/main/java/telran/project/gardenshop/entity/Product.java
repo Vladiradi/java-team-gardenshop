@@ -30,7 +30,7 @@ public class Product {
     @Column(nullable = false)
     private Double price;
 
-    @Column(name = "discount_price")
+    //@Column(name = "discount_price")
     private Double discountPrice;
 
     @Column(name = "image_url")

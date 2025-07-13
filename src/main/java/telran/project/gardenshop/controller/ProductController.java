@@ -8,29 +8,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.utilities.ProductSpecification;
 import telran.project.gardenshop.repository.ProductRepository;
+import telran.project.gardenshop.dto.ProductEditDto;
 import telran.project.gardenshop.dto.ProductRequestDto;
 import telran.project.gardenshop.dto.ProductResponseDto;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.mapper.ProductMapper;
 import telran.project.gardenshop.service.ProductService;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
+//@SecurityRequirement(name = "bearerAuth")
 public class ProductController {
 
     private final ProductService productService;
+
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
 
     @PostMapping
-    @Operation(summary = "Добавить новый товар")
+    @Operation(summary = "Add new product")
     public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
         Product saved = productService.createProduct(entity);
@@ -38,14 +38,14 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Получить товар по ID")
+    @Operation(summary = "Get product by ID")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
         Product product = productService.getProductById(id);
         return ResponseEntity.ok(productMapper.toDto(product));
     }
 
     @GetMapping
-    @Operation(summary = "Получить все товары")
+    @Operation(summary = "Get all products")
     public ResponseEntity<List<ProductResponseDto>> getAll() {
         List<Product> products = productService.getAllProducts();
         List<ProductResponseDto> dtoList = products.stream()
@@ -55,17 +55,27 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Обновить товар")
+    @Operation(summary = "Update product")
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
                                                      @Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
-        entity.setId(id);
+      //  entity.setId(id);
         Product updated = productService.updateProduct(id, entity);
         return ResponseEntity.ok(productMapper.toDto(updated));
     }
 
+    @PutMapping("/{id}/edit")
+    @Operation(summary = "Полное редактирование товара (title, description, price)")
+    public ResponseEntity<ProductResponseDto> editProduct(
+            @PathVariable Long id,
+            @RequestBody ProductEditDto dto) {
+
+        Product updated = productService.updateProduct(id, dto);
+        return ResponseEntity.ok(productMapper.toDto(updated));
+    }
+
     @DeleteMapping("/{id}")
-    @Operation(summary = "Удалить товар")
+    @Operation(summary = "Delete product")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();

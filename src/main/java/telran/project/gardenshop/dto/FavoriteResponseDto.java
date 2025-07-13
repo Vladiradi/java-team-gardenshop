@@ -1,8 +1,10 @@
 package telran.project.gardenshop.dto;
 
 import lombok.Data;
+import lombok.Builder;
 
 @Data
+@Builder
 public class FavoriteResponseDto {
     private Long id;
     private Long userId;

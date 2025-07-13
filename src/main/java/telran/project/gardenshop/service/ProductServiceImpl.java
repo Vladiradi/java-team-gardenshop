@@ -1,7 +1,9 @@
 package telran.project.gardenshop.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import telran.project.gardenshop.dto.ProductEditDto;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.exception.CategoryNotFoundException;
@@ -16,11 +18,12 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
+
+    private final CategoryService categoryService;
 
     @Override
     public Product createProduct(Product product) {
-        Category category = getCategoryByIdOrThrow(product.getCategory().getId());
+        Category category = categoryService.getCategoryById(product.getCategory().getId());
         product.setCategory(category);
         return productRepository.save(product);
     }
@@ -39,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(Long id, Product updatedProduct) {
         Product product = getProductById(id);
-        Category category = getCategoryByIdOrThrow(updatedProduct.getCategory().getId());
+        Category category = categoryService.getCategoryById(updatedProduct.getCategory().getId());
 
         product.setName(updatedProduct.getName());
         product.setDescription(updatedProduct.getDescription());
@@ -49,15 +52,22 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.save(product);
     }
+    @Override
+    public Product updateProduct(Long id, ProductEditDto dto) {
+        Product product = getProductById(id);
+
+        product.setName(dto.getTitle());       // может быть null — сбросится
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+
+        // Не трогаем category и imageUrl, чтобы не ломать ограничения БД
+
+        return productRepository.save(product);
+    }
 
     @Override
     public void deleteProduct(Long id) {
         Product product = getProductById(id);
         productRepository.delete(product);
-    }
-
-    private Category getCategoryByIdOrThrow(Long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
     }
 }

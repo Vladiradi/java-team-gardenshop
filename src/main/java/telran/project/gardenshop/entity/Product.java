@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.List;
 
 @Entity
@@ -30,11 +29,8 @@ public class Product {
     @Column(nullable = false)
     private Double price;
 
-    //@Column(name = "discount_price")
-    private Double discountPrice;
-
-    @Column(name = "image_url")
     private String imageUrl;
+
     private Double discountPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -11,7 +11,10 @@ import telran.project.gardenshop.entity.Product;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    @Mapping(source = "category.name", target = "categoryName")
+
+    // Product → DTO
+    @Mapping(source = "category", target = "categoryName", qualifiedByName = "extractCategoryName")
+    @Mapping(target = "hasDiscount", expression = "java(product.getDiscountPrice() != null)")
     ProductResponseDto toDto(Product product);
 
     @Mapping(source = "categoryId", target = "category.id")

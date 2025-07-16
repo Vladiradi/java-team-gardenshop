@@ -13,4 +13,5 @@ public class ProductResponseDto {
     private Double price;
     private String imageUrl;
     private String categoryName;
+    private boolean hasDiscount;
 }

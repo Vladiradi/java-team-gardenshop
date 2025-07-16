@@ -11,12 +11,15 @@ import telran.project.gardenshop.entity.Product;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-
-    // Product → DTO
     @Mapping(source = "category", target = "categoryName", qualifiedByName = "extractCategoryName")
     @Mapping(target = "hasDiscount", expression = "java(product.getDiscountPrice() != null)")
     ProductResponseDto toDto(Product product);
 
     @Mapping(source = "categoryId", target = "category.id")
     Product toEntity(ProductRequestDto dto);
+
+    @Named("extractCategoryName")
+    static String extractCategoryName(Category category) {
+        return category != null ? category.getName() : null;
+    }
 }

@@ -24,6 +24,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product createProduct(Product product) {
         Category category = categoryService.getCategoryById(product.getCategory().getId());
+        
         product.setCategory(category);
         return productRepository.save(product);
     }

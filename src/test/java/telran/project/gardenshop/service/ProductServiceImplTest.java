@@ -131,6 +131,6 @@ class ProductServiceImplTest {
                 productService.deleteProduct(productId));
 
         verify(productRepository).findById(productId);
-        verify(productRepository, never()).delete(any());
+        verify(productRepository, never()).delete((Product) any());
     }
 }

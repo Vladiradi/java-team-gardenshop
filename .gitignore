@@ -1,0 +1,22 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven
+target/
+
+# Workspace storage
+*.iws
+
+# HTTP Client
+httpRequests/
+
+# Datasource storage
+dataSources/
+dataSources.local.xml
+
+# Shelf (unsaved changes)
+shelf/
+
+# Logs
+*.log

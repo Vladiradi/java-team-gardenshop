@@ -1,5 +1,6 @@
 package telran.project.gardenshop.entity;
-
+import telran.project.gardenshop.entity.User;
+import telran.project.gardenshop.entity.Product;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;

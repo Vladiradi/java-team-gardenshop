@@ -11,4 +11,8 @@ public interface FavoriteService {
     void removeFromFavorites(Long id);
 
     List<Favorite> getAllByUserId(Long userId);
+
+    Favorite getFavoriteById(Long id);
+
+    Favorite updateFavorite(Long id, Favorite updatedFavorite);
 }

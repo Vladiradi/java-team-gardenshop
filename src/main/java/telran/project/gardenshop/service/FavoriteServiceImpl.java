@@ -63,7 +63,6 @@ public class FavoriteServiceImpl implements FavoriteService {
         Favorite existingFavorite = getFavoriteById(id);
         User user = userService.getUserById(updatedFavorite.getUser().getId());
         Product product = productService.getProductById(updatedFavorite.getProduct().getId());
-
         existingFavorite.setUser(user);
         existingFavorite.setProduct(product);
 

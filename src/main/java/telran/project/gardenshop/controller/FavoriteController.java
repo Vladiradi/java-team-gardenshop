@@ -65,20 +65,6 @@ public class FavoriteController {
     }
 }
 
-}
-
-
-//2️⃣ Favorite (избранное)
-//
-//POST /api/favorites/{productId} — добавить
-//
-//DELETE /api/favorites/{productId} — удалить
-//
-//GET /api/favorites/user/{userId} — получить все избранные
-//
-//Связь между User и Product через Favorite
-//
-//DTO ↔ Entity маппинг
 
 
 //Главное — будь готов объяснить:

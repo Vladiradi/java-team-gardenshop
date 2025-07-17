@@ -49,6 +49,12 @@ public class FavoriteController {
         return ResponseEntity.noContent().build();
     }
 
+//    @DeleteMapping
+//    public ResponseEntity<Void> remove(@Valid @RequestBody FavoriteRequestDto dto) {
+//        favoriteService.removeFromFavorites(dto.getProductId(), dto.getUserId()); @DeleteMapping
+//        public ResponseEntity<Void> remove(@Valid @RequestBody FavoriteRequestDto dto) {
+//            favoriteService.removeFromFavorites(dto.getProductId(), dto.getUserId());
+
     @Operation(summary = "Get all favorite products by user ID")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<FavoriteResponseDto>> getAll(@PathVariable Long userId) {
@@ -58,3 +64,30 @@ public class FavoriteController {
                         .collect(Collectors.toList()));
     }
 }
+
+}
+
+
+//2️⃣ Favorite (избранное)
+//
+//POST /api/favorites/{productId} — добавить
+//
+//DELETE /api/favorites/{productId} — удалить
+//
+//GET /api/favorites/user/{userId} — получить все избранные
+//
+//Связь между User и Product через Favorite
+//
+//DTO ↔ Entity маппинг
+
+
+//Главное — будь готов объяснить:
+//Если кто-то спросит, почему ты не сделала {productId} в URL, ты можешь сказать:
+//
+//Я выбрала вариант с @RequestBody FavoriteRequestDto, потому что:
+//
+//он позволяет использовать валидацию через @Valid,
+//
+//он лучше масштабируется при добавлении новых полей,
+//
+//он соответствует REST-подходу с JSON-телом запроса.

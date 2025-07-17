@@ -51,4 +51,22 @@ public class FavoriteServiceImpl implements FavoriteService {
     public List<Favorite> getAllByUserId(Long userId) {
         return favoriteRepository.findAllByUserId(userId);
     }
+
+    @Override
+    public Favorite getFavoriteById(Long id) {
+        return favoriteRepository.findById(id)
+                .orElseThrow(() -> new FavoriteNotFoundException(id));
+    }
+
+    @Override
+    public Favorite updateFavorite(Long id, Favorite updatedFavorite) {
+        Favorite existingFavorite = getFavoriteById(id);
+        User user = userService.getUserById(updatedFavorite.getUser().getId());
+        Product product = productService.getProductById(updatedFavorite.getProduct().getId());
+
+        existingFavorite.setUser(user);
+        existingFavorite.setProduct(product);
+
+        return favoriteRepository.save(existingFavorite);
+    }
 }

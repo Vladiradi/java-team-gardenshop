@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+
+    <changeSet id="create-orders-table" author="yourname">
+        <createTable tableName="orders">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="orders"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_orders_user"/>
+    </changeSet>
+
+    <changeSet id="insert-sample-orders" author="yourname">
+        <insert tableName="orders">
+            <column name="user_id" value="1"/>
+            <column name="created_at" valueDate="2025-07-18T10:00:00"/>
+            <column name="status" value="NEW"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="user_id" value="2"/>
+            <column name="created_at" valueDate="2025-07-18T11:00:00"/>
+            <column name="status" value="PROCESSING"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

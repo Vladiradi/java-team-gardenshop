@@ -121,7 +121,11 @@
     </changeSet>
 
     <changeSet id="1752229816567-1" author="anna">
-        <comment>add discount price</comment>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="products" columnName="discount_price"/>
+            </not>
+        </preConditions>
         <addColumn tableName="products">
             <column name="discount_price" type="decimal"/>
         </addColumn>

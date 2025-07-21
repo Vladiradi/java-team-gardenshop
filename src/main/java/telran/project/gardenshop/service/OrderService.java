@@ -5,15 +5,23 @@ import java.util.List;
 
 public interface OrderService {
 
-    Order createOrder(Order order);
-
-    Order getOrderById(Long id);
-
-    List<Order> getAllOrders();
+    Order getOrderById(Long orderId);
 
     List<Order> getOrdersByUserId(Long userId);
 
-    Order updateOrder(Long id, Order updatedOrder);
+    List<Order> getActiveOrders();
 
-    void deleteOrder(Long id);
+    BigDecimal getTotalAmount(Long orderId);
+
+    Order createOrder(Long userId, OrderCreateRequestDto dto);
+
+    Order updateStatus(Long orderId, OrderStatus status);
+
+    Order addItem(Long orderId, Long productId, Integer quantity);
+
+    Order updateItem(Long orderItemId, Integer quantity);
+
+    Order removeItem(Long orderItemId);
+
+    void cancelOrder(Long orderId);
 }

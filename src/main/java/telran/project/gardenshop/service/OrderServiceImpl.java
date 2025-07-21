@@ -1,15 +1,22 @@
-package telran.project.gardenshop.service;
+package telran.project.gardenshop.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import telran.project.gardenshop.dto.OrderCreateRequestDto;
 import telran.project.gardenshop.entity.Order;
+import telran.project.gardenshop.entity.OrderItem;
+import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.enums.OrderStatus;
-import telran.project.gardenshop.exception.OrderNotFoundException;
+import telran.project.gardenshop.exception.NotFoundException;
+import telran.project.gardenshop.mapper.OrderMapper;
+import telran.project.gardenshop.repository.OrderItemRepository;
 import telran.project.gardenshop.repository.OrderRepository;
-import telran.project.gardenshop.repository.UserRepository;
+import telran.project.gardenshop.service.OrderService;
+import telran.project.gardenshop.service.ProductService;
+import telran.project.gardenshop.service.UserService;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -17,50 +24,93 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final UserService userService;
+    private final ProductService productService;
+    private final OrderMapper orderMapper;
 
     @Override
-    public Order createOrder(Order order) {
-        User user = userRepository.findById(order.getUser().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        order.setUser(user);
-        order.setCreatedAt(LocalDateTime.now());
-        order.setUpdatedAt(LocalDateTime.now());
-        order.setStatus(OrderStatus.NEW); // Статус по умолчанию
-        return orderRepository.save(order);
-    }
-
-    @Override
-    public Order getOrderById(Long id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException(id));
-    }
-
-    @Override
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public Order getOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Order not found: " + orderId));
     }
 
     @Override
     public List<Order> getOrdersByUserId(Long userId) {
-        return orderRepository.findByUserId(userId);
+        return orderRepository.findAllByUserId(userId);
     }
 
     @Override
-    public Order updateOrder(Long id, Order updatedOrder) {
-        Order existing = getOrderById(id);
-        existing.setDeliveryMethod(updatedOrder.getDeliveryMethod());
-        existing.setDeliveryAddress(updatedOrder.getDeliveryAddress());
-        existing.setContactName(updatedOrder.getContactName());
-        existing.setStatus(updatedOrder.getStatus());
-        existing.setUpdatedAt(LocalDateTime.now());
-        return orderRepository.save(existing);
+    public List<Order> getActiveOrders() {
+        return orderRepository.findAllByStatusNotIn(List.of(OrderStatus.CANCELLED, OrderStatus.DELIVERED));
     }
 
     @Override
-    public void deleteOrder(Long id) {
-        Order order = getOrderById(id);
-        orderRepository.delete(order);
+    public BigDecimal getTotalAmount(Long orderId) {
+        Order order = getOrderById(orderId);
+        return order.getItems().stream()
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    @Override
+    public Order createOrder(Long userId, OrderCreateRequestDto dto) {
+        User user = userService.getUserById(userId);
+        Order order = Order.builder()
+                .user(user)
+                .status(OrderStatus.NEW)
+                .deliveryType(dto.getDeliveryType())
+                .address(dto.getAddress())
+                .contactName(dto.getContactName())
+                .createdAt(dto.getCreatedAt())
+                .build();
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Order updateStatus(Long orderId, OrderStatus status) {
+        Order order = getOrderById(orderId);
+        order.setStatus(status);
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Order addItem(Long orderId, Long productId, Integer quantity) {
+        Order order = getOrderById(orderId);
+        Product product = productService.getProductById(productId);
+        OrderItem item = OrderItem.builder()
+                .order(order)
+                .product(product)
+                .quantity(quantity)
+                .price(product.getPrice())
+                .build();
+        order.getItems().add(item);
+        orderItemRepository.save(item);
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Order updateItem(Long orderItemId, Integer quantity) {
+        OrderItem item = orderItemRepository.findById(orderItemId)
+                .orElseThrow(() -> new NotFoundException("OrderItem not found: " + orderItemId));
+        item.setQuantity(quantity);
+        return orderRepository.save(item.getOrder());
+    }
+
+    @Override
+    public Order removeItem(Long orderItemId) {
+        OrderItem item = orderItemRepository.findById(orderItemId)
+                .orElseThrow(() -> new NotFoundException("OrderItem not found: " + orderItemId));
+        Order order = item.getOrder();
+        order.getItems().remove(item);
+        orderItemRepository.delete(item);
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public void cancelOrder(Long orderId) {
+        Order order = getOrderById(orderId);
+        order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.save(order);
+    }
 }

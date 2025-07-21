@@ -27,6 +27,7 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
                         .requestMatchers("/api/categories").authenticated()
+                        .requestMatchers("/v1/orders/**").hasRole("USER")
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->

@@ -3,7 +3,7 @@ package telran.project.gardenshop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import telran.project.gardenshop.enums.OrderStatus;
-
+import telran.project.gardenshop.entity.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

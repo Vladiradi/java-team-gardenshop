@@ -1,22 +1,45 @@
-# IntelliJ IDEA
+# ----------------------------
 .idea/
 *.iml
+*.iws
+shelf/
+workspace.xml
+tasks.xml
+usage.statistics.xml
 
 # Maven
+# ----------------------------
 target/
+dependency-reduced-pom.xml
+release.properties
+buildNumber.properties
 
-# Workspace storage
-*.iws
-
+# ----------------------------
 # HTTP Client
+# ----------------------------
 httpRequests/
 
+# ----------------------------
 # Datasource storage
+# ----------------------------
 dataSources/
 dataSources.local.xml
 
-# Shelf (unsaved changes)
-shelf/
+# ----------------------------
+# OS generated files
+# ----------------------------
+.DS_Store
+Thumbs.db
 
+# ----------------------------
 # Logs
+# ----------------------------
 *.log
+
+# ----------------------------
+# Others
+# ----------------------------
+.env
+*.bak
+*.tmp
+*.swp

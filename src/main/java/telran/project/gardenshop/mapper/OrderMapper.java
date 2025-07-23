@@ -6,7 +6,7 @@ import telran.project.gardenshop.dto.OrderResponseDto;
 import telran.project.gardenshop.dto.OrderShortResponseDto;
 import telran.project.gardenshop.entity.Order;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = OrderItemMapper.class)
 public interface OrderMapper {
 
     @Mapping(source = "deliveryAdress", target = "address")

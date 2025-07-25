@@ -35,7 +35,7 @@ public class Order {
     private String deliveryMethod;
 
     @Column(nullable = false)
-    private String deliveryAdress;
+    private String deliveryAddress;
 
     @Column(nullable = false)
     private String contactName;

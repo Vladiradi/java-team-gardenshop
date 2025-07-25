@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
                 .user(user)
                 .status(OrderStatus.NEW)
                 .deliveryMethod(dto.getDeliveryMethod().name())
-                .deliveryAdress(dto.getAddress())
+                .deliveryAddress(dto.getAddress())
                 .contactName(dto.getContactName())
                 .createdAt(dto.getCreatedAt())
                 .build();

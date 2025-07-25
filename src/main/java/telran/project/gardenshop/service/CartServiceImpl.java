@@ -1,5 +1,6 @@
 package telran.project.gardenshop.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,14 @@ public class CartServiceImpl implements CartService {
 
         return mapToResponse(cart);
     }
+
+    @Override
+    public Cart getCartById(Long cartId) {
+        return cartRepository.findById(cartId)
+                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+    }
+
+
 
     private CartResponseDto mapToResponse(Cart cart) {
         CartResponseDto dto = new CartResponseDto();

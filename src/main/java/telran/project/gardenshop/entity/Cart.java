@@ -3,6 +3,8 @@ package telran.project.gardenshop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "carts")
 @Getter
@@ -19,5 +21,10 @@ public class Cart {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<CartItem> items;
 
 }

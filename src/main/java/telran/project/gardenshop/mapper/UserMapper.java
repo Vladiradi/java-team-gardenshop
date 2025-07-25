@@ -31,7 +31,7 @@ public interface UserMapper {
                         .userId(fav.getUser().getId())
                         .productId(fav.getProduct().getId())
                         .productName(fav.getProduct().getName())
-                        .price(fav.getProduct().getPrice())
+                        .price(fav.getProduct().getPrice().doubleValue())
                         .imageUrl(fav.getProduct().getImageUrl())
                         .build())
                 .collect(Collectors.toList());

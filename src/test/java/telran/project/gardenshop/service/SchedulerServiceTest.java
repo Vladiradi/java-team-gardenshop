@@ -1,13 +1,15 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.Payment;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.PaymentStatus;
 import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.PaymentRepository;
+import telran.project.gardenshop.service.SchedulerServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class SchedulerServiceTest {
 
     @Mock
@@ -28,7 +30,7 @@ public class SchedulerServiceTest {
     SchedulerServiceImpl schedulerService;
 
     @Test
-    void testUpdateOrderStatuses_cancelExpiredNewOrders() {
+    void testUpdateOrderStatus_cancelExpiredNewOrders() {
         Order order = Order.builder()
                 .id(1L)
                 .status(OrderStatus.NEW)
@@ -45,7 +47,7 @@ public class SchedulerServiceTest {
         when(orderRepository.findAllByStatus(OrderStatus.PAID)).thenReturn(List.of());
         when(paymentRepository.findByOrderId(1L)).thenReturn(Optional.of(payment));
 
-        schedulerService.updateOrderStatuses();
+        schedulerService.updateOrderStatus();
 
         assert order.getStatus() == OrderStatus.CANCELLED;
         assert payment.getStatus() == PaymentStatus.CANCELLED;

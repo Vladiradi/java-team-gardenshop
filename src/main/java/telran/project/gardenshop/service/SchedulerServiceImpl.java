@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SchedulerServiceImpl {
+public class SchedulerServiceImpl implements SchedulerService {
 
     private final OrderRepository orderRepository;
 
@@ -26,7 +26,7 @@ public class SchedulerServiceImpl {
     @Override
     @Transactional
     @Scheduled(fixedRate = 30000)
-    public void updateOrderStatuses() {
+    public void updateOrderStatus() {
         LocalDateTime now = LocalDateTime.now();
         log.info("Running scheduler at {}", now);
 

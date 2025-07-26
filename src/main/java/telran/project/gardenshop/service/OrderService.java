@@ -1,6 +1,8 @@
 package telran.project.gardenshop.service;
 
+import lombok.RequiredArgsConstructor;
 import telran.project.gardenshop.dto.OrderCreateRequestDto;
+import telran.project.gardenshop.dto.OrderHistoryDto;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.enums.OrderStatus;
 
@@ -30,4 +32,6 @@ public interface OrderService {
     Order removeItem(Long orderItemId);
 
     void cancelOrder(Long orderId);
+
+    List<OrderHistoryDto> getOrderHistory(String email);
 }

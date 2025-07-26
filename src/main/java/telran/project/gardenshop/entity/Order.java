@@ -3,8 +3,6 @@ package telran.project.gardenshop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import telran.project.gardenshop.enums.OrderStatus;
-import telran.project.gardenshop.entity.User;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class Order {
     private String deliveryMethod;
 
     @Column(nullable = false)
-    private String deliveryAdress;
+    private String deliveryAddres;
 
     @Column(nullable = false)
     private String contactName;

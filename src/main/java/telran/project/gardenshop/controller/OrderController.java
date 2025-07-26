@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.OrderCreateRequestDto;
+import telran.project.gardenshop.dto.OrderHistoryDto;
 import telran.project.gardenshop.dto.OrderResponseDto;
 import telran.project.gardenshop.dto.OrderShortResponseDto;
 
@@ -20,6 +21,9 @@ public interface OrderController {
 
     @GetMapping("/{orderId}")
     OrderResponseDto getById(@PathVariable @Positive Long orderId);
+
+    @GetMapping("/history")
+    List<OrderHistoryDto> getMyOrderHistory();
 
     @PostMapping("/{userId}")
     @ResponseStatus(HttpStatus.CREATED)

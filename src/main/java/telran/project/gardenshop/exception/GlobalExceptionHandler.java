@@ -35,7 +35,8 @@ public class GlobalExceptionHandler {
             UserNotFoundException.class,
             ProductNotFoundException.class,
             CategoryNotFoundException.class,
-            FavoriteNotFoundException.class
+            FavoriteNotFoundException.class,
+            OrderNotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, Object> handleNotFoundException(RuntimeException ex) {

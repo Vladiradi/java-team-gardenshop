@@ -1,4 +1,4 @@
-package telran.project.gardenshop.service.impl;
+package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,13 +8,10 @@ import telran.project.gardenshop.entity.OrderItem;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.enums.OrderStatus;
-import telran.project.gardenshop.exception.NotFoundException;
+import telran.project.gardenshop.exception.OrderNotFoundException;
 import telran.project.gardenshop.mapper.OrderMapper;
 import telran.project.gardenshop.repository.OrderItemRepository;
 import telran.project.gardenshop.repository.OrderRepository;
-import telran.project.gardenshop.service.OrderService;
-import telran.project.gardenshop.service.ProductService;
-import telran.project.gardenshop.service.UserService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,12 +29,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new NotFoundException("Order not found: " + orderId));
+                .orElseThrow(() -> new OrderNotFoundException(orderId));
     }
 
     @Override
     public List<Order> getOrdersByUserId(Long userId) {
-        return orderRepository.findAllByUserId(userId);
+        return orderRepository.findAllByUserId((userId));
     }
 
     @Override
@@ -59,13 +56,20 @@ public class OrderServiceImpl implements OrderService {
         Order order = Order.builder()
                 .user(user)
                 .status(OrderStatus.NEW)
-                .deliveryType(dto.getDeliveryType())
-                .address(dto.getAddress())
+                .deliveryMethod(dto.getDeliveryMethod().name())
+                .deliveryAddress(dto.getAddress())
                 .contactName(dto.getContactName())
                 .createdAt(dto.getCreatedAt())
                 .build();
         return orderRepository.save(order);
     }
+
+    @Override
+    public void deleteOrder(Long orderId) {
+        Order order = getOrderById(orderId);
+        orderRepository.delete(order);
+    }
+
 
     @Override
     public Order updateStatus(Long orderId, OrderStatus status) {
@@ -92,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order updateItem(Long orderItemId, Integer quantity) {
         OrderItem item = orderItemRepository.findById(orderItemId)
-                .orElseThrow(() -> new NotFoundException("OrderItem not found: " + orderItemId));
+                .orElseThrow(() -> new OrderNotFoundException(orderItemId));
         item.setQuantity(quantity);
         return orderRepository.save(item.getOrder());
     }
@@ -100,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order removeItem(Long orderItemId) {
         OrderItem item = orderItemRepository.findById(orderItemId)
-                .orElseThrow(() -> new NotFoundException("OrderItem not found: " + orderItemId));
+                .orElseThrow(() -> new OrderNotFoundException(orderItemId));
         Order order = item.getOrder();
         order.getItems().remove(item);
         orderItemRepository.delete(item);

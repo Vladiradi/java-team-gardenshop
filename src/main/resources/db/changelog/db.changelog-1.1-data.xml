@@ -404,78 +404,78 @@
     </changeSet>
 
 
-<!--    &lt;!&ndash; Constraints &ndash;&gt;-->
-<!--    <changeSet id="999-add-constraints" author="vladiradi">-->
+    <!-- Constraints -->
+    <changeSet id="999-add-constraints" author="vladiradi">
 
-<!--        &lt;!&ndash; Unique: один продукт может быть в избранном у пользователя только один раз &ndash;&gt;-->
-<!--        <addUniqueConstraint-->
-<!--                tableName="favorites"-->
-<!--                columnNames="user_id, product_id"-->
-<!--                constraintName="uq_favorites_user_product" />-->
+        <!-- Unique -->
+        <addUniqueConstraint
+                tableName="favorites"
+                columnNames="user_id, product_id"
+                constraintName="uq_favorites_user_product" />
 
-<!--        &lt;!&ndash; Foreign key: products → categories &ndash;&gt;-->
-<!--        <addForeignKeyConstraint-->
-<!--                baseTableName="products"-->
-<!--                baseColumnNames="category_id"-->
-<!--                constraintName="fk_products_category"-->
-<!--                referencedTableName="categories"-->
-<!--                referencedColumnNames="id"-->
-<!--                onDelete="CASCADE" />-->
+        <!-- foreign key: products → categories -->
+        <addForeignKeyConstraint
+                baseTableName="products"
+                baseColumnNames="category_id"
+                constraintName="fk_products_category"
+                referencedTableName="categories"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
 
-<!--        &lt;!&ndash; Foreign key: favorites → users &ndash;&gt;-->
-<!--        <addForeignKeyConstraint-->
-<!--                baseTableName="favorites"-->
-<!--                baseColumnNames="user_id"-->
-<!--                constraintName="fk_favorites_user"-->
-<!--                referencedTableName="users"-->
-<!--                referencedColumnNames="id"-->
-<!--                onDelete="CASCADE" />-->
+        <!-- Foreign key: favorites → users -->
+        <addForeignKeyConstraint
+                baseTableName="favorites"
+                baseColumnNames="user_id"
+                constraintName="fk_favorites_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
 
-<!--        &lt;!&ndash; Foreign key: favorites → products &ndash;&gt;-->
-<!--        <addForeignKeyConstraint-->
-<!--                baseTableName="favorites"-->
-<!--                baseColumnNames="product_id"-->
-<!--                constraintName="fk_favorites_product"-->
-<!--                referencedTableName="products"-->
-<!--                referencedColumnNames="id"-->
-<!--                onDelete="CASCADE" />-->
+        <!-- Foreign key: favorites → products -->
+        <addForeignKeyConstraint
+                baseTableName="favorites"
+                baseColumnNames="product_id"
+                constraintName="fk_favorites_product"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
 
-<!--        &lt;!&ndash; Foreign key: orders → users &ndash;&gt;-->
-<!--        <addForeignKeyConstraint-->
-<!--                baseTableName="orders"-->
-<!--                baseColumnNames="user_id"-->
-<!--                constraintName="fk_orders_user"-->
-<!--                referencedTableName="users"-->
-<!--                referencedColumnNames="id"-->
-<!--                onDelete="CASCADE" />-->
+        <!-- Foreign key: orders → users -->
+        <addForeignKeyConstraint
+                baseTableName="orders"
+                baseColumnNames="user_id"
+                constraintName="fk_orders_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
 
-<!--        &lt;!&ndash; Foreign key: order_items → orders &ndash;&gt;-->
-<!--        <addForeignKeyConstraint-->
-<!--                baseTableName="order_items"-->
-<!--                baseColumnNames="order_id"-->
-<!--                constraintName="fk_order_items_order"-->
-<!--                referencedTableName="orders"-->
-<!--                referencedColumnNames="id"-->
-<!--                onDelete="CASCADE" />-->
+        <!-- Foreign key: order_items → orders -->
+        <addForeignKeyConstraint
+                baseTableName="order_items"
+                baseColumnNames="order_id"
+                constraintName="fk_order_items_order"
+                referencedTableName="orders"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
 
-<!--        &lt;!&ndash; Foreign key: order_items → products &ndash;&gt;-->
-<!--        <addForeignKeyConstraint-->
-<!--                baseTableName="order_items"-->
-<!--                baseColumnNames="product_id"-->
-<!--                constraintName="fk_order_items_product"-->
-<!--                referencedTableName="products"-->
-<!--                referencedColumnNames="id"-->
-<!--                onDelete="CASCADE" />-->
+        <!-- Foreign key: order_items → products -->
+        <addForeignKeyConstraint
+                baseTableName="order_items"
+                baseColumnNames="product_id"
+                constraintName="fk_order_items_product"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
 
-<!--        &lt;!&ndash; Foreign key: payments → orders &ndash;&gt;-->
-<!--        <addForeignKeyConstraint-->
-<!--                baseTableName="payments"-->
-<!--                baseColumnNames="order_id"-->
-<!--                constraintName="fk_payments_order"-->
-<!--                referencedTableName="orders"-->
-<!--                referencedColumnNames="id"-->
-<!--                onDelete="CASCADE" />-->
+        <!-- Foreign key: payments → orders -->
+        <addForeignKeyConstraint
+                baseTableName="payments"
+                baseColumnNames="order_id"
+                constraintName="fk_payments_order"
+                referencedTableName="orders"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
 
-<!--    </changeSet>-->
+    </changeSet>
 
 </databaseChangeLog>

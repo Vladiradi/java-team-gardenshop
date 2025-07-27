@@ -11,28 +11,42 @@
         <insert tableName="users">
             <column name="email" value="anna.petrova@garden.ru"/>
             <column name="full_name" value="Anna Petrova"/>
-            <column name="phone_number" value="+79001112233"/>
+            <column name="phone_number" value="+4915732201123"/>
             <column name="password" value="pw123"/>
             <column name="role" value="USER"/>
         </insert>
         <insert tableName="users">
             <column name="email" value="sergey.ivanov@plants.ru"/>
             <column name="full_name" value="Sergey Ivanov"/>
-            <column name="phone_number" value="+79004567890"/>
+            <column name="phone_number" value="+4915732201345"/>
             <column name="password" value="pw123"/>
             <column name="role" value="USER"/>
         </insert>
         <insert tableName="users">
             <column name="email" value="elena.sidorova@flowershop.ru"/>
             <column name="full_name" value="Elena Sidorova"/>
-            <column name="phone_number" value="+79007894561"/>
+            <column name="phone_number" value="+4915732201567"/>
             <column name="password" value="pw123"/>
             <column name="role" value="USER"/>
         </insert>
         <insert tableName="users">
             <column name="email" value="dmitry.smirnov@greenzone.ru"/>
             <column name="full_name" value="Dmitry Smirnov"/>
-            <column name="phone_number" value="+79006543210"/>
+            <column name="phone_number" value="+4915732201789"/>
+            <column name="password" value="pw123"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="users">
+            <column name="email" value="maria.kuznetsova@blumen.de"/>
+            <column name="full_name" value="Maria Kuznetsova"/>
+            <column name="phone_number" value="+4915732201923"/>
+            <column name="password" value="pw123"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="users">
+            <column name="email" value="ivan.karpov@gartenwelt.de"/>
+            <column name="full_name" value="Ivan Karpov"/>
+            <column name="phone_number" value="+4915732201987"/>
             <column name="password" value="pw123"/>
             <column name="role" value="USER"/>
         </insert>
@@ -63,12 +77,20 @@
             <column name="category_id" value="1"/>
         </insert>
         <insert tableName="products">
-            <column name="name" value="Organic fertilizer BioGrow"/>
-            <column name="description" value="Suitable for all vegetables and flowers"/>
-            <column name="price" value="13.50"/>
-            <column name="image_url" value="https://example.com/images/biogrow.jpg"/>
+            <column name="name" value="Universal liquid plant food"/>
+            <column name="description" value="Nutrient-rich solution for all houseplants"/>
+            <column name="price" value="6.50"/>
+            <column name="image_url" value="https://example.com/images/universal_food.jpg"/>
             <column name="category_id" value="1"/>
         </insert>
+        <insert tableName="products">
+            <column name="name" value="Slow-release granulated fertilizer"/>
+            <column name="description" value="Feeds plants up to 3 months"/>
+            <column name="price" value="11.25"/>
+            <column name="image_url" value="https://example.com/images/slow_granules.jpg"/>
+            <column name="category_id" value="1"/>
+        </insert>
+
         <insert tableName="products">
             <column name="name" value="Aphid and spider mite spray"/>
             <column name="description" value="Safe pest control spray"/>
@@ -83,28 +105,377 @@
             <column name="image_url" value="https://example.com/images/snail_granules.jpg"/>
             <column name="category_id" value="2"/>
         </insert>
+        <insert tableName="products">
+            <column name="name" value="Anti-fungal root treatment"/>
+            <column name="description" value="Prevents root rot and fungal diseases"/>
+            <column name="price" value="10.99"/>
+            <column name="image_url" value="https://example.com/images/root_treatment.jpg"/>
+            <column name="category_id" value="2"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="Tomato seeds Cherry Sweet"/>
+            <column name="description" value="High-yield, sweet cherry tomatoes"/>
+            <column name="price" value="3.50"/>
+            <column name="image_url" value="https://example.com/images/cherry_tomato.jpg"/>
+            <column name="category_id" value="3"/>
+        </insert>
+        <insert tableName="products">
+            <column name="name" value="Cucumber seeds Green Delight"/>
+            <column name="description" value="Crisp and refreshing cucumbers"/>
+            <column name="price" value="2.80"/>
+            <column name="image_url" value="https://example.com/images/cucumber.jpg"/>
+            <column name="category_id" value="3"/>
+        </insert>
+        <insert tableName="products">
+            <column name="name" value="Sunflower seedlings pack"/>
+            <column name="description" value="Ready-to-plant healthy seedlings"/>
+            <column name="price" value="5.00"/>
+            <column name="image_url" value="https://example.com/images/sunflower_seedlings.jpg"/>
+            <column name="category_id" value="3"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="Ergonomic garden trowel"/>
+            <column name="description" value="Comfort grip, stainless steel blade"/>
+            <column name="price" value="6.75"/>
+            <column name="image_url" value="https://example.com/images/trowel.jpg"/>
+            <column name="category_id" value="4"/>
+        </insert>
+        <insert tableName="products">
+            <column name="name" value="Telescopic pruning shears"/>
+            <column name="description" value="Reach high branches with ease"/>
+            <column name="price" value="15.90"/>
+            <column name="image_url" value="https://example.com/images/shears.jpg"/>
+            <column name="category_id" value="4"/>
+        </insert>
+
+        <insert tableName="products">
+            <column name="name" value="Terracotta clay pot 25cm"/>
+            <column name="description" value="Classic pot for indoor or outdoor use"/>
+            <column name="price" value="4.80"/>
+            <column name="image_url" value="https://example.com/images/clay_pot.jpg"/>
+            <column name="category_id" value="5"/>
+        </insert>
+        <insert tableName="products">
+            <column name="name" value="Self-watering plastic planter"/>
+            <column name="description" value="Reduces watering frequency"/>
+            <column name="price" value="9.60"/>
+            <column name="image_url" value="https://example.com/images/self_water.jpg"/>
+            <column name="category_id" value="5"/>
+        </insert>
+        <insert tableName="products">
+            <column name="name" value="Decorative ceramic planter"/>
+            <column name="description" value="Stylish glazed pot for living rooms"/>
+            <column name="price" value="12.00"/>
+            <column name="image_url" value="https://example.com/images/ceramic_pot.jpg"/>
+            <column name="category_id" value="5"/>
+        </insert>
+
 
         <!-- Favorites -->
         <insert tableName="favorites">
             <column name="user_id" value="1"/>
             <column name="product_id" value="2"/>
-            <column name="created_at" valueDate="2024-06-01T10:00:00"/>
+            <column name="created_at" valueDate="2024-07-01T10:15:00"/>
         </insert>
         <insert tableName="favorites">
             <column name="user_id" value="1"/>
-            <column name="product_id" value="3"/>
-            <column name="created_at" valueDate="2024-06-02T12:00:00"/>
+            <column name="product_id" value="7"/>
+            <column name="created_at" valueDate="2024-07-02T11:00:00"/>
         </insert>
         <insert tableName="favorites">
             <column name="user_id" value="2"/>
-            <column name="product_id" value="1"/>
-            <column name="created_at" valueDate="2024-06-03T14:30:00"/>
+            <column name="product_id" value="3"/>
+            <column name="created_at" valueDate="2024-07-03T09:30:00"/>
+        </insert>
+        <insert tableName="favorites">
+            <column name="user_id" value="2"/>
+            <column name="product_id" value="9"/>
+            <column name="created_at" valueDate="2024-07-03T13:45:00"/>
         </insert>
         <insert tableName="favorites">
             <column name="user_id" value="3"/>
-            <column name="product_id" value="2"/>
-            <column name="created_at" valueDate="2024-06-04T09:15:00"/>
+            <column name="product_id" value="5"/>
+            <column name="created_at" valueDate="2024-07-04T08:20:00"/>
         </insert>
+        <insert tableName="favorites">
+            <column name="user_id" value="3"/>
+            <column name="product_id" value="12"/>
+            <column name="created_at" valueDate="2024-07-04T15:00:00"/>
+        </insert>
+        <insert tableName="favorites">
+            <column name="user_id" value="4"/>
+            <column name="product_id" value="1"/>
+            <column name="created_at" valueDate="2024-07-05T10:10:00"/>
+        </insert>
+        <insert tableName="favorites">
+            <column name="user_id" value="4"/>
+            <column name="product_id" value="5"/>
+            <column name="created_at" valueDate="2024-07-05T14:40:00"/>
+        </insert>
+        <insert tableName="favorites">
+            <column name="user_id" value="5"/>
+            <column name="product_id" value="8"/>
+            <column name="created_at" valueDate="2024-07-06T12:00:00"/>
+        </insert>
+        <insert tableName="favorites">
+            <column name="user_id" value="6"/>
+            <column name="product_id" value="10"/>
+            <column name="created_at" valueDate="2024-07-06T17:15:00"/>
+        </insert>
+
+
+        <!-- Orders -->
+        <insert tableName="orders">
+            <column name="user_id" value="1"/>
+            <column name="status" value="NEW"/>
+            <column name="delivery_method" value="COURIER"/>
+            <column name="delivery_address" value="Berlin, Lindenstraße 12"/>
+            <column name="contact_name" value="Anna Petrova"/>
+            <column name="created_at" valueDate="2024-07-10T09:00:00"/>
+            <column name="updated_at" valueDate="2024-07-10T09:00:00"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="user_id" value="2"/>
+            <column name="status" value="PAID"/>
+            <column name="delivery_method" value="PICKUP"/>
+            <column name="delivery_address" value="Pickup Point #45"/>
+            <column name="contact_name" value="Sergey Ivanov"/>
+            <column name="created_at" valueDate="2024-07-11T10:30:00"/>
+            <column name="updated_at" valueDate="2024-07-11T11:00:00"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="user_id" value="3"/>
+            <column name="status" value="DELIVERED"/>
+            <column name="delivery_method" value="COURIER"/>
+            <column name="delivery_address" value="Hamburg, Gartenweg 7"/>
+            <column name="contact_name" value="Elena Sidorova"/>
+            <column name="created_at" valueDate="2024-07-12T14:00:00"/>
+            <column name="updated_at" valueDate="2024-07-13T09:00:00"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="user_id" value="4"/>
+            <column name="status" value="CANCELLED"/>
+            <column name="delivery_method" value="COURIER"/>
+            <column name="delivery_address" value="München, Hauptstraße 99"/>
+            <column name="contact_name" value="Dmitry Smirnov"/>
+            <column name="created_at" valueDate="2024-07-14T15:45:00"/>
+            <column name="updated_at" valueDate="2024-07-14T16:15:00"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="user_id" value="5"/>
+            <column name="status" value="NEW"/>
+            <column name="delivery_method" value="PICKUP"/>
+            <column name="delivery_address" value="Pickup Point #12"/>
+            <column name="contact_name" value="Maria Volkova"/>
+            <column name="created_at" valueDate="2024-07-15T08:00:00"/>
+            <column name="updated_at" valueDate="2024-07-15T08:00:00"/>
+        </insert>
+        <insert tableName="orders">
+            <column name="user_id" value="6"/>
+            <column name="status" value="PAID"/>
+            <column name="delivery_method" value="COURIER"/>
+            <column name="delivery_address" value="Köln, Blumenstraße 3"/>
+            <column name="contact_name" value="Ivan Kuznetsov"/>
+            <column name="created_at" valueDate="2024-07-16T12:00:00"/>
+            <column name="updated_at" valueDate="2024-07-16T12:30:00"/>
+        </insert>
+
+
+        <!-- Payments -->
+        <insert tableName="payments">
+            <column name="order_id" value="1"/>
+            <column name="status" value="NEW"/>
+            <column name="method" value="CARD"/>
+            <column name="created_at" valueDate="2024-07-10T09:05:00"/>
+        </insert>
+        <insert tableName="payments">
+            <column name="order_id" value="2"/>
+            <column name="status" value="PAID"/>
+            <column name="method" value="CASH"/>
+            <column name="created_at" valueDate="2024-07-11T10:35:00"/>
+        </insert>
+        <insert tableName="payments">
+            <column name="order_id" value="3"/>
+            <column name="status" value="DELIVERED"/>
+            <column name="method" value="CARD"/>
+            <column name="created_at" valueDate="2024-07-12T14:05:00"/>
+        </insert>
+        <insert tableName="payments">
+            <column name="order_id" value="4"/>
+            <column name="status" value="CANCELLED"/>
+            <column name="method" value="CASH"/>
+            <column name="created_at" valueDate="2024-07-14T15:50:00"/>
+        </insert>
+        <insert tableName="payments">
+            <column name="order_id" value="5"/>
+            <column name="status" value="NEW"/>
+            <column name="method" value="CASH"/>
+            <column name="created_at" valueDate="2024-07-15T08:05:00"/>
+        </insert>
+        <insert tableName="payments">
+            <column name="order_id" value="6"/>
+            <column name="status" value="PAID"/>
+            <column name="method" value="CARD"/>
+            <column name="created_at" valueDate="2024-07-16T12:05:00"/>
+        </insert>
+
+
+        <!-- Order Items -->
+        <insert tableName="order_items">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="2"/>
+            <column name="quantity" value="1"/>
+            <column name="price" value="6.50"/>
+        </insert>
+        <insert tableName="order_items">
+            <column name="order_id" value="1"/>
+            <column name="product_id" value="3"/>
+            <column name="quantity" value="2"/>
+            <column name="price" value="11.25"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="order_id" value="2"/>
+            <column name="product_id" value="5"/>
+            <column name="quantity" value="1"/>
+            <column name="price" value="7.25"/>
+        </insert>
+        <insert tableName="order_items">
+            <column name="order_id" value="2"/>
+            <column name="product_id" value="6"/>
+            <column name="quantity" value="1"/>
+            <column name="price" value="10.99"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="order_id" value="3"/>
+            <column name="product_id" value="7"/>
+            <column name="quantity" value="3"/>
+            <column name="price" value="3.50"/>
+        </insert>
+        <insert tableName="order_items">
+            <column name="order_id" value="3"/>
+            <column name="product_id" value="9"/>
+            <column name="quantity" value="1"/>
+            <column name="price" value="5.00"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="order_id" value="4"/>
+            <column name="product_id" value="10"/>
+            <column name="quantity" value="1"/>
+            <column name="price" value="6.75"/>
+        </insert>
+        <insert tableName="order_items">
+            <column name="order_id" value="4"/>
+            <column name="product_id" value="11"/>
+            <column name="quantity" value="1"/>
+            <column name="price" value="15.90"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="order_id" value="5"/>
+            <column name="product_id" value="12"/>
+            <column name="quantity" value="2"/>
+            <column name="price" value="4.80"/>
+        </insert>
+        <insert tableName="order_items">
+            <column name="order_id" value="5"/>
+            <column name="product_id" value="13"/>
+            <column name="quantity" value="1"/>
+            <column name="price" value="9.60"/>
+        </insert>
+
+        <insert tableName="order_items">
+            <column name="order_id" value="6"/>
+            <column name="product_id" value="4"/>
+            <column name="quantity" value="1"/>
+            <column name="price" value="9.20"/>
+        </insert>
+        <insert tableName="order_items">
+            <column name="order_id" value="6"/>
+            <column name="product_id" value="14"/>
+            <column name="quantity" value="1"/>
+            <column name="price" value="12.00"/>
+        </insert>
+
+    </changeSet>
+
+
+    <!-- Constraints -->
+    <changeSet id="999-add-constraints" author="vladiradi">
+
+        <!-- Unique -->
+        <addUniqueConstraint
+                tableName="favorites"
+                columnNames="user_id, product_id"
+                constraintName="uq_favorites_user_product" />
+
+        <!-- foreign key: products → categories -->
+        <addForeignKeyConstraint
+                baseTableName="products"
+                baseColumnNames="category_id"
+                constraintName="fk_products_category"
+                referencedTableName="categories"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
+
+        <!-- Foreign key: favorites → users -->
+        <addForeignKeyConstraint
+                baseTableName="favorites"
+                baseColumnNames="user_id"
+                constraintName="fk_favorites_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
+
+        <!-- Foreign key: favorites → products -->
+        <addForeignKeyConstraint
+                baseTableName="favorites"
+                baseColumnNames="product_id"
+                constraintName="fk_favorites_product"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
+
+        <!-- Foreign key: orders → users -->
+        <addForeignKeyConstraint
+                baseTableName="orders"
+                baseColumnNames="user_id"
+                constraintName="fk_orders_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
+
+        <!-- Foreign key: order_items → orders -->
+        <addForeignKeyConstraint
+                baseTableName="order_items"
+                baseColumnNames="order_id"
+                constraintName="fk_order_items_order"
+                referencedTableName="orders"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
+
+        <!-- Foreign key: order_items → products -->
+        <addForeignKeyConstraint
+                baseTableName="order_items"
+                baseColumnNames="product_id"
+                constraintName="fk_order_items_product"
+                referencedTableName="products"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
+
+        <!-- Foreign key: payments → orders -->
+        <addForeignKeyConstraint
+                baseTableName="payments"
+                baseColumnNames="order_id"
+                constraintName="fk_payments_order"
+                referencedTableName="orders"
+                referencedColumnNames="id"
+                onDelete="CASCADE" />
+
     </changeSet>
 
 </databaseChangeLog>

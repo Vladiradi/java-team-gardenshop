@@ -2,6 +2,7 @@ package telran.project.gardenshop.service;
 
 import telran.project.gardenshop.dto.UserEditDto;
 import telran.project.gardenshop.entity.User;
+import telran.project.gardenshop.service.UserService;
 
 import java.util.List;
 import java.util.Optional;

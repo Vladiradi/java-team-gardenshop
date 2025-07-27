@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
                 .user(user)
                 .status(OrderStatus.NEW)
                 .deliveryMethod(dto.getDeliveryMethod().name())
-                .deliveryAddres(dto.getAddress())
+                .deliveryAddress(dto.getAddress())
                 .contactName(dto.getContactName())
                 .createdAt(dto.getCreatedAt())
                 .build();
@@ -131,7 +131,6 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
     }
 
-        // 🔽 И сюда метод для преобразования в DTO:
         private OrderHistoryDto toOrderHistoryDto(Order order) {
             List<OrderItemResponseDto> products = order.getItems().stream()
                     .map(item -> OrderItemResponseDto.builder()

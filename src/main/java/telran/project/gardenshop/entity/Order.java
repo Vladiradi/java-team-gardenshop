@@ -33,7 +33,8 @@ public class Order {
     private String deliveryMethod;
 
     @Column(nullable = false)
-    private String deliveryAddres;
+
+    private String deliveryAddress;
 
     @Column(nullable = false)
     private String contactName;

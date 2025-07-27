@@ -152,7 +152,7 @@ public class OrderServiceImpl implements OrderService {
                             .doubleValue())
                     .createdAt(order.getCreatedAt().toString())
                     .products(products)
-                    .deliveryAddress(order.getDeliveryAddres()) // Проверь правильность поля
+                    .deliveryAddress(order.getDeliveryAddress())
                     .recipientName(order.getContactName())
                     .recipientPhone(userService.getUserById(order.getUser().getId()).getPhoneNumber())
                     .build();

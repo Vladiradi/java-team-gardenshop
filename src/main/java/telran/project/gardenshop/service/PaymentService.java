@@ -7,8 +7,12 @@ import java.util.List;
 
 public interface PaymentService {
     PaymentResponseDto createPayment(PaymentRequestDto paymentRequestDto);
+
     PaymentResponseDto getPaymentById(Long id);
+
     List<PaymentResponseDto> getAllPayments();
+
     PaymentResponseDto updatePaymentStatus(Long id, String status);
+
     void deletePayment(Long id);
 }

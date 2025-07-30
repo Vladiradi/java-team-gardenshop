@@ -1,5 +1,9 @@
 package telran.project.gardenshop.service;
 
+import org.junit.jupiter.api.DisplayName;
+
+import telran.project.gardenshop.mapper.CartMapper;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +17,7 @@ import telran.project.gardenshop.repository.UserRepository;
 
 import java.util.Optional;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -26,11 +30,15 @@ class CartServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private CartMapper cartMapper;
+
     @InjectMocks
     private CartServiceImpl cartService;
 
     @Test
-    void testAddToCart_whenCartExists() {
+    @DisplayName("Should return existing cart when cart already exists")
+    void shouldReturnExistingCart_whenCartExists() {
         Long userId = 1L;
         User user = new User();
         user.setId(userId);
@@ -39,6 +47,10 @@ class CartServiceImplTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(cartRepository.findByUser(user)).thenReturn(Optional.of(cart));
+        CartResponseDto expectedDto = new CartResponseDto();
+        expectedDto.setId(cart.getId());
+        expectedDto.setUserId(userId);
+        when(cartMapper.toDto(cart)).thenReturn(expectedDto);
 
         CartResponseDto response = cartService.addToCart(userId);
 
@@ -48,7 +60,8 @@ class CartServiceImplTest {
     }
 
     @Test
-    void testAddToCart_whenCartDoesNotExist() {
+    @DisplayName("Should create and return new cart when cart does not exist")
+    void shouldCreateNewCart_whenCartDoesNotExist() {
         Long userId = 1L;
         User user = new User();
         user.setId(userId);
@@ -58,6 +71,10 @@ class CartServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(cartRepository.findByUser(user)).thenReturn(Optional.empty());
         when(cartRepository.save(any(Cart.class))).thenReturn(cart);
+        CartResponseDto expectedDto = new CartResponseDto();
+        expectedDto.setId(cart.getId());
+        expectedDto.setUserId(userId);
+        when(cartMapper.toDto(cart)).thenReturn(expectedDto);
 
         CartResponseDto response = cartService.addToCart(userId);
 
@@ -67,7 +84,8 @@ class CartServiceImplTest {
     }
 
     @Test
-    void testGetCartById() {
+    @DisplayName("Should return cart by ID when it exists")
+    void shouldReturnCart_whenCartIdExists() {
         Long cartId = 1L;
         Cart cart = new Cart();
         cart.setId(cartId);

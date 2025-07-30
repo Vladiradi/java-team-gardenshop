@@ -33,5 +33,4 @@ public interface OrderService {
 
     void cancelOrder(Long orderId);
 
-    List<OrderHistoryDto> getOrderHistory(String email);
 }

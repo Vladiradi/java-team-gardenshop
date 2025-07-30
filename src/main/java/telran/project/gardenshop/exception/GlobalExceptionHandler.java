@@ -37,7 +37,8 @@ public class GlobalExceptionHandler {
             CategoryNotFoundException.class,
             FavoriteNotFoundException.class,
             OrderNotFoundException.class,
-            PaymentNotFoundException.class
+            PaymentNotFoundException.class,
+            CartNotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, Object> handleNotFoundException(RuntimeException ex) {
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler {
             FavoriteAlreadyExistsException.class
     })
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, Object> handleFavoriteAlreadyExistsException(FavoriteAlreadyExistsException ex) {
+    public Map<String, Object> handleFavoriteAlreadyExistsException(RuntimeException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.CONFLICT.value());
         response.put("code", "ALREADY_EXISTS");

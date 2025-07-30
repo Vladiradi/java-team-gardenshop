@@ -1,15 +1,16 @@
 package telran.project.gardenshop.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import telran.project.gardenshop.dto.CartResponseDto;
 import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.User;
+import telran.project.gardenshop.exception.CartNotFoundException;
+import telran.project.gardenshop.exception.UserNotFoundException;
+import telran.project.gardenshop.mapper.CartMapper;
 import telran.project.gardenshop.repository.CartRepository;
 import telran.project.gardenshop.repository.UserRepository;
-import telran.project.gardenshop.service.CartService;
 
 @Service
 @RequiredArgsConstructor
@@ -17,12 +18,13 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
+    private final CartMapper cartMapper;
 
     @Override
     @Transactional
     public CartResponseDto addToCart(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found"));
 
         Cart cart = cartRepository.findByUser(user)
                 .orElseGet(() -> {
@@ -32,21 +34,21 @@ public class CartServiceImpl implements CartService {
                     return cartRepository.save(newCart);
                 });
 
-        return mapToResponse(cart);
+        return cartMapper.toDto(cart);
     }
 
     @Override
     public Cart getCartById(Long cartId) {
         return cartRepository.findById(cartId)
-                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+                .orElseThrow(() -> new CartNotFoundException("Cart with id " + cartId + " not found"));
     }
 
+    @Override
+    public Cart getOrCreateCartByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found"));
 
-
-    private CartResponseDto mapToResponse(Cart cart) {
-        CartResponseDto dto = new CartResponseDto();
-        dto.setId(cart.getId());
-        dto.setUserId(cart.getUser().getId());
-        return dto;
+        return cartRepository.findByUser(user)
+                .orElseGet(() -> cartRepository.save(Cart.builder().user(user).build()));
     }
 }

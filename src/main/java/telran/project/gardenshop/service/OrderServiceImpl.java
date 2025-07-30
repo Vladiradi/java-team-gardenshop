@@ -119,42 +119,4 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
     }
-    @Override
-    public List<OrderHistoryDto> getOrderHistory(String email) {
-        User user = userService.getUserByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        List<Order> orders = orderRepository.findAllByUserId(user.getId());
-
-        return orders.stream()
-                .map(this::toOrderHistoryDto)
-                .toList();
-    }
-
-        private OrderHistoryDto toOrderHistoryDto(Order order) {
-            List<OrderItemResponseDto> products = order.getItems().stream()
-                    .map(item -> OrderItemResponseDto.builder()
-                            .id(item.getId())
-                            .productId(item.getProduct().getId())
-                            .productName(item.getProduct().getName())
-                            .productImageUrl(item.getProduct().getImageUrl())
-                            .quantity(item.getQuantity())
-                            .price(item.getPrice().doubleValue())
-                            .build())
-                    .toList();
-
-            return OrderHistoryDto.builder()
-                    .orderId(order.getId())
-                    .status(order.getStatus().name())
-                    .totalPrice(order.getItems().stream()
-                            .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add)
-                            .doubleValue())
-                    .createdAt(order.getCreatedAt().toString())
-                    .products(products)
-                    .deliveryAddress(order.getDeliveryAddress())
-                    .recipientName(order.getContactName())
-                    .recipientPhone(userService.getUserById(order.getUser().getId()).getPhoneNumber())
-                    .build();
-        }
 }

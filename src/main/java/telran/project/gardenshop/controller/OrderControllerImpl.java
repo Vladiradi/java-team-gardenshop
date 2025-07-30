@@ -65,6 +65,36 @@ public class OrderControllerImpl implements OrderController {
     @Override
     public List<OrderHistoryDto> getMyOrderHistory() {
         User currentUser = userService.getCurrentUser();
-        return orderService.getOrderHistory(currentUser.getEmail());
+        var orders = orderService.getOrdersByUserId(currentUser.getId());
+        return orders.stream()
+                .map(this::toOrderHistoryDto)
+                .toList();
+    }
+
+    private OrderHistoryDto toOrderHistoryDto(telran.project.gardenshop.entity.Order order) {
+        var products = order.getItems().stream()
+                .map(item -> telran.project.gardenshop.dto.OrderItemResponseDto.builder()
+                        .id(item.getId())
+                        .productId(item.getProduct().getId())
+                        .productName(item.getProduct().getName())
+                        .productImageUrl(item.getProduct().getImageUrl())
+                        .quantity(item.getQuantity())
+                        .price(item.getPrice().doubleValue())
+                        .build())
+                .toList();
+
+        return telran.project.gardenshop.dto.OrderHistoryDto.builder()
+                .orderId(order.getId())
+                .status(order.getStatus().name())
+                .totalPrice(order.getItems().stream()
+                        .map(i -> i.getPrice().multiply(java.math.BigDecimal.valueOf(i.getQuantity())))
+                        .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add)
+                        .doubleValue())
+                .createdAt(order.getCreatedAt().toString())
+                .products(products)
+                .deliveryAddress(order.getDeliveryAddress())
+                .recipientName(order.getContactName())
+                .recipientPhone(userService.getUserById(order.getUser().getId()).getPhoneNumber())
+                .build();
     }
 }

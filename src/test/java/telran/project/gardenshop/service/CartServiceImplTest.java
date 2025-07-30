@@ -1,5 +1,7 @@
 package telran.project.gardenshop.service;
 
+import org.junit.jupiter.api.DisplayName;
+
 import telran.project.gardenshop.mapper.CartMapper;
 
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,7 @@ import telran.project.gardenshop.repository.UserRepository;
 
 import java.util.Optional;
 
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -35,7 +37,8 @@ class CartServiceImplTest {
     private CartServiceImpl cartService;
 
     @Test
-    void testAddToCart_whenCartExists() {
+    @DisplayName("Should return existing cart when cart already exists")
+    void shouldReturnExistingCart_whenCartExists() {
         Long userId = 1L;
         User user = new User();
         user.setId(userId);
@@ -57,7 +60,8 @@ class CartServiceImplTest {
     }
 
     @Test
-    void testAddToCart_whenCartDoesNotExist() {
+    @DisplayName("Should create and return new cart when cart does not exist")
+    void shouldCreateNewCart_whenCartDoesNotExist() {
         Long userId = 1L;
         User user = new User();
         user.setId(userId);
@@ -80,7 +84,8 @@ class CartServiceImplTest {
     }
 
     @Test
-    void testGetCartById() {
+    @DisplayName("Should return cart by ID when it exists")
+    void shouldReturnCart_whenCartIdExists() {
         Long cartId = 1L;
         Cart cart = new Cart();
         cart.setId(cartId);

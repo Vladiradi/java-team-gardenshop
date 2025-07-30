@@ -14,7 +14,6 @@ public interface OrderItemMapper {
     @Mapping(source = "product.imageUrl", target = "productImageUrl")
     OrderItemResponseDto toDto(OrderItem item);
 
-    // (Опционально — если маппить из DTO)
     @Mapping(source = "productId", target = "product.id")
     OrderItem toEntity(OrderItemRequestDto dto);
 }

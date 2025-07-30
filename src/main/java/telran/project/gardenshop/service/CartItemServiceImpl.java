@@ -9,6 +9,7 @@ import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.CartItem;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.repository.CartItemRepository;
+import telran.project.gardenshop.mapper.CartItemMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
     private final ProductService productService;
     private final CartService cartService;
+    private final CartItemMapper cartItemMapper;
 
     @Override
     public CartItemResponseDto addItemToCart(Long cartId, CartItemRequestDto requestDto) {
@@ -34,7 +36,7 @@ public class CartItemServiceImpl implements CartItemService {
 
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + requestDto.getQuantity());
-            return convertToDto(cartItemRepository.save(existingItem));
+            return cartItemMapper.toDto(cartItemRepository.save(existingItem));
         } else {
             CartItem newItem = CartItem.builder()
                     .cart(cart)
@@ -42,7 +44,7 @@ public class CartItemServiceImpl implements CartItemService {
                     .quantity(requestDto.getQuantity())
                     .price(requestDto.getPrice())
                     .build();
-            return convertToDto(cartItemRepository.save(newItem));
+            return cartItemMapper.toDto(cartItemRepository.save(newItem));
         }
     }
 
@@ -59,7 +61,7 @@ public class CartItemServiceImpl implements CartItemService {
                 .orElseThrow(() -> new EntityNotFoundException("Cart item not found"));
 
         item.setQuantity(newQuantity);
-        return convertToDto(cartItemRepository.save(item));
+        return cartItemMapper.toDto(cartItemRepository.save(item));
     }
 
     @Override
@@ -73,7 +75,7 @@ public class CartItemServiceImpl implements CartItemService {
     public List<CartItemResponseDto> getCartItems(Long cartId) {
         Cart cart = cartService.getCartById(cartId);
         return cartItemRepository.findByCart(cart).stream()
-                .map(this::convertToDto)
+                .map(cartItemMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -81,16 +83,5 @@ public class CartItemServiceImpl implements CartItemService {
     public void clearCart(Long cartId) {
         Cart cart = cartService.getCartById(cartId);
         cartItemRepository.deleteAllByCart(cart);
-    }
-
-    private CartItemResponseDto convertToDto(CartItem cartItem) {
-        return CartItemResponseDto.builder()
-                .id(cartItem.getId())
-                .cartId(cartItem.getCart().getId())
-                .productId(cartItem.getProduct().getId())
-                .productName(cartItem.getProduct().getName())
-                .quantity(cartItem.getQuantity())
-                .price(cartItem.getPrice())
-                .build();
     }
 }

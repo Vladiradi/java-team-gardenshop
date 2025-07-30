@@ -25,12 +25,16 @@ public class CartItemController {
     @Operation(summary = "Add item to cart")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Item added to cart"),
+
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
+
             @ApiResponse(responseCode = "404", description = "Cart or product not found")
     })
     @PostMapping
     public ResponseEntity<CartItemResponseDto> addItemToCart(
+
             @PathVariable Long cartId,
+
             @Valid @RequestBody CartItemRequestDto requestDto) {
         CartItemResponseDto response = cartItemService.addItemToCart(cartId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

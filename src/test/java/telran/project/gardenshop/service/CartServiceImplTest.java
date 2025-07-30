@@ -1,5 +1,7 @@
 package telran.project.gardenshop.service;
 
+import telran.project.gardenshop.mapper.CartMapper;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +28,9 @@ class CartServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private CartMapper cartMapper;
+
     @InjectMocks
     private CartServiceImpl cartService;
 
@@ -39,6 +44,10 @@ class CartServiceImplTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(cartRepository.findByUser(user)).thenReturn(Optional.of(cart));
+        CartResponseDto expectedDto = new CartResponseDto();
+        expectedDto.setId(cart.getId());
+        expectedDto.setUserId(userId);
+        when(cartMapper.toDto(cart)).thenReturn(expectedDto);
 
         CartResponseDto response = cartService.addToCart(userId);
 
@@ -58,6 +67,10 @@ class CartServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(cartRepository.findByUser(user)).thenReturn(Optional.empty());
         when(cartRepository.save(any(Cart.class))).thenReturn(cart);
+        CartResponseDto expectedDto = new CartResponseDto();
+        expectedDto.setId(cart.getId());
+        expectedDto.setUserId(userId);
+        when(cartMapper.toDto(cart)).thenReturn(expectedDto);
 
         CartResponseDto response = cartService.addToCart(userId);
 

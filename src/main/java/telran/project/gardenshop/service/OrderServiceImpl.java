@@ -1,17 +1,18 @@
 package telran.project.gardenshop.service;
 
+import jakarta.transaction.Transactional;
+import telran.project.gardenshop.entity.Cart;
+import telran.project.gardenshop.entity.CartItem;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import telran.project.gardenshop.dto.OrderCreateRequestDto;
-import telran.project.gardenshop.dto.OrderHistoryDto;
-import telran.project.gardenshop.dto.OrderItemResponseDto;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.OrderItem;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.exception.OrderNotFoundException;
-import telran.project.gardenshop.mapper.OrderMapper;
 import telran.project.gardenshop.repository.OrderItemRepository;
 import telran.project.gardenshop.repository.OrderRepository;
 
@@ -26,7 +27,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final UserService userService;
     private final ProductService productService;
-    private final OrderMapper orderMapper;
+    private final CartService cartService;
+    private final CartItemService cartItemService;
 
     @Override
     public Order getOrderById(Long orderId) {
@@ -53,8 +55,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order createOrder(Long userId, OrderCreateRequestDto dto) {
         User user = userService.getUserById(userId);
+        Cart cart = cartService.getCartByUserId(userId);
+
+        if (cart.getItems().isEmpty()) {
+            throw new IllegalStateException("Cannot create an order with an empty cart");
+        }
+
         Order order = Order.builder()
                 .user(user)
                 .status(OrderStatus.NEW)
@@ -63,7 +72,22 @@ public class OrderServiceImpl implements OrderService {
                 .contactName(dto.getContactName())
                 .createdAt(dto.getCreatedAt())
                 .build();
-        return orderRepository.save(order);
+        orderRepository.save(order);
+
+        for (CartItem cartItem : cart.getItems()) {
+            OrderItem orderItem = OrderItem.builder()
+                    .order(order)
+                    .product(cartItem.getProduct())
+                    .quantity(cartItem.getQuantity())
+                    .price(cartItem.getProduct().getPrice())
+                    .build();
+            orderItemRepository.save(orderItem);
+            order.getItems().add(orderItem);
+        }
+
+        cartItemService.clearCart(cart.getId());
+
+        return order;
     }
 
     @Override
@@ -114,6 +138,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void cancelOrder(Long orderId) {
         Order order = getOrderById(orderId);
         order.setStatus(OrderStatus.CANCELLED);

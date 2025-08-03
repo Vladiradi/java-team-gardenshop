@@ -57,11 +57,9 @@ public class ProductServiceImpl implements ProductService {
     public Product updateProduct(Long id, ProductEditDto dto) {
         Product product = getProductById(id);
 
-        product.setName(dto.getTitle());       // может быть null — сбросится
+        product.setName(dto.getTitle());
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());
-
-        // Не трогаем category и imageUrl, чтобы не ломать ограничения БД
 
         return productRepository.save(product);
     }

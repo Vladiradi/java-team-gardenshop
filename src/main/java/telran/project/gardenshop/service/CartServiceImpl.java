@@ -44,11 +44,11 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart getOrCreateCartByUserId(Long userId) {
+    public Cart getCartByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found"));
 
         return cartRepository.findByUser(user)
-                .orElseGet(() -> cartRepository.save(Cart.builder().user(user).build()));
+                .orElseThrow(() -> new CartNotFoundException("Cart for user with id " + userId + " not found"));
     }
 }

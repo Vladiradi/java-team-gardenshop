@@ -34,4 +34,5 @@ public class Favorite {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
 }

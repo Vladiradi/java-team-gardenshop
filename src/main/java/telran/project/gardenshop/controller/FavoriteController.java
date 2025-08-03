@@ -49,7 +49,6 @@ public class FavoriteController {
         return ResponseEntity.noContent().build();
     }
 
-
     @Operation(summary = "Get all favorite products by user ID")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<FavoriteResponseDto>> getAll(@PathVariable Long userId) {

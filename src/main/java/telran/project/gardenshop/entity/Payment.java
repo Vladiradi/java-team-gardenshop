@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -34,4 +35,5 @@ public class Payment {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
 }

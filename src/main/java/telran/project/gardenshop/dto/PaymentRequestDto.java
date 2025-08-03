@@ -11,6 +11,9 @@ import telran.project.gardenshop.enums.PaymentMethod;
 @AllArgsConstructor
 @Builder
 public class PaymentRequestDto {
+
     private Long orderId;
+
     private PaymentMethod method;
+
 }

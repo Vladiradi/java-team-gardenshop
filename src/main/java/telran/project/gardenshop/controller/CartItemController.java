@@ -1,8 +1,7 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import telran.project.gardenshop.swagger.SwaggerResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +22,7 @@ public class CartItemController {
     private final CartItemService cartItemService;
 
     @Operation(summary = "Add item to cart")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Item added to cart"),
-
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
-
-            @ApiResponse(responseCode = "404", description = "Cart or product not found")
-    })
+    @SwaggerResponses.CartItemCreated
     @PostMapping
     public ResponseEntity<CartItemResponseDto> addItemToCart(
 
@@ -41,7 +34,7 @@ public class CartItemController {
     }
 
     @Operation(summary = "Get all items in cart")
-    @ApiResponse(responseCode = "200", description = "List of cart items retrieved")
+    @SwaggerResponses.CartItemListRetrieved
     @GetMapping
     public ResponseEntity<List<CartItemResponseDto>> getCartItems(
             @PathVariable Long cartId) {
@@ -50,11 +43,7 @@ public class CartItemController {
     }
 
     @Operation(summary = "Update item quantity")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quantity updated"),
-            @ApiResponse(responseCode = "400", description = "Invalid quantity"),
-            @ApiResponse(responseCode = "404", description = "Item not found")
-    })
+    @SwaggerResponses.CartItemUpdated
     @PutMapping("/{productId}")
     public ResponseEntity<CartItemResponseDto> updateItemQuantity(
             @PathVariable Long cartId,
@@ -65,7 +54,7 @@ public class CartItemController {
     }
 
     @Operation(summary = "Remove item from cart")
-    @ApiResponse(responseCode = "204", description = "Item removed")
+    @SwaggerResponses.CartItemRemoved
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> removeItemFromCart(
             @PathVariable Long cartId,
@@ -75,7 +64,7 @@ public class CartItemController {
     }
 
     @Operation(summary = "Clear all items from cart")
-    @ApiResponse(responseCode = "204", description = "Cart cleared")
+    @SwaggerResponses.CartCleared
     @DeleteMapping
     public ResponseEntity<Void> clearCart(
             @PathVariable Long cartId) {

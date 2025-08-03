@@ -33,4 +33,5 @@ public class Category {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Product> products;
+
 }

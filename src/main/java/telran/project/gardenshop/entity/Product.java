@@ -19,6 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -46,4 +47,5 @@ public class Product {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Favorite> favorites;
+
 }

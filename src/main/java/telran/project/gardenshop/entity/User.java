@@ -44,4 +44,5 @@ public class User {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Favorite> favorites;
+
 }

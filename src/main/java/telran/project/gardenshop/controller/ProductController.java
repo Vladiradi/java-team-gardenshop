@@ -59,7 +59,6 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
                                                      @Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
-      //  entity.setId(id);
         Product updated = productService.updateProduct(id, entity);
         return ResponseEntity.ok(productMapper.toDto(updated));
     }

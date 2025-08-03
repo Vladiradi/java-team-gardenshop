@@ -13,9 +13,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class PaymentResponseDto {
+
     private Long id;
+
     private Long orderId;
+
     private PaymentStatus status;
+
     private PaymentMethod method;
+
     private LocalDateTime createdAt;
+
 }

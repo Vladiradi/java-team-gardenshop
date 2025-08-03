@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserEditDto {
+
     @NotBlank
     @Size(min = 2, max = 100)
     private String fullName;
@@ -29,4 +30,5 @@ public class UserEditDto {
     @NotBlank
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{5,}$")
     private String password;
+
 }

@@ -10,7 +10,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductEditDto {
+
     private String title;
+
     private String description;
+
     private BigDecimal price;
+
 }

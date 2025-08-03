@@ -10,12 +10,21 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class OrderHistoryDto {
+
     private Long orderId;
+
     private String status;
+
     private Double totalPrice;
+
     private String createdAt;
+
     private List<OrderItemResponseDto> products;
+
     private String deliveryAddress;
+
     private String recipientName;
+
     private String recipientPhone;
+
 }

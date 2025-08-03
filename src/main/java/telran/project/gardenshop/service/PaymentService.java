@@ -1,18 +1,20 @@
 package telran.project.gardenshop.service;
 
-import telran.project.gardenshop.dto.PaymentRequestDto;
-import telran.project.gardenshop.dto.PaymentResponseDto;
+import telran.project.gardenshop.entity.Payment;
+import telran.project.gardenshop.enums.PaymentMethod;
+import telran.project.gardenshop.enums.PaymentStatus;
 
 import java.util.List;
 
 public interface PaymentService {
-    PaymentResponseDto createPayment(PaymentRequestDto paymentRequestDto);
 
-    PaymentResponseDto getPaymentById(Long id);
+    Payment createPayment(Long orderId, PaymentMethod method);
 
-    List<PaymentResponseDto> getAllPayments();
+    Payment getPaymentById(Long id);
 
-    PaymentResponseDto updatePaymentStatus(Long id, String status);
+    List<Payment> getAllPayments();
+
+    Payment updatePaymentStatus(Long id, PaymentStatus status);
 
     void deletePayment(Long id);
 }

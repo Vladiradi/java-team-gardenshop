@@ -21,17 +21,21 @@ public class Payment {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private PaymentStatus status;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private PaymentMethod method;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime createdAt;
+
+    @Column
+    private LocalDateTime updatedAt;
+
 }

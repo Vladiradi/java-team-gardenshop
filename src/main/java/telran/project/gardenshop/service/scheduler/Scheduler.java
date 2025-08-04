@@ -25,37 +25,49 @@ public class Scheduler {
     public void updateOrderStatuses() {
         LocalDateTime now = LocalDateTime.now();
 
+
         processOrders(
                 OrderStatus.NEW,
                 OrderStatus.CANCELLED,
-                PaymentStatus.CANCELLED,
+                PaymentStatus.UNPAID,
                 now.minusMinutes(15)
         );
+
 
         processOrders(
                 OrderStatus.PAID,
                 OrderStatus.DELIVERED,
-                PaymentStatus.DELIVERED,
+                PaymentStatus.PAID,
                 now.minusMinutes(10)
         );
     }
 
     private void processOrders(OrderStatus currentStatus,
                                OrderStatus newStatus,
-                               PaymentStatus newPaymentStatus,
+                               PaymentStatus requiredPaymentStatus,
                                LocalDateTime cutoffTime) {
         List<Order> orders = orderRepository.findAllByStatus(currentStatus);
         for (Order order : orders) {
             if (order.getCreatedAt().isBefore(cutoffTime)) {
-                order.setStatus(newStatus);
-                updatePayment(order.getId(), newPaymentStatus);
-                log.info("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
+                boolean paymentMatches = paymentRepository.findByOrderId(order.getId())
+                        .map(payment -> payment.getStatus() == requiredPaymentStatus)
+                        .orElse(false);
+
+                if (paymentMatches) {
+                    order.setStatus(newStatus);
+                    orderRepository.save(order);
+                    updatePayment(order.getId(), requiredPaymentStatus);
+                    log.info("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
+                }
             }
         }
     }
 
     private void updatePayment(Long orderId, PaymentStatus status) {
         paymentRepository.findByOrderId(orderId)
-                .ifPresent(payment -> payment.setStatus(status));
+                .ifPresent(payment -> {
+                    payment.setStatus(status);
+                    paymentRepository.save(payment);
+                });
     }
 }

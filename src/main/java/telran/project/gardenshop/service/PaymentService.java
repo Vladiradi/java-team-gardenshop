@@ -16,4 +16,8 @@ public interface PaymentService {
     Payment updatePaymentStatus(Long id, PaymentStatus status);
 
     void deletePayment(Long id);
+
+    boolean isPaymentStatus(Long orderId, PaymentStatus status);
+
+    Payment updatePaymentStatusByOrderId(Long orderId, PaymentStatus status);
 }

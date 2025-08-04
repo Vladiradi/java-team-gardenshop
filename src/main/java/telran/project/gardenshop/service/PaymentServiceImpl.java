@@ -10,6 +10,7 @@ import telran.project.gardenshop.exception.OrderNotFoundException;
 import telran.project.gardenshop.exception.PaymentNotFoundException;
 import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.PaymentRepository;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
@@ -55,6 +56,22 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment updatePaymentStatus(Long id, PaymentStatus status) {
         Payment payment = getPaymentById(id);
         payment.setStatus(status);
+        return paymentRepository.save(payment);
+    }
+
+    @Override
+    public boolean isPaymentStatus(Long orderId, PaymentStatus status) {
+        return paymentRepository.findByOrderId(orderId)
+                .map(payment -> payment.getStatus() == status)
+                .orElse(false);
+    }
+
+    @Override
+    public Payment updatePaymentStatusByOrderId(Long orderId, PaymentStatus status) {
+        Payment payment = paymentRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found for order id: " + orderId));
+        payment.setStatus(status);
+        payment.setUpdatedAt(LocalDateTime.now());
         return paymentRepository.save(payment);
     }
 }

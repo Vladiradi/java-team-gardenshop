@@ -2,9 +2,10 @@ package telran.project.gardenshop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import telran.project.gardenshop.dto.PaymentRequestDto;
-import telran.project.gardenshop.dto.PaymentResponseDto;
 import telran.project.gardenshop.service.PaymentService;
+import telran.project.gardenshop.entity.Payment;
+import telran.project.gardenshop.enums.PaymentMethod;
+import telran.project.gardenshop.enums.PaymentStatus;
 
 import java.util.List;
 
@@ -16,22 +17,26 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping
-    public PaymentResponseDto createPayment(@RequestBody PaymentRequestDto paymentRequestDto) {
-        return paymentService.createPayment(paymentRequestDto);
+    public Payment createPayment(
+            @RequestParam Long orderId,
+            @RequestParam PaymentMethod method) {
+        return paymentService.createPayment(orderId, method);
     }
 
     @GetMapping("/{id}")
-    public PaymentResponseDto getPaymentById(@PathVariable Long id) {
+    public Payment getPaymentById(@PathVariable Long id) {
         return paymentService.getPaymentById(id);
     }
 
     @GetMapping
-    public List<PaymentResponseDto> getAllPayments() {
+    public List<Payment> getAllPayments() {
         return paymentService.getAllPayments();
     }
 
     @PutMapping("/{id}/status")
-    public PaymentResponseDto updatePaymentStatus(@PathVariable Long id, @RequestParam String status) {
+    public Payment updatePaymentStatus(
+            @PathVariable Long id,
+            @RequestParam PaymentStatus status) {
         return paymentService.updatePaymentStatus(id, status);
     }
 

@@ -108,7 +108,7 @@ class OrderServiceImplTest {
 
     @Test
     void createOrder_ShouldThrowException_WhenCartIsEmpty() {
-        // Arrange
+
         OrderCreateRequestDto dto = new OrderCreateRequestDto();
         dto.setDeliveryMethod(DeliveryMethod.COURIER);
         dto.setAddress("Some address");

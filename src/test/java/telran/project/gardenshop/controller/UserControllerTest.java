@@ -43,7 +43,7 @@ class UserControllerTest {
     private UserMapper userMapper;
 
     @MockBean
-    private JwtService jwtService;  // <-- добавь сюда
+    private JwtService jwtService;
 
     @MockBean
     private JwtFilter jwtFilter;

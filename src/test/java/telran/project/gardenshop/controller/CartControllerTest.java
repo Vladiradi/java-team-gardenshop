@@ -27,7 +27,7 @@ public class CartControllerTest {
     private CartService cartService;
 
     @MockBean
-    private JwtService jwtService;  // <- добавь этот мок
+    private JwtService jwtService;
 
     @Test
     void addToCart_ReturnsCartResponse() throws Exception {

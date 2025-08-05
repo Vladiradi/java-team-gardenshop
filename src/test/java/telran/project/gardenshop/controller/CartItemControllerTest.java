@@ -33,7 +33,7 @@ class CartItemControllerTest {
     private CartItemService cartItemService;
 
     @Autowired
-    private ObjectMapper objectMapper; // для сериализации/десериализации JSON
+    private ObjectMapper objectMapper;
 
     private CartItemRequestDto requestDto;
     private CartItemResponseDto responseDto;

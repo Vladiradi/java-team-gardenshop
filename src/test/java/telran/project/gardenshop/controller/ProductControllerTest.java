@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
-@AutoConfigureMockMvc(addFilters = false)  // отключаем security фильтры
+@AutoConfigureMockMvc(addFilters = false)  // disable security
 class ProductControllerTest {
 
     @Autowired

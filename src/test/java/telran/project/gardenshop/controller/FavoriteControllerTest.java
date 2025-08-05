@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FavoriteController.class)
-@AutoConfigureMockMvc(addFilters = false)  // Отключаем security для тестов
+@AutoConfigureMockMvc(addFilters = false)  // disable  security for test
 class FavoriteControllerTest {
 
     @Autowired

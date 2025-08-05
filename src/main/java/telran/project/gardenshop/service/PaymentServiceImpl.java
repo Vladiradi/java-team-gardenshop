@@ -13,6 +13,7 @@ import telran.project.gardenshop.repository.PaymentRepository;
 import java.time.LocalDateTime;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,11 +68,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment updatePaymentStatusByOrderId(Long orderId, PaymentStatus status) {
-        Payment payment = paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new PaymentNotFoundException("Payment not found for order id: " + orderId));
-        payment.setStatus(status);
-        payment.setUpdatedAt(LocalDateTime.now());
-        return paymentRepository.save(payment);
+    public Optional<Payment> updatePaymentStatusByOrderId(Long orderId, PaymentStatus status) {
+        return paymentRepository.findByOrderId(orderId)
+            .map(payment -> {
+                payment.setStatus(status);
+                payment.setUpdatedAt(LocalDateTime.now());
+                return paymentRepository.save(payment);
+            });
     }
 }

@@ -24,7 +24,7 @@ public class SchedulerService {
 
 
     @Async
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRateString = "${scheduler.fixed-rate}")
     public void cancelOrders() {
         LocalDateTime now = LocalDateTime.now();
         processOrders(
@@ -36,7 +36,7 @@ public class SchedulerService {
     }
 
     @Async
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRateString = "${scheduler.fixed-rate}")
     public void completePaidOrders() {
         LocalDateTime now = LocalDateTime.now();
         processOrders(
@@ -52,19 +52,18 @@ public class SchedulerService {
                                PaymentStatus requiredPaymentStatus,
                                LocalDateTime cutoffTime) {
         List<Order> orders = orderRepository.findAllByStatus(currentStatus);
-        for (Order order : orders) {
-            if (order.getCreatedAt().isBefore(cutoffTime)) {
-                boolean paymentMatches = paymentService.isPaymentStatus(order.getId(), requiredPaymentStatus);
+        LocalDateTime now = LocalDateTime.now();
 
-                if (paymentMatches) {
-                    order.setUpdatedAt(LocalDateTime.now());
-                    order.setStatus(newStatus);
-                    orderRepository.save(order);
-                    updatePayment(order.getId(), requiredPaymentStatus);
-                    log.debug("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
-                }
-            }
-        }
+        orders.stream()
+              .filter(order -> order.getCreatedAt() != null && order.getCreatedAt().isBefore(cutoffTime))
+              .filter(order -> paymentService.isPaymentStatus(order.getId(), requiredPaymentStatus))
+              .forEach(order -> {
+                  order.setUpdatedAt(now);
+                  order.setStatus(newStatus);
+                  orderRepository.save(order);
+                  paymentService.updatePaymentStatusByOrderId(order.getId(), requiredPaymentStatus);
+                  log.debug("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
+              });
     }
 
     private void updatePayment(Long orderId, PaymentStatus status) {

@@ -5,6 +5,8 @@ import lombok.*;
 import telran.project.gardenshop.enums.PaymentMethod;
 import telran.project.gardenshop.enums.PaymentStatus;
 import java.time.LocalDateTime;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 @Entity
 @Table(name = "payments")
@@ -22,7 +24,7 @@ public class Payment {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false, unique = true)
     private Order order;
 
     @Enumerated(EnumType.STRING)
@@ -39,4 +41,14 @@ public class Payment {
     @Column
     private LocalDateTime updatedAt;
 
+    @PrePersist
+    public void onPrePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

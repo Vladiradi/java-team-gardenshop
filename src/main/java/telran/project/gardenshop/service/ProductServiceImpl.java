@@ -8,7 +8,8 @@ import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.exception.CategoryNotFoundException;
 import telran.project.gardenshop.exception.ProductNotFoundException;
-import telran.project.gardenshop.repository.CategoryRepository;
+import telran.project.gardenshop.service.CategoryService;
+import org.springframework.transaction.annotation.Transactional;
 import telran.project.gardenshop.repository.ProductRepository;
 
 import java.util.List;
@@ -22,9 +23,10 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
 
     @Override
+    @Transactional
     public Product createProduct(Product product) {
         Category category = categoryService.getCategoryById(product.getCategory().getId());
-        
+
         product.setCategory(category);
         return productRepository.save(product);
     }
@@ -41,6 +43,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product updateProduct(Long id, Product updatedProduct) {
         Product product = getProductById(id);
         Category category = categoryService.getCategoryById(updatedProduct.getCategory().getId());
@@ -54,6 +57,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
     @Override
+    @Transactional
     public Product updateProduct(Long id, ProductEditDto dto) {
         Product product = getProductById(id);
 
@@ -65,6 +69,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long id) {
         Product product = getProductById(id);
         productRepository.delete(product);

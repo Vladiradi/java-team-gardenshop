@@ -1,6 +1,7 @@
 package telran.project.gardenshop.service;
 
 import java.util.List;
+import java.util.Optional;
 import telran.project.gardenshop.entity.Payment;
 import telran.project.gardenshop.enums.PaymentMethod;
 import telran.project.gardenshop.enums.PaymentStatus;
@@ -19,5 +20,5 @@ public interface PaymentService {
 
     boolean isPaymentStatus(Long orderId, PaymentStatus status);
 
-    Payment updatePaymentStatusByOrderId(Long orderId, PaymentStatus status);
+    Optional<Payment> updatePaymentStatusByOrderId(Long orderId, PaymentStatus status);
 }

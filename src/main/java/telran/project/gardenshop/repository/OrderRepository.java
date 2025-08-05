@@ -14,6 +14,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByStatusNotIn(Collection<OrderStatus> statuses);
 
     List<Order> findAllByUserId(Long userId);
-    //this use for scheduler , ok
+
     List<Order> findAllByStatus(OrderStatus status);
 }

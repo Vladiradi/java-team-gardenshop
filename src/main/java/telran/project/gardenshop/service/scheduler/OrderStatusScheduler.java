@@ -61,7 +61,7 @@ public class OrderStatusScheduler {
                     order.setStatus(newStatus);
                     orderRepository.save(order);
                     updatePayment(order.getId(), requiredPaymentStatus);
-                    log.info("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
+                    log.debug("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
                 }
             }
         }

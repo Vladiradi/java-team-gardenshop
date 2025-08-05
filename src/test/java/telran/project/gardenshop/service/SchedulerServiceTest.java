@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SchedulerTest {
+public class SchedulerServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
@@ -44,7 +44,7 @@ public class SchedulerTest {
 
         when(orderRepository.findAllByStatus(OrderStatus.NEW))
                 .thenReturn(List.of(oldOrder, recentOrder));
-        when(paymentService.isPaymentStatus(1L, PaymentStatus.UNPAID)).thenReturn(true);
+        when(paymentService.isPaymentStatus(1L, PaymentStatus.UNPAID)).thenReturn (true);
 
 
         schedulerService.cancelOrders();

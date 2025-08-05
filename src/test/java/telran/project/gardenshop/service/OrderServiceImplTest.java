@@ -53,7 +53,7 @@ class OrderServiceImplTest {
 
     @Test
     void createOrder_ShouldCreateOrderWithItemsAndClearCart() {
-        // GIVEN
+
         OrderCreateRequestDto dto = new OrderCreateRequestDto();
         dto.setDeliveryMethod(DeliveryMethod.COURIER);
         dto.setAddress("Test Address");
@@ -93,10 +93,8 @@ class OrderServiceImplTest {
         when(orderRepository.save(any(Order.class))).thenReturn(savedOrder);
         when(orderItemRepository.save(any(OrderItem.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        // WHEN
         Order result = orderService.createOrder(userId, dto);
 
-        // THEN
         assertNotNull(result);
         assertEquals(OrderStatus.NEW, result.getStatus());
         assertEquals("Test Address", result.getDeliveryAddress());

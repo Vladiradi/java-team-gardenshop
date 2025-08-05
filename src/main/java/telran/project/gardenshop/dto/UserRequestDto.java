@@ -1,9 +1,11 @@
 package telran.project.gardenshop.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class UserRequestDto {
 
     @NotNull(message = "Full name must not be null")

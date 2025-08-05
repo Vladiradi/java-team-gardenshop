@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
         User user = userService.getUserById(userId);
         Cart cart = cartService.getCartByUserId(userId);
 
-        if (cart.getItems().isEmpty()) {
+        if (cart == null || cart.getItems() == null || cart.getItems().isEmpty()) {
             throw new IllegalStateException("Cannot create an order with an empty cart");
         }
 

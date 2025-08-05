@@ -1,104 +1,121 @@
-//package telran.project.gardenshop.controller;
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.*;
-//        import org.springframework.http.MediaType;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-//import telran.project.gardenshop.dto.UserRequestDto;
-//import telran.project.gardenshop.dto.UserResponseDto;
-//import telran.project.gardenshop.service.UserService;
-//import telran.project.gardenshop.enums.Role;
-//
-//import java.util.List;
-//
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.*;
-//        import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-//        import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-//
-//public class UserControllerTest {
-//
-//    @Mock
-//    private UserService userService;
-//
-//    @InjectMocks
-//    private UserController userController;
-//
-//    private MockMvc mockMvc;
-//
-//    private ObjectMapper objectMapper = new ObjectMapper();
-//
-//    @BeforeEach
-//    void setup() {
-//        MockitoAnnotations.openMocks(this);
-//        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-//    }
-//
-//    @Test
-//    void createUser_ReturnsCreatedUser() throws Exception {
-//        UserRequestDto requestDto = new UserRequestDto();
-//        requestDto.setEmail("test@example.com");
-//        requestDto.setFullName("Test User");
-//        requestDto.setPassword("password123");
-//        requestDto.setPhoneNumber("1234567890");
-//
-//        UserResponseDto responseDto = new UserResponseDto(1L, "Test User", "test@example.com", "1234567890", Role.USER);
-//
-//        when(userService.create(any(UserRequestDto.class))).thenReturn(responseDto);
-//
-//        mockMvc.perform(post("/api/users")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(requestDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value(1L))
-//                .andExpect(jsonPath("$.email").value("test@example.com"))
-//                .andExpect(jsonPath("$.fullName").value("Test User"))
-//                .andExpect(jsonPath("$.phoneNumber").value("1234567890"))
-//                .andExpect(jsonPath("$.role").value("USER"));
-//
-//        verify(userService, times(1)).create(any(UserRequestDto.class));
-//    }
-//
-//    @Test
-//    void getAll_ReturnsListOfUsers() throws Exception {
-//        UserResponseDto user1 = new UserResponseDto(1L, "User One", "user1@example.com", "111111", Role.USER);
-//        UserResponseDto user2 = new UserResponseDto(2L, "User Two", "user2@example.com", "222222", Role.ADMIN);
-//
-//        when(userService.getAll()).thenReturn(List.of(user1, user2));
-//
-//        mockMvc.perform(get("/api/users"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.length()").value(2))
-//                .andExpect(jsonPath("$[0].email").value("user1@example.com"))
-//                .andExpect(jsonPath("$[1].email").value("user2@example.com"));
-//
-//        verify(userService, times(1)).getAll();
-//    }
-//
-//    @Test
-//    void getById_ReturnsUser() throws Exception {
-//        UserResponseDto responseDto = new UserResponseDto(1L, "User One", "user1@example.com", "111111", Role.USER);
-//
-//        when(userService.getById(1L)).thenReturn(responseDto);
-//
-//        mockMvc.perform(get("/api/users/1"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value(1L))
-//                .andExpect(jsonPath("$.email").value("user1@example.com"));
-//
-//        verify(userService, times(1)).getById(1L);
-//    }
-//
-//    @Test
-//    void deleteUser_DeletesUser() throws Exception {
-//        doNothing().when(userService).delete(1L);
-//
-//        mockMvc.perform(delete("/api/users/1"))
-//                .andExpect(status().isOk());
-//
-//        verify(userService, times(1)).delete(1L);
-//    }
-//}
+package telran.project.gardenshop.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.web.servlet.MockMvc;
+import telran.project.gardenshop.dto.UserRequestDto;
+import telran.project.gardenshop.dto.UserResponseDto;
+import telran.project.gardenshop.entity.User;
+import telran.project.gardenshop.mapper.UserMapper;
+import telran.project.gardenshop.service.UserService;
+import telran.project.gardenshop.service.security.JwtFilter;
+import telran.project.gardenshop.service.security.JwtService;
+
+import java.util.Collections;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private UserMapper userMapper;
+
+    @MockBean
+    private JwtService jwtService;  // <-- добавь сюда
+
+    @MockBean
+    private JwtFilter jwtFilter;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private UserRequestDto userRequestDto;
+    private User user;
+    private UserResponseDto userResponseDto;
+
+    @BeforeEach
+    void setUp() {
+        userRequestDto = UserRequestDto.builder()
+                .email("test@example.com")
+                .fullName("Test User")
+                .phoneNumber("+1234567890")
+                .password("pass123")
+                .build();
+
+        user = User.builder()
+                .id(1L)
+                .email("test@example.com")
+                .fullName("Test User")
+                .phoneNumber("+1234567890")
+                .build();
+
+        userResponseDto = UserResponseDto.builder()
+                .id(1L)
+                .email("test@example.com")
+                .fullName("Test User")
+                .phoneNumber("+1234567890")
+                .build();
+    }
+
+    @Test
+    void create_shouldReturnCreatedUser() throws Exception {
+        when(passwordEncoder.encode(any())).thenReturn("encodedPass");
+        when(userMapper.toEntity(any())).thenReturn(user);
+        when(userService.createUser(any())).thenReturn(user);
+        when(userMapper.toDto(any())).thenReturn(userResponseDto);
+
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequestDto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.email").value("test@example.com"));
+    }
+
+    @Test
+    void getById_shouldReturnUser() throws Exception {
+        when(userService.getUserById(1L)).thenReturn(user);
+        when(userMapper.toDto(any())).thenReturn(userResponseDto);
+
+        mockMvc.perform(get("/api/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("test@example.com"));
+    }
+
+    @Test
+    void getAll_shouldReturnList() throws Exception {
+        when(userService.getAllUsers()).thenReturn(Collections.singletonList(user));
+        when(userMapper.toDto(any())).thenReturn(userResponseDto);
+
+        mockMvc.perform(get("/api/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].email").value("test@example.com"));
+    }
+
+    @Test
+    void delete_shouldReturnNoContent() throws Exception {
+        mockMvc.perform(delete("/api/users/1"))
+                .andExpect(status().isNoContent());
+    }
+}

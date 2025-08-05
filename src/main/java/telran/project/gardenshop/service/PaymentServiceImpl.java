@@ -24,13 +24,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
+    private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
+
     private Payment findPaymentOrThrow(Long id) {
         return paymentRepository.findById(id)
             .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + id));
     }
-
-    private final PaymentRepository paymentRepository;
-    private final OrderRepository orderRepository;
 
     @Transactional
     @Override
@@ -43,7 +43,6 @@ public class PaymentServiceImpl implements PaymentService {
                 .status(PaymentStatus.UNPAID)
                 .method(method)
                 .build();
-
         try {
             return paymentRepository.save(payment);
         } catch (DataIntegrityViolationException ex) {

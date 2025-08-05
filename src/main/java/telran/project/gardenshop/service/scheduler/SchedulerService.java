@@ -65,9 +65,4 @@ public class SchedulerService {
                   log.debug("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
               });
     }
-
-    private void updatePayment(Long orderId, PaymentStatus status) {
-        paymentService.updatePaymentStatusByOrderId(orderId, status)
-                .ifPresent(payment -> payment.setStatus(status));
-    }
 }

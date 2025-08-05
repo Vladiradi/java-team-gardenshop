@@ -1,136 +1,131 @@
-//package telran.project.gardenshop.service;
-//
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//import telran.project.gardenshop.entity.Category;
-//import telran.project.gardenshop.entity.Product;
-//import telran.project.gardenshop.exception.CategoryNotFoundException;
-//import telran.project.gardenshop.exception.ProductNotFoundException;
-//import telran.project.gardenshop.repository.CategoryRepository;
-//import telran.project.gardenshop.repository.ProductRepository;
-//
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertThrows;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.*;
-//
-//@ExtendWith(MockitoExtension.class)
-//class ProductServiceImplTest {
-//
-//    @Mock
-//    private ProductRepository productRepository;
-//
-//    @Mock
-//    private CategoryRepository categoryRepository;
-//
-//    @InjectMocks
-//    private ProductServiceImpl productService;
-//
-//    @Test
-//    void testUpdateProduct_Success() {
-//        Long productId = 1L;
-//        Long categoryId = 10L;
-//
-//        Product existingProduct = new Product();
-//        existingProduct.setId(productId);
-//        existingProduct.setName("Old Name");
-//
-//        Category category = new Category();
-//        category.setId(categoryId);
-//
-//        Product updatedProduct = new Product();
-//        updatedProduct.setName("New Name");
-//        updatedProduct.setDescription("New Description");
-//        updatedProduct.setPrice(99.99);
-//        updatedProduct.setImageUrl("new.jpg");
-//        updatedProduct.setCategory(category);
-//
-//        when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
-//        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
-//        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
-//
-//        Product result = productService.updateProduct(productId, updatedProduct);
-//
-//        assertEquals("New Name", result.getName());
-//        assertEquals("New Description", result.getDescription());
-//        assertEquals(99.99, result.getPrice());
-//        assertEquals("new.jpg", result.getImageUrl());
-//        assertEquals(category, result.getCategory());
-//
-//        verify(productRepository).findById(productId);
-//        verify(categoryRepository).findById(categoryId);
-//        verify(productRepository).save(existingProduct);
-//    }
-//
-//    @Test
-//    void testUpdateProduct_ProductNotFound() {
-//        Long productId = 1L;
-//
-//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-//
-//        Product updatedProduct = new Product();
-//
-//        assertThrows(ProductNotFoundException.class, () ->
-//                productService.updateProduct(productId, updatedProduct));
-//
-//        verify(productRepository).findById(productId);
-//        verify(categoryRepository, never()).findById(any());
-//        verify(productRepository, never()).save(any());
-//    }
-//
-//    @Test
-//    void testUpdateProduct_CategoryNotFound() {
-//        Long productId = 1L;
-//        Long categoryId = 10L;
-//
-//        Product existingProduct = new Product();
-//        existingProduct.setId(productId);
-//
-//        Product updatedProduct = new Product();
-//        updatedProduct.setCategory(new Category());
-//        updatedProduct.getCategory().setId(categoryId);
-//
-//        when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
-//        when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
-//
-//        assertThrows(CategoryNotFoundException.class, () ->
-//                productService.updateProduct(productId, updatedProduct));
-//
-//        verify(productRepository).findById(productId);
-//        verify(categoryRepository).findById(categoryId);
-//        verify(productRepository, never()).save(any());
-//    }
-//
-//    @Test
-//    void testDeleteProduct_Success() {
-//        Long productId = 1L;
-//
-//        Product existingProduct = new Product();
-//        existingProduct.setId(productId);
-//
-//        when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
-//
-//        productService.deleteProduct(productId);
-//
-//        verify(productRepository).findById(productId);
-//        verify(productRepository).delete(existingProduct);
-//    }
-//
-//    @Test
-//    void testDeleteProduct_NotFound() {
-//        Long productId = 1L;
-//
-//        when(productRepository.findById(productId)).thenReturn(Optional.empty());
-//
-//        assertThrows(ProductNotFoundException.class, () ->
-//                productService.deleteProduct(productId));
-//
-//        verify(productRepository).findById(productId);
-//        verify(productRepository, never()).delete((Product) any());
-//    }
-//}
+package telran.project.gardenshop.service;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import telran.project.gardenshop.entity.Category;
+import telran.project.gardenshop.entity.Product;
+import telran.project.gardenshop.exception.ProductNotFoundException;
+import telran.project.gardenshop.repository.ProductRepository;
+
+import java.math.BigDecimal;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class ProductServiceImplTest {
+
+    @Mock
+    private ProductRepository productRepository;
+
+    @Mock
+    private CategoryService categoryService;
+
+    @InjectMocks
+    private ProductServiceImpl productService;
+
+    @Test
+    void createProduct_shouldSaveProductWithCategory() {
+        Category category = Category.builder().id(1L).name("Flowers").build();
+
+        Product productToSave = Product.builder()
+                .name("Rose")
+                .description("Red flower")
+                .price(BigDecimal.valueOf(10.0))
+                .category(Category.builder().id(1L).build()) // только id для запроса
+                .build();
+
+        Product savedProduct = Product.builder()
+                .id(1L)
+                .name("Rose")
+                .description("Red flower")
+                .price(BigDecimal.valueOf(10.0))
+                .category(category)
+                .build();
+
+        when(categoryService.getCategoryById(1L)).thenReturn(category);
+        when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
+
+        Product result = productService.createProduct(productToSave);
+
+        assertNotNull(result.getId());
+        assertEquals("Rose", result.getName());
+        assertEquals(category, result.getCategory());
+
+        verify(categoryService).getCategoryById(1L);
+        verify(productRepository).save(productToSave);
+    }
+
+    @Test
+    void getProductById_existingId_shouldReturnProduct() {
+        Product product = Product.builder()
+                .id(1L)
+                .name("Rose")
+                .build();
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+        Product result = productService.getProductById(1L);
+
+        assertEquals(1L, result.getId());
+        assertEquals("Rose", result.getName());
+    }
+
+    @Test
+    void getProductById_nonExistingId_shouldThrowException() {
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class, () -> productService.getProductById(1L));
+    }
+
+    @Test
+    void updateProduct_shouldUpdateFields() {
+        Category category = Category.builder().id(2L).name("Trees").build();
+
+        Product existing = Product.builder()
+                .id(1L)
+                .name("Old name")
+                .description("Old desc")
+                .price(BigDecimal.valueOf(5))
+                .category(Category.builder().id(1L).build())
+                .build();
+
+        Product updated = Product.builder()
+                .name("New name")
+                .description("New desc")
+                .price(BigDecimal.valueOf(15))
+                .imageUrl("url")
+                .category(Category.builder().id(2L).build())
+                .build();
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(categoryService.getCategoryById(2L)).thenReturn(category);
+        when(productRepository.save(any(Product.class))).thenAnswer(i -> i.getArgument(0));
+
+        Product result = productService.updateProduct(1L, updated);
+
+        assertEquals("New name", result.getName());
+        assertEquals("New desc", result.getDescription());
+        assertEquals(BigDecimal.valueOf(15), result.getPrice());
+        assertEquals("url", result.getImageUrl());
+        assertEquals(category, result.getCategory());
+    }
+
+    @Test
+    void deleteProduct_existingId_shouldDelete() {
+        Product product = Product.builder().id(1L).build();
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+        productService.deleteProduct(1L);
+
+        verify(productRepository).delete(product);
+    }
+
+}

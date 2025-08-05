@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class OrderStatusScheduler {
+public class SchedulerService {
 
     private final OrderRepository orderRepository;
     private final PaymentService paymentService;
@@ -68,6 +68,7 @@ public class OrderStatusScheduler {
     }
 
     private void updatePayment(Long orderId, PaymentStatus status) {
-        paymentService.updatePaymentStatusByOrderId(orderId, status);
+        paymentService.updatePaymentStatusByOrderId(orderId, status)
+                .ifPresent(payment -> payment.setStatus(status));
     }
 }

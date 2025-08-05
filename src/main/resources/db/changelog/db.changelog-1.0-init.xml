@@ -141,4 +141,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="008-add-unique-constraint-payments-order_id" author="vladiradi">
+        <addUniqueConstraint tableName="payments"
+                             columnNames="order_id"
+                             constraintName="uc_payments_order_id"/>
+    </changeSet>
+
 </databaseChangeLog>

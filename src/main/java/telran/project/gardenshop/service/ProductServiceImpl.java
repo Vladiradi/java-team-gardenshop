@@ -1,12 +1,9 @@
 package telran.project.gardenshop.service;
-
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import telran.project.gardenshop.dto.ProductEditDto;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.entity.Product;
-import telran.project.gardenshop.exception.CategoryNotFoundException;
 import telran.project.gardenshop.exception.ProductNotFoundException;
 import telran.project.gardenshop.service.CategoryService;
 import org.springframework.transaction.annotation.Transactional;

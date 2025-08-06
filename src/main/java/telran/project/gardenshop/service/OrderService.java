@@ -5,7 +5,6 @@ import telran.project.gardenshop.dto.OrderCreateRequestDto;
 import telran.project.gardenshop.dto.OrderHistoryDto;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.enums.OrderStatus;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -32,5 +31,4 @@ public interface OrderService {
     Order removeItem(Long orderItemId);
 
     void cancelOrder(Long orderId);
-
 }

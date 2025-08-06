@@ -34,7 +34,6 @@ public class Order {
     private String deliveryMethod;
 
     @Column(nullable = false)
-
     private String deliveryAddress;
 
     @Column(nullable = false)
@@ -43,7 +42,7 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column()
+    @Column
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -15,7 +15,7 @@ import telran.project.gardenshop.service.CartItemService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/carts/{cartId}/items")
+@RequestMapping("/v1/carts/{cartId}/items")
 @RequiredArgsConstructor
 public class CartItemController {
 

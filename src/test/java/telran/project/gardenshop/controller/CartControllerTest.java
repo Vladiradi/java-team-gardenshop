@@ -38,7 +38,7 @@ public class CartControllerTest {
 
         when(cartService.addToCart(userId)).thenReturn(responseDto);
 
-        mockMvc.perform(post("/api/carts/add/{userId}", userId))
+        mockMvc.perform(post("/v1/carts/add/{userId}", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(10))
                 .andExpect(jsonPath("$.userId").value(userId));

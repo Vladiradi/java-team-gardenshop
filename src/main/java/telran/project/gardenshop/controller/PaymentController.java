@@ -10,7 +10,7 @@ import telran.project.gardenshop.enums.PaymentStatus;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping("/v1/payments")
 @RequiredArgsConstructor
 public class PaymentController {
 

@@ -7,7 +7,7 @@ import telran.project.gardenshop.dto.CartResponseDto;
 import telran.project.gardenshop.service.CartService;
 
 @RestController
-@RequestMapping("/api/carts")
+@RequestMapping("/v1/carts")
 @RequiredArgsConstructor
 public class CartController {
 

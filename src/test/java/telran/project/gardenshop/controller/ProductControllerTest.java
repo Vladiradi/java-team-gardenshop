@@ -76,7 +76,7 @@ class ProductControllerTest {
         when(productService.createProduct(any(Product.class))).thenReturn(productEntity);
         when(productMapper.toDto(any(Product.class))).thenReturn(responseDto);
 
-        mockMvc.perform(post("/api/products")
+        mockMvc.perform(post("/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
@@ -119,7 +119,7 @@ class ProductControllerTest {
         when(productService.getProductById(id)).thenReturn(product);
         when(productMapper.toDto(product)).thenReturn(dto);
 
-        mockMvc.perform(get("/api/products/{id}", id))
+        mockMvc.perform(get("/v1/products/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value("Rose"));

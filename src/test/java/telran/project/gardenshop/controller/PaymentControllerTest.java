@@ -53,7 +53,7 @@ public class PaymentControllerTest {
 
         when(paymentService.createPayment(eq(1L), eq(PaymentMethod.CARD))).thenReturn(payment);
 
-        mockMvc.perform(post("/api/payments")
+        mockMvc.perform(post("/v1/payments")
                         .param("orderId", "1")
                         .param("method", "CARD"))
                 .andExpect(status().isOk())
@@ -73,7 +73,7 @@ public class PaymentControllerTest {
 
         when(paymentService.getPaymentById(1L)).thenReturn(payment);
 
-        mockMvc.perform(get("/api/payments/{id}", 1L))
+        mockMvc.perform(get("/v1/payments/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(payment.getId()))
                 .andExpect(jsonPath("$.status").value(payment.getStatus().name()))
@@ -98,7 +98,7 @@ public class PaymentControllerTest {
 
         when(paymentService.getAllPayments()).thenReturn(List.of(payment1, payment2));
 
-        mockMvc.perform(get("/api/payments"))
+        mockMvc.perform(get("/v1/payments"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(payment1.getId()))
@@ -116,7 +116,7 @@ public class PaymentControllerTest {
 
         when(paymentService.updatePaymentStatus(1L, PaymentStatus.PAID)).thenReturn(updatedPayment);
 
-        mockMvc.perform(put("/api/payments/{id}/status", 1L)
+        mockMvc.perform(put("/v1/payments/{id}/status", 1L)
                         .param("status", "PAID"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(updatedPayment.getId()))
@@ -127,7 +127,7 @@ public class PaymentControllerTest {
     void deletePayment_returnsNoContent() throws Exception {
         doNothing().when(paymentService).deletePayment(1L);
 
-        mockMvc.perform(delete("/api/payments/{id}", 1L))
+        mockMvc.perform(delete("/v1/payments/{id}", 1L))
                 .andExpect(status().isOk());
 
         verify(paymentService, times(1)).deletePayment(1L);

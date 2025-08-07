@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/v1/products")
 @RequiredArgsConstructor
 //@SecurityRequirement(name = "bearerAuth")
 public class ProductController {

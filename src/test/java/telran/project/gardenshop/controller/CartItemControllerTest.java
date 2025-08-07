@@ -57,7 +57,7 @@ class CartItemControllerTest {
         when(cartItemService.addItemToCart(eq(1L), any(CartItemRequestDto.class)))
                 .thenReturn(responseDto);
 
-        mockMvc.perform(post("/api/carts/1/items")
+        mockMvc.perform(post("/v1/carts/1/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isCreated())
@@ -76,7 +76,7 @@ class CartItemControllerTest {
         List<CartItemResponseDto> items = List.of(responseDto);
         when(cartItemService.getCartItems(1L)).thenReturn(items);
 
-        mockMvc.perform(get("/api/carts/1/items"))
+        mockMvc.perform(get("/v1/carts/1/items"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(items.size()))
                 .andExpect(jsonPath("$[0].id").value(responseDto.getId()));
@@ -88,7 +88,7 @@ class CartItemControllerTest {
     void updateItemQuantity_ReturnsOk() throws Exception {
         when(cartItemService.updateItemQuantity(1L, 2L, 5)).thenReturn(responseDto);
 
-        mockMvc.perform(put("/api/carts/1/items/2")
+        mockMvc.perform(put("/v1/carts/1/items/2")
                         .param("quantity", "5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(responseDto.getId()));
@@ -100,7 +100,7 @@ class CartItemControllerTest {
     void removeItemFromCart_ReturnsNoContent() throws Exception {
         doNothing().when(cartItemService).removeItemFromCart(1L, 2L);
 
-        mockMvc.perform(delete("/api/carts/1/items/2"))
+        mockMvc.perform(delete("/v1/carts/1/items/2"))
                 .andExpect(status().isNoContent());
 
         verify(cartItemService).removeItemFromCart(1L, 2L);
@@ -110,7 +110,7 @@ class CartItemControllerTest {
     void clearCart_ReturnsNoContent() throws Exception {
         doNothing().when(cartItemService).clearCart(1L);
 
-        mockMvc.perform(delete("/api/carts/1/items"))
+        mockMvc.perform(delete("/v1/carts/1/items"))
                 .andExpect(status().isNoContent());
 
         verify(cartItemService).clearCart(1L);

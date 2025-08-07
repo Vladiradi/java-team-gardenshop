@@ -1,6 +1,7 @@
 package telran.project.gardenshop.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import telran.project.gardenshop.dto.CartItemRequestDto;
@@ -8,17 +9,14 @@ import telran.project.gardenshop.dto.CartItemResponseDto;
 import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.CartItem;
 import telran.project.gardenshop.entity.Product;
-import telran.project.gardenshop.repository.CartItemRepository;
 import telran.project.gardenshop.mapper.CartItemMapper;
+import telran.project.gardenshop.repository.CartItemRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemRepository cartItemRepository;
@@ -27,6 +25,7 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartItemMapper cartItemMapper;
 
     @Override
+    @Transactional
     public CartItemResponseDto addItemToCart(Long cartId, CartItemRequestDto requestDto) {
         Cart cart = cartService.getCartById(cartId);
         Product product = productService.getProductById(requestDto.getProductId());
@@ -49,6 +48,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
+    @Transactional
     public CartItemResponseDto updateItemQuantity(Long cartId, Long productId, Integer newQuantity) {
         if (newQuantity <= 0) {
             throw new IllegalArgumentException("Quantity must be greater than 0");

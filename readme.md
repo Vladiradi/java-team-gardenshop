@@ -63,3 +63,46 @@ git clone https://github.com/Vladiradi/java-team-gardenshop.git
 | Liudmyla Iermolenko | [LinkedIn](https://linkedin.com/in/) | Favorites      |
 
 
+# Стандарты использования @Transactional
+
+## Когда использовать @Transactional
+- Используйте @Transactional только для методов, где требуется атомарность нескольких операций с БД (например, несколько save/delete, сложная бизнес-логика, массовые изменения).
+- Пример:
+```java
+@Transactional
+public void transferMoney(Long fromId, Long toId, BigDecimal amount) {
+    Account from = accountRepository.findById(fromId).get();
+    Account to = accountRepository.findById(toId).get();
+    from.debit(amount);
+    to.credit(amount);
+    accountRepository.save(from);
+    accountRepository.save(to);
+}
+```
+
+## Когда НЕ использовать @Transactional
+- Не используйте @Transactional для методов, которые делают только один вызов save или delete — Spring Data JPA сам откроет транзакцию на уровне репозитория.
+- Пример:
+```java
+public void deleteUser(Long id) {
+    userRepository.deleteById(id); // транзакция будет создана автоматически
+}
+```
+
+## Общие рекомендации
+- Не ставьте @Transactional на класс, если не все методы требуют транзакции.
+- Для сервисов с несколькими изменяющими операциями используйте @Transactional только на нужных методах.
+- Для методов только чтения транзакция не требуется.
+- Для массовых обновлений (batch) используйте @Transactional для атомарности.
+
+## Примеры из проекта
+- Оставляйте @Transactional только для методов:
+  - CartItemServiceImpl: addItemToCart, updateItemQuantity, removeItemFromCart, clearCart
+  - OrderServiceImpl: createOrder, cancelOrder
+  - SchedulerService: processOrders
+
+---
+
+Следуйте этим правилам для минимизации нагрузки на БД и предотвращения блокировок.
+
+

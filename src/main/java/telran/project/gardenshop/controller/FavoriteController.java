@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/favorites")
+@RequestMapping("/v1/favorites")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class FavoriteController {

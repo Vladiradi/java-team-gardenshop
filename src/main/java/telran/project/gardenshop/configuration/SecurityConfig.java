@@ -34,7 +34,7 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
-                        .requestMatchers("/api/categories").authenticated()
+                        .requestMatchers("/v1/categories").authenticated()
                         .requestMatchers("/v1/orders/**").hasRole("USER")
                         .anyRequest().permitAll())
                 //.httpBasic()

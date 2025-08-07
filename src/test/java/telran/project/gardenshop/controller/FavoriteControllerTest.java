@@ -70,7 +70,7 @@ class FavoriteControllerTest {
         when(favoriteService.addToFavorites(any(Favorite.class))).thenReturn(favorite);
         when(favoriteMapper.toDto(any(Favorite.class))).thenReturn(responseDto);
 
-        mockMvc.perform(post("/api/favorites")
+        mockMvc.perform(post("/v1/favorites")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
@@ -87,7 +87,7 @@ class FavoriteControllerTest {
     void removeFavorite_success() throws Exception {
         doNothing().when(favoriteService).removeFromFavorites(1L);
 
-        mockMvc.perform(delete("/api/favorites/{id}", 1L))
+        mockMvc.perform(delete("/v1/favorites/{id}", 1L))
                 .andExpect(status().isNoContent());
 
         verify(favoriteService).removeFromFavorites(1L);
@@ -101,7 +101,7 @@ class FavoriteControllerTest {
         when(favoriteService.getAllByUserId(1L)).thenReturn(favorites);
         when(favoriteMapper.toDto(any(Favorite.class))).thenReturn(responseDto);
 
-        mockMvc.perform(get("/api/favorites/user/{userId}", 1L))
+        mockMvc.perform(get("/v1/favorites/user/{userId}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].userId").value(1))
                 .andExpect(jsonPath("$[0].productId").value(2));

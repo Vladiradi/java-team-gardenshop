@@ -64,7 +64,7 @@ class CategoryControllerTest {
         when(categoryService.createCategory(any(Category.class))).thenReturn(savedCategory);
         when(categoryMapper.toDto(any(Category.class))).thenReturn(responseDto);
 
-        mockMvc.perform(post("/api/categories")
+        mockMvc.perform(post("/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
@@ -92,7 +92,7 @@ class CategoryControllerTest {
         when(categoryService.getCategoryById(id)).thenReturn(category);
         when(categoryMapper.toDto(category)).thenReturn(dto);
 
-        mockMvc.perform(get("/api/categories/{id}", id))
+        mockMvc.perform(get("/v1/categories/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value("Flowers"));
@@ -117,7 +117,7 @@ class CategoryControllerTest {
         when(categoryMapper.toDto(cat1)).thenReturn(dto1);
         when(categoryMapper.toDto(cat2)).thenReturn(dto2);
 
-        mockMvc.perform(get("/api/categories"))
+        mockMvc.perform(get("/v1/categories"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("Fruits"))
@@ -145,7 +145,7 @@ class CategoryControllerTest {
         when(categoryService.updateCategory(eq(id), any(CategoryEditDto.class))).thenReturn(updatedCategory);
         when(categoryMapper.toDto(updatedCategory)).thenReturn(responseDto);
 
-        mockMvc.perform(put("/api/categories/{id}", id)
+        mockMvc.perform(put("/v1/categories/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
@@ -164,7 +164,7 @@ class CategoryControllerTest {
 
         doNothing().when(categoryService).deleteCategory(id);
 
-        mockMvc.perform(delete("/api/categories/{id}", id))
+        mockMvc.perform(delete("/v1/categories/{id}", id))
                 .andExpect(status().isNoContent());
     }
 }

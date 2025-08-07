@@ -10,7 +10,7 @@ import telran.project.gardenshop.dto.security.AuthResponse;
 import telran.project.gardenshop.service.security.AuthenticationService;
 
 @RestController
-@RequestMapping("/login")  //http://localhost:8080/login
+@RequestMapping("/v1/login")  //http://localhost:8080/login
 @RequiredArgsConstructor
 public class AuthController {
 

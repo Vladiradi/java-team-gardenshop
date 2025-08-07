@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/v1/categories")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class CategoryController {

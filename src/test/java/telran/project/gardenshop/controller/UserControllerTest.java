@@ -86,7 +86,7 @@ class UserControllerTest {
         when(userService.createUser(any())).thenReturn(user);
         when(userMapper.toDto(any())).thenReturn(userResponseDto);
 
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post("/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDto)))
                 .andExpect(status().isCreated())
@@ -98,7 +98,7 @@ class UserControllerTest {
         when(userService.getUserById(1L)).thenReturn(user);
         when(userMapper.toDto(any())).thenReturn(userResponseDto);
 
-        mockMvc.perform(get("/api/users/1"))
+        mockMvc.perform(get("/v1/users/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("test@example.com"));
     }
@@ -108,14 +108,14 @@ class UserControllerTest {
         when(userService.getAllUsers()).thenReturn(Collections.singletonList(user));
         when(userMapper.toDto(any())).thenReturn(userResponseDto);
 
-        mockMvc.perform(get("/api/users"))
+        mockMvc.perform(get("/v1/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].email").value("test@example.com"));
     }
 
     @Test
     void delete_shouldReturnNoContent() throws Exception {
-        mockMvc.perform(delete("/api/users/1"))
+        mockMvc.perform(delete("/v1/users/1"))
                 .andExpect(status().isNoContent());
     }
 }

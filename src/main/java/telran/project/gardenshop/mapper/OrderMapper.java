@@ -42,8 +42,11 @@ public interface OrderMapper {
         BigDecimal total = order.getItems() == null ? BigDecimal.ZERO
             : order.getItems().stream()
                 .filter(Objects::nonNull)
-                .map(i -> (i.getPrice() == null ? BigDecimal.ZERO : i.getPrice())
-                        .multiply(BigDecimal.valueOf(i.getQuantity() == null ? 0 : i.getQuantity())))
+                .map(i -> {
+                    BigDecimal price = i.getPrice() != null ? i.getPrice() : BigDecimal.ZERO;
+                    int qty = i.getQuantity();
+                    return price.multiply(BigDecimal.valueOf(qty));
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return OrderHistoryDto.builder()

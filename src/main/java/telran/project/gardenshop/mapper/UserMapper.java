@@ -6,7 +6,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import telran.project.gardenshop.dto.*;
 import telran.project.gardenshop.entity.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

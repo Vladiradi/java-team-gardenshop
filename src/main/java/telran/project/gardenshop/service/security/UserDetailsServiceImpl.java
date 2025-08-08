@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.service.UserService;
-
 import java.util.Collections;
 
 @Service

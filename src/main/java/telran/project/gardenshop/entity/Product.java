@@ -1,6 +1,5 @@
 package telran.project.gardenshop.entity;
-import telran.project.gardenshop.entity.Category;
-import telran.project.gardenshop.entity.Favorite;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -47,5 +46,4 @@ public class Product {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Favorite> favorites;
-
 }

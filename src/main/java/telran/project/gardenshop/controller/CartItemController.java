@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.CartItemRequestDto;
 import telran.project.gardenshop.dto.CartItemResponseDto;
 import telran.project.gardenshop.service.CartItemService;
-
 import java.util.List;
 
 @RestController

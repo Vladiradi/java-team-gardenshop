@@ -8,5 +8,4 @@ public class CategoryEditDto {
     private String name;
 
     private String description;
-
 }

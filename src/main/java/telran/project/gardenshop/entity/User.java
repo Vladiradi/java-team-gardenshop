@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import telran.project.gardenshop.enums.Role;
-
 import java.util.List;
 
 @Entity
@@ -44,5 +43,4 @@ public class User {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Favorite> favorites;
-
 }

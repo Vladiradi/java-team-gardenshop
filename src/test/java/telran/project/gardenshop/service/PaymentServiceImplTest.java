@@ -12,9 +12,7 @@ import telran.project.gardenshop.enums.PaymentStatus;
 import telran.project.gardenshop.exception.OrderNotFoundException;
 import telran.project.gardenshop.exception.PaymentNotFoundException;
 import telran.project.gardenshop.repository.PaymentRepository;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

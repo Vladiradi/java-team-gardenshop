@@ -11,12 +11,10 @@ import telran.project.gardenshop.enums.DeliveryMethod;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.repository.OrderItemRepository;
 import telran.project.gardenshop.repository.OrderRepository;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,22 +26,29 @@ import static org.mockito.Mockito.when;
 class OrderServiceImplTest {
 
     private final Long userId = 1L;
+
     private final LocalDateTime now = LocalDateTime.now();
+
     @InjectMocks
     private OrderServiceImpl orderService;
+
     @Mock
     private OrderRepository orderRepository;
+
     @Mock
     private OrderItemRepository orderItemRepository;
+
     @Mock
     private UserService userService;
+
     @Mock
     private ProductService productService;
+
     @Mock
     private CartService cartService;
+
     @Mock
     private CartItemService cartItemService;
-
 
     @Test
     void createOrder_ShouldCreateOrderWithItemsAndClearCart() {

@@ -8,5 +8,4 @@ public class CartResponseDto {
     private Long id;
 
     private Long userId;
-
 }

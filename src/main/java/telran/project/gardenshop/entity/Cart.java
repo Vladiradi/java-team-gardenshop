@@ -26,5 +26,4 @@ public class Cart {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<CartItem> items;
-
 }

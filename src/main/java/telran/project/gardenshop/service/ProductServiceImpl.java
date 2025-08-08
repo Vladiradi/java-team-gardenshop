@@ -1,4 +1,5 @@
 package telran.project.gardenshop.service;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import telran.project.gardenshop.dto.ProductEditDto;
@@ -6,7 +7,6 @@ import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.exception.ProductNotFoundException;
 import telran.project.gardenshop.repository.ProductRepository;
-
 import java.util.List;
 
 @Service

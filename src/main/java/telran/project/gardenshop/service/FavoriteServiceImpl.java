@@ -7,12 +7,7 @@ import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.exception.FavoriteAlreadyExistsException;
 import telran.project.gardenshop.exception.FavoriteNotFoundException;
-import telran.project.gardenshop.exception.ProductNotFoundException;
-import telran.project.gardenshop.exception.UserNotFoundException;
 import telran.project.gardenshop.repository.FavoriteRepository;
-import telran.project.gardenshop.repository.ProductRepository;
-import telran.project.gardenshop.repository.UserRepository;
-
 import java.util.List;
 
 @Service

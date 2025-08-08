@@ -2,7 +2,6 @@ package telran.project.gardenshop.service;
 
 import telran.project.gardenshop.dto.CategoryEditDto;
 import telran.project.gardenshop.entity.Category;
-
 import java.util.List;
 
 public interface CategoryService {

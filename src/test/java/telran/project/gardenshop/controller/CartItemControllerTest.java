@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import telran.project.gardenshop.dto.CartItemRequestDto;
 import telran.project.gardenshop.dto.CartItemResponseDto;
 import telran.project.gardenshop.service.CartItemService;
+import telran.project.gardenshop.service.security.JwtService;
 
 import java.util.List;
 
@@ -37,6 +38,8 @@ class CartItemControllerTest {
 
     private CartItemRequestDto requestDto;
     private CartItemResponseDto responseDto;
+    @MockBean
+    private JwtService jwtService;
 
     @BeforeEach
     void setUp() {

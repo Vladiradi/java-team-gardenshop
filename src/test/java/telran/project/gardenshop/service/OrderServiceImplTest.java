@@ -1,11 +1,9 @@
 package telran.project.gardenshop.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import telran.project.gardenshop.dto.OrderCreateRequestDto;
 import telran.project.gardenshop.entity.*;
@@ -46,10 +44,6 @@ class OrderServiceImplTest {
     @Mock
     private CartItemService cartItemService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void createOrder_ShouldCreateOrderWithItemsAndClearCart() {
@@ -85,7 +79,7 @@ class OrderServiceImplTest {
                 .deliveryAddress("Test Address")
                 .contactName("Test Name")
                 .createdAt(now)
-                .items(new java.util.ArrayList<>())
+                .items(new ArrayList<>())
                 .build();
 
         when(userService.getUserById(userId)).thenReturn(user);
@@ -119,9 +113,6 @@ class OrderServiceImplTest {
         Cart emptyCart = new Cart();
         emptyCart.setId(99L);
         emptyCart.setItems(new ArrayList<>());
-
-        when(userService.getUserById(userId)).thenReturn(user);
-        when(cartService.getCartByUserId(userId)).thenReturn(emptyCart);
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
                 () -> orderService.createOrder(userId, dto));

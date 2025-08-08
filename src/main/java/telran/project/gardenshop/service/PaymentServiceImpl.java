@@ -8,13 +8,10 @@ import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.Payment;
 import telran.project.gardenshop.enums.PaymentStatus;
 import telran.project.gardenshop.enums.PaymentMethod;
-import telran.project.gardenshop.exception.OrderNotFoundException;
 import telran.project.gardenshop.exception.PaymentNotFoundException;
-import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.PaymentRepository;
 import telran.project.gardenshop.exception.PaymentAlreadyExistsException;
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +21,8 @@ import java.util.Optional;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final OrderRepository orderRepository;
+
+    private final OrderService orderService;
 
     private Payment findPaymentOrThrow(Long id) {
         return paymentRepository.findById(id)
@@ -33,8 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment createPayment(Long orderId, PaymentMethod method) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + orderId));
+        Order order = orderService.getOrderById(orderId);
 
         Payment payment = Payment.builder()
                 .order(order)

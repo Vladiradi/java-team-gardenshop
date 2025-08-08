@@ -11,7 +11,6 @@ import telran.project.gardenshop.enums.PaymentMethod;
 import telran.project.gardenshop.enums.PaymentStatus;
 import telran.project.gardenshop.exception.OrderNotFoundException;
 import telran.project.gardenshop.exception.PaymentNotFoundException;
-import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.PaymentRepository;
 
 import java.util.Optional;
@@ -25,7 +24,7 @@ class PaymentServiceImplTest {
     private PaymentRepository paymentRepository;
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderService orderService;
 
     @InjectMocks
     private PaymentServiceImpl paymentService;
@@ -40,7 +39,7 @@ class PaymentServiceImplTest {
         Long orderId = 1L;
         Order order = Order.builder().id(orderId).build();
 
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderService.getOrderById(orderId)).thenReturn(order);
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Payment payment = paymentService.createPayment(orderId, PaymentMethod.CARD);
@@ -50,20 +49,21 @@ class PaymentServiceImplTest {
         assertEquals(PaymentStatus.UNPAID, payment.getStatus());
         assertEquals(PaymentMethod.CARD, payment.getMethod());
 
-        verify(orderRepository).findById(orderId);
+        verify(orderService).getOrderById(orderId);
         verify(paymentRepository).save(any(Payment.class));
     }
 
     @Test
     void createPayment_whenOrderNotFound_thenThrowException() {
         Long orderId = 99L;
-        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+        when(orderService.getOrderById(orderId))
+                .thenThrow(new OrderNotFoundException("Order not found with id: " + orderId));
 
         OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () ->
                 paymentService.createPayment(orderId, PaymentMethod.CASH));
 
         assertEquals("Order not found with id: " + orderId, ex.getMessage());
-        verify(orderRepository).findById(orderId);
+        verify(orderService).getOrderById(orderId);
         verifyNoMoreInteractions(paymentRepository);
     }
 

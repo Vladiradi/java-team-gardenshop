@@ -3,7 +3,6 @@ package telran.project.gardenshop.service;
 import jakarta.transaction.Transactional;
 import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.CartItem;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import telran.project.gardenshop.dto.OrderCreateRequestDto;
@@ -15,7 +14,6 @@ import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.exception.OrderNotFoundException;
 import telran.project.gardenshop.repository.OrderItemRepository;
 import telran.project.gardenshop.repository.OrderRepository;
-
 import java.math.BigDecimal;
 import java.util.List;
 

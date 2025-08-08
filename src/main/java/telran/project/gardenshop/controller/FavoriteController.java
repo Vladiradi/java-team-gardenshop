@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.FavoriteRequestDto;
 import telran.project.gardenshop.dto.FavoriteResponseDto;
@@ -39,7 +40,7 @@ public class FavoriteController {
                 .build();
 
         Favorite saved = favoriteService.addToFavorites(favorite);
-        return ResponseEntity.status(201).body(favoriteMapper.toDto(saved));
+        return ResponseEntity.status(HttpStatus.CREATED).body(favoriteMapper.toDto(saved));
     }
 
     @Operation(summary = "Remove product from user's favorites")

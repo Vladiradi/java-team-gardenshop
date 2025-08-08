@@ -22,8 +22,11 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class OrderController {
+
     private final OrderService orderService;
+
     private final OrderMapper orderMapper;
+
     private final UserService userService;
 
     @GetMapping("/history/{userId}")
@@ -44,7 +47,7 @@ public class OrderController {
         User currentUser = userService.getCurrentUser();
         var orders = orderService.getOrdersByUserId(currentUser.getId());
         return orders.stream()
-                .map(this::toOrderHistoryDto)
+                .map(order -> orderMapper.toHistoryDto(order, currentUser.getPhoneNumber()))
                 .toList();
     }
 
@@ -78,32 +81,5 @@ public class OrderController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable @Positive Long orderId) {
         orderService.deleteOrder(orderId);
-    }
-
-    private OrderHistoryDto toOrderHistoryDto(telran.project.gardenshop.entity.Order order) {
-        var products = order.getItems().stream()
-                .map(item -> telran.project.gardenshop.dto.OrderItemResponseDto.builder()
-                        .id(item.getId())
-                        .productId(item.getProduct().getId())
-                        .productName(item.getProduct().getName())
-                        .productImageUrl(item.getProduct().getImageUrl())
-                        .quantity(item.getQuantity())
-                        .price(item.getPrice().doubleValue())
-                        .build())
-                .toList();
-
-        return telran.project.gardenshop.dto.OrderHistoryDto.builder()
-                .orderId(order.getId())
-                .status(order.getStatus().name())
-                .totalPrice(order.getItems().stream()
-                        .map(i -> i.getPrice().multiply(java.math.BigDecimal.valueOf(i.getQuantity())))
-                        .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add)
-                        .doubleValue())
-                .createdAt(order.getCreatedAt().toString())
-                .products(products)
-                .deliveryAddress(order.getDeliveryAddress())
-                .recipientName(order.getContactName())
-                .recipientPhone(userService.getUserById(order.getUser().getId()).getPhoneNumber())
-                .build();
     }
 }

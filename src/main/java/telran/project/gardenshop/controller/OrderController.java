@@ -1,85 +1,58 @@
 package telran.project.gardenshop.controller;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.OrderCreateRequestDto;
-import telran.project.gardenshop.dto.OrderHistoryDto;
 import telran.project.gardenshop.dto.OrderResponseDto;
 import telran.project.gardenshop.dto.OrderShortResponseDto;
-import telran.project.gardenshop.entity.User;
-import telran.project.gardenshop.mapper.OrderMapper;
-import telran.project.gardenshop.service.OrderService;
-import telran.project.gardenshop.service.UserService;
 
 import java.util.List;
 
-@RestController
 @RequestMapping("/v1/orders")
-@SecurityRequirement(name = "bearerAuth")
-@RequiredArgsConstructor
-public class OrderController {
-
-    private final OrderService orderService;
-
-    private final OrderMapper orderMapper;
-
-    private final UserService userService;
-
-    @GetMapping("/history/{userId}")
-    public List<OrderShortResponseDto> getAll(@PathVariable Long userId) {
-        return orderService.getOrdersByUserId(userId)
-                .stream()
-                .map(orderMapper::toShortDto)
-                .toList();
-    }
-
-    @GetMapping("/{orderId}")
-    public OrderResponseDto getById(@PathVariable @Positive Long orderId) {
-        return orderMapper.toDto(orderService.getOrderById(orderId));
-    }
+public interface OrderController {
 
     @GetMapping("/history")
-    public List<OrderHistoryDto> getMyOrderHistory() {
-        User currentUser = userService.getCurrentUser();
-        var orders = orderService.getOrdersByUserId(currentUser.getId());
-        return orders.stream()
-                .map(order -> orderMapper.toHistoryDto(order, currentUser.getPhoneNumber()))
-                .toList();
-    }
+    @PreAuthorize("hasRole('USER')")
+    List<OrderShortResponseDto> getAllForCurrentUser();
 
-    @PostMapping("/{userId}")
+    @GetMapping("/history/delivered")
+    @PreAuthorize("hasRole('USER')")
+    List<OrderResponseDto> getAllDeliveredForCurrentUser();
+
+    @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
+    List<OrderShortResponseDto> getAll();
+
+    @GetMapping("/{orderId}")
+    @PreAuthorize("hasRole('USER')")
+    OrderResponseDto getById(@PathVariable @Positive Long orderId);
+
+    @PostMapping()
+    @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderResponseDto create(@PathVariable Long userId, @RequestBody @Valid OrderCreateRequestDto dto) {
-        return orderMapper.toDto(orderService.createOrder(userId, dto));
-    }
+    OrderResponseDto create(@RequestBody @Valid OrderCreateRequestDto orderCreateRequestDto);
 
     @PostMapping("/items")
+    @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderResponseDto addOrderItem(@RequestParam @Positive Long orderId,
-                                         @RequestParam @Positive Long productId,
-                                         @RequestParam @Positive Integer quantity) {
-        return orderMapper.toDto(orderService.addItem(orderId, productId, quantity));
-    }
+    OrderResponseDto addItem(@RequestParam @Positive Long orderId,
+                             @RequestParam @Positive Long productId,
+                             @RequestParam @Positive Integer quantity);
 
     @PutMapping("/items")
+    @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public OrderResponseDto updateOrderItem(@RequestParam @Positive Long orderItemId,
-                                            @RequestParam @Positive Integer quantity) {
-        return orderMapper.toDto(orderService.updateItem(orderItemId, quantity));
-    }
+    OrderResponseDto updateItem(@RequestParam @Positive Long orderItemId,
+                                @RequestParam @Positive Integer quantity);
 
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/items/{orderItemId}")
-    public OrderResponseDto removeOrderItem(@PathVariable @Positive Long orderItemId) {
-        return orderMapper.toDto(orderService.removeItem(orderItemId));
-    }
+    OrderResponseDto removeItem(@PathVariable @Positive Long orderItemId);
 
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{orderId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @Positive Long orderId) {
-        orderService.deleteOrder(orderId);
-    }
+    OrderResponseDto delete(@PathVariable @Positive Long orderId);
 }

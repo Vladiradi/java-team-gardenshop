@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.Payment;
 import telran.project.gardenshop.enums.PaymentStatus;
@@ -32,7 +31,6 @@ public class PaymentServiceImpl implements PaymentService {
             .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + id));
     }
 
-    @Transactional
     @Override
     public Payment createPayment(Long orderId, PaymentMethod method) {
         Order order = orderRepository.findById(orderId)
@@ -63,14 +61,12 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.findAll();
     }
 
-    @Transactional
     @Override
     public void deletePayment(Long id) {
         findPaymentOrThrow(id);
         paymentRepository.deleteById(id);
     }
 
-    @Transactional
     @Override
     public Payment updatePaymentStatus(Long id, PaymentStatus status) {
         Payment payment = findPaymentOrThrow(id);
@@ -86,7 +82,6 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElse(false);
     }
 
-    @Transactional
     @Override
     public Optional<Payment> updatePaymentStatusByOrderId(Long orderId, PaymentStatus status) {
         return paymentRepository.findByOrderId(orderId)

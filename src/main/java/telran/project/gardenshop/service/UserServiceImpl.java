@@ -2,7 +2,6 @@ package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import telran.project.gardenshop.dto.UserEditDto;
 import telran.project.gardenshop.entity.User;
@@ -49,7 +48,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-
     public User updateUser(Long id, UserEditDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
@@ -59,7 +57,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userMapper.updateUserFromDto(dto, user);
-       // user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        // user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         return userRepository.save(user);
     }

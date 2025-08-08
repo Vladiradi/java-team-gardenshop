@@ -17,6 +17,7 @@ import telran.project.gardenshop.repository.OrderItemRepository;
 import telran.project.gardenshop.repository.OrderRepository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -71,8 +72,9 @@ public class OrderServiceImpl implements OrderService {
                 .deliveryAddress(dto.getAddress())
                 .contactName(dto.getContactName())
                 .createdAt(dto.getCreatedAt())
+                .items(new ArrayList<>())
                 .build();
-        orderRepository.save(order);
+        order = orderRepository.save(order);
 
         for (CartItem cartItem : cart.getItems()) {
             OrderItem orderItem = OrderItem.builder()

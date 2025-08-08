@@ -20,14 +20,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    //private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
     @Override
     public User createUser(User user) {
         emailCheck(user.getEmail());
         user.setRole(Role.USER);
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -57,7 +55,6 @@ public class UserServiceImpl implements UserService {
         }
 
         userMapper.updateUserFromDto(dto, user);
-        // user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         return userRepository.save(user);
     }

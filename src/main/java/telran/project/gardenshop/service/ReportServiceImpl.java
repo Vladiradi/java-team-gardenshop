@@ -29,10 +29,10 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public List<ProductReportDto> getTopProductsBySales(int limit) {
-        // Получаем все завершенные заказы
+
         List<Order> completedOrders = orderRepository.findAllByStatus(OrderStatus.DELIVERED);
         
-        // Агрегируем данные по товарам
+
         Map<Long, ProductReportDto> productStats = completedOrders.stream()
                 .flatMap(order -> order.getItems().stream())
                 .collect(Collectors.groupingBy(
@@ -60,7 +60,7 @@ public class ReportServiceImpl implements ReportService {
                         )
                 ));
         
-        // Сортируем по количеству продаж и берем топ-N
+
         return productStats.values().stream()
                 .sorted((p1, p2) -> p2.getTotalQuantitySold().compareTo(p1.getTotalQuantitySold()))
                 .limit(limit)
@@ -73,7 +73,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public ProfitReportDto getProfitReport(LocalDateTime startDate, LocalDateTime endDate) {
-        // Получаем заказы за период
+
         List<Order> ordersInPeriod = orderRepository.findAllByCreatedAtBetweenAndStatus(
                 startDate, endDate, OrderStatus.DELIVERED);
         
@@ -82,9 +82,7 @@ public class ReportServiceImpl implements ReportService {
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // TODO
-        // Для упрощения считаем, что себестоимость составляет 60% от выручки
-        // В реальном проекте нужно получать себестоимость из базы данных
+
         BigDecimal totalCost = totalRevenue.multiply(BigDecimal.valueOf(0.6));
         BigDecimal totalProfit = totalRevenue.subtract(totalCost);
         
@@ -108,7 +106,7 @@ public class ReportServiceImpl implements ReportService {
     public List<PendingPaymentReportDto> getPendingPaymentOrders(int daysOlder) {
         LocalDateTime cutoffDate = LocalDateTime.now().minusDays(daysOlder);
         
-        // Получаем заказы в статусе NEW (ожидают оплаты) старше указанного количества дней
+
         List<Order> pendingOrders = orderRepository.findAllByStatusAndCreatedAtBefore(
                 OrderStatus.NEW, cutoffDate);
         

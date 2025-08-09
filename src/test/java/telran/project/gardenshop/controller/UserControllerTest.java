@@ -17,9 +17,7 @@ import telran.project.gardenshop.mapper.UserMapper;
 import telran.project.gardenshop.service.UserService;
 import telran.project.gardenshop.service.security.JwtFilter;
 import telran.project.gardenshop.service.security.JwtService;
-
 import java.util.Collections;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

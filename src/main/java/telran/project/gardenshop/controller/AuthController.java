@@ -16,25 +16,6 @@ public class AuthController {
 
     private final AuthenticationService authenticationService;
 
-    /*
-        AuthRequest ;
-        {
-            "email" : "alex@alex.com",
-            "password" : "12345"
-
-        }
-
-        AuthResponse :
-
-        {
-            "token" : "dfgfdgfgdfg.dfgdfgdgdfg.dfgdfgdfgd"
-        }
-
-        //POST, GET, PATCH,DELETE
-        //Authorization : "Bearer Token" : dfgfdgfgdfg.dfgdfgdgdfg.dfgdfgdfgd
-
-     */
-
     @PostMapping
     public AuthResponse login(@RequestBody AuthRequest authRequest) {
         return authenticationService.authenticate(authRequest);

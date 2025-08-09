@@ -7,7 +7,6 @@ import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.mapper.CategoryMapper;
 import telran.project.gardenshop.repository.CategoryRepository;
 import telran.project.gardenshop.exception.CategoryNotFoundException;
-
 import java.util.List;
 
 @Service

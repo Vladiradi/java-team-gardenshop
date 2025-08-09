@@ -16,7 +16,6 @@ import telran.project.gardenshop.service.security.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
-//@EnableMethodSecurity // enable @PreAuthorize, @PostAuthorize, etc.
 public class SecurityConfig {
 
     @Autowired

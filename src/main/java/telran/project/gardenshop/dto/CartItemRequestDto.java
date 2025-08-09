@@ -14,5 +14,4 @@ public class CartItemRequestDto {
     private Integer quantity;
 
     private Double price;
-
 }

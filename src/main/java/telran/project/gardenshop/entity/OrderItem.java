@@ -2,7 +2,6 @@ package telran.project.gardenshop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 
 @Entity
@@ -31,5 +30,4 @@ public class OrderItem {
     private int quantity;
 
     private BigDecimal price;
-
 }

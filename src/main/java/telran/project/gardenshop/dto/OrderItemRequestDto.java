@@ -16,5 +16,4 @@ public class OrderItemRequestDto {
     private int quantity;
 
     private Double price;
-
 }

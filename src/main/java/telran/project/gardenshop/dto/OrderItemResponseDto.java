@@ -22,5 +22,4 @@ public class OrderItemResponseDto {
     private int quantity;
 
     private Double price;
-
 }

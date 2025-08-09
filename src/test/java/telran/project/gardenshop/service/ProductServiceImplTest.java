@@ -9,10 +9,8 @@ import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.exception.ProductNotFoundException;
 import telran.project.gardenshop.repository.ProductRepository;
-
 import java.math.BigDecimal;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -105,15 +103,21 @@ class ProductServiceImplTest {
                 .build();
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(existing));
+
         when(categoryService.getCategoryById(2L)).thenReturn(category);
+
         when(productRepository.save(any(Product.class))).thenAnswer(i -> i.getArgument(0));
 
         Product result = productService.updateProduct(1L, updated);
 
         assertEquals("New name", result.getName());
+
         assertEquals("New desc", result.getDescription());
+
         assertEquals(BigDecimal.valueOf(15), result.getPrice());
+
         assertEquals("url", result.getImageUrl());
+
         assertEquals(category, result.getCategory());
     }
 

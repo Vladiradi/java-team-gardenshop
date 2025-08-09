@@ -1,7 +1,6 @@
 package telran.project.gardenshop.dto;
 
 import lombok.*;
-
 import java.util.List;
 
 @Getter
@@ -26,5 +25,4 @@ public class OrderHistoryDto {
     private String recipientName;
 
     private String recipientPhone;
-
 }

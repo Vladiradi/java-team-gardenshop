@@ -6,7 +6,6 @@ import telran.project.gardenshop.dto.FavoriteResponseDto;
 import telran.project.gardenshop.entity.Favorite;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
-
 import java.time.LocalDateTime;
 
 @Mapper(componentModel = "spring")

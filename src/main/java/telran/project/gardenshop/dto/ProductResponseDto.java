@@ -21,5 +21,4 @@ public class ProductResponseDto {
     private String categoryName;
 
     private boolean hasDiscount;
-
 }

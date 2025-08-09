@@ -30,5 +30,4 @@ public class UserEditDto {
     @NotBlank
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{5,}$")
     private String password;
-
 }

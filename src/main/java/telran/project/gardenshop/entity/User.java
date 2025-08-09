@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.Builder.Default;
 import telran.project.gardenshop.enums.Role;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,5 +50,4 @@ public class User {
     public List<Favorite> getFavorites() {
         return favorites != null ? favorites : new ArrayList<>();
     }
-
 }

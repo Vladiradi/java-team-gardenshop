@@ -46,7 +46,7 @@ public class OrderControllerImpl implements OrderController {
 
     @Override
     public List<OrderShortResponseDto> getAll() {
-        // В проекте есть getActiveOrders(); если нужен реально "все", добавь в сервисе метод findAll()
+
         return orderService.getActiveOrders()
                 .stream()
                 .map(orderMapper::toShortDto)

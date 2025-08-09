@@ -46,6 +46,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> findAll() {
+        return orderRepository.findAll();
+    }
+
+    @Override
     public BigDecimal getTotalAmount(Long orderId) {
         Order order = getOrderById(orderId);
         return order.getItems().stream()

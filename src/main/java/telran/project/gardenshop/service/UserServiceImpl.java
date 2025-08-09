@@ -19,7 +19,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    //private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
     @Override
@@ -55,7 +54,6 @@ public class UserServiceImpl implements UserService {
         }
 
         userMapper.updateUserFromDto(dto, user);
-        // user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         return userRepository.save(user);
     }

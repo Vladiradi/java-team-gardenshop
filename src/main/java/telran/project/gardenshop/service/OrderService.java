@@ -14,6 +14,8 @@ public interface OrderService {
 
     List<Order> getActiveOrders();
 
+    List<Order> findAll();
+
     BigDecimal getTotalAmount(Long orderId);
 
     Order createOrder(Long userId, OrderCreateRequestDto dto);

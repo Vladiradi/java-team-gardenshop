@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -45,5 +46,10 @@ public class Product {
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<Favorite> favorites;
+    @Builder.Default
+    private List<Favorite> favorites = new ArrayList<>();
+
+    public List<Favorite> getFavorites() {
+        return favorites != null ? favorites : new ArrayList<>();
+    }
 }

@@ -3,8 +3,10 @@ package telran.project.gardenshop.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.Builder.Default;
 import telran.project.gardenshop.enums.Role;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -43,6 +45,11 @@ public class User {
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<Favorite> favorites;
+    @Builder.Default
+    private List<Favorite> favorites = new ArrayList<>();
+
+    public List<Favorite> getFavorites() {
+        return favorites != null ? favorites : new ArrayList<>();
+    }
 
 }

@@ -89,7 +89,6 @@ public class OrderControllerImpl implements OrderController {
 
     @Override
     public OrderResponseDto delete(@Positive Long orderId) {
-        // В твоём сервисе есть cancelOrder(orderId) (void). Делаем «мягкое удаление» = отмена и возвращаем изменённый заказ
         orderService.cancelOrder(orderId);
         var cancelled = orderService.getOrderById(orderId);
         return orderMapper.toDto(cancelled);

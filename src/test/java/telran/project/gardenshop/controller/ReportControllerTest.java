@@ -83,7 +83,7 @@ class ReportControllerTest {
         // Given
         LocalDateTime startDate = LocalDateTime.now().minusDays(30);
         LocalDateTime endDate = LocalDateTime.now();
-        
+
         ProfitReportDto profitReport = ProfitReportDto.builder()
                 .startDate(startDate)
                 .endDate(endDate)
@@ -137,4 +137,4 @@ class ReportControllerTest {
                 .andExpect(jsonPath("$[0].daysPending").value(10))
                 .andExpect(jsonPath("$[0].orderTotal").value(500));
     }
-} 
+}

@@ -10,7 +10,6 @@ import telran.project.gardenshop.exception.UserNotFoundException;
 import telran.project.gardenshop.exception.UserWithEmailAlreadyExistsException;
 import telran.project.gardenshop.mapper.UserMapper;
 import telran.project.gardenshop.repository.UserRepository;
-
 import java.util.List;
 import java.util.Optional;
 

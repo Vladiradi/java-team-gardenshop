@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.OrderCreateRequestDto;
 import telran.project.gardenshop.dto.OrderResponseDto;
 import telran.project.gardenshop.dto.OrderShortResponseDto;
-
 import java.util.List;
 
 @RequestMapping("/v1/orders")

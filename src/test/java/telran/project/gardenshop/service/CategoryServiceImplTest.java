@@ -10,11 +10,9 @@ import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.exception.CategoryNotFoundException;
 import telran.project.gardenshop.mapper.CategoryMapper;
 import telran.project.gardenshop.repository.CategoryRepository;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;

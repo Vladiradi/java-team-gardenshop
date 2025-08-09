@@ -13,9 +13,7 @@ import telran.project.gardenshop.dto.CartItemRequestDto;
 import telran.project.gardenshop.dto.CartItemResponseDto;
 import telran.project.gardenshop.service.CartItemService;
 import telran.project.gardenshop.service.security.JwtService;
-
 import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;

@@ -13,5 +13,4 @@ public class OrderShortResponseDto {
     private OrderStatus status;
 
     private LocalDateTime createdAt;
-
 }

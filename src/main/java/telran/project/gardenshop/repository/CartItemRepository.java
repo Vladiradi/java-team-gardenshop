@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.CartItem;
 import telran.project.gardenshop.entity.Product;
-
 import java.util.List;
 import java.util.Optional;
 

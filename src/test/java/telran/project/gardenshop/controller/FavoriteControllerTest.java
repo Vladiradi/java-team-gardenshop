@@ -16,10 +16,8 @@ import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.mapper.FavoriteMapper;
 import telran.project.gardenshop.service.FavoriteService;
 import telran.project.gardenshop.service.security.JwtService;
-
 import java.time.LocalDateTime;
 import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

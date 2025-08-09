@@ -1,6 +1,5 @@
 package telran.project.gardenshop.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,7 +9,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import telran.project.gardenshop.dto.CartResponseDto;
 import telran.project.gardenshop.service.CartService;
 import telran.project.gardenshop.service.security.JwtService;
-
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

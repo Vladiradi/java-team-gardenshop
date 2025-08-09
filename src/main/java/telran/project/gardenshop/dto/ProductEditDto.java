@@ -16,5 +16,4 @@ public class ProductEditDto {
     private String description;
 
     private BigDecimal price;
-
 }

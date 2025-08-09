@@ -11,7 +11,6 @@ import telran.project.gardenshop.entity.CartItem;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.mapper.CartItemMapper;
 import telran.project.gardenshop.repository.CartItemRepository;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

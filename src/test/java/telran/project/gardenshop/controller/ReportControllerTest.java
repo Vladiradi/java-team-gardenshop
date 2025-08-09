@@ -13,12 +13,10 @@ import telran.project.gardenshop.dto.PendingPaymentReportDto;
 import telran.project.gardenshop.service.ReportService;
 import telran.project.gardenshop.service.security.JwtFilter;
 import telran.project.gardenshop.service.security.JwtService;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

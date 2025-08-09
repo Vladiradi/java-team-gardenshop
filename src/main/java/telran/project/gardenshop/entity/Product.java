@@ -1,12 +1,12 @@
 package telran.project.gardenshop.entity;
-import telran.project.gardenshop.entity.Category;
-import telran.project.gardenshop.entity.Favorite;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -46,6 +46,10 @@ public class Product {
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<Favorite> favorites;
+    @Builder.Default
+    private List<Favorite> favorites = new ArrayList<>();
 
+    public List<Favorite> getFavorites() {
+        return favorites != null ? favorites : new ArrayList<>();
+    }
 }

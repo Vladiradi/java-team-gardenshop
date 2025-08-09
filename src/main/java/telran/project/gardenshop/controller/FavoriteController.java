@@ -13,9 +13,7 @@ import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.mapper.FavoriteMapper;
 import telran.project.gardenshop.service.FavoriteService;
-
 import io.swagger.v3.oas.annotations.Operation;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;

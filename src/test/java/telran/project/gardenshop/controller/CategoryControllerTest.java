@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import telran.project.gardenshop.controller.CategoryController;
 import telran.project.gardenshop.dto.CategoryEditDto;
 import telran.project.gardenshop.dto.CategoryRequestDto;
 import telran.project.gardenshop.dto.CategoryResponseDto;
@@ -15,9 +14,7 @@ import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.mapper.CategoryMapper;
 import telran.project.gardenshop.service.CategoryService;
 import telran.project.gardenshop.service.security.JwtService;
-
 import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;

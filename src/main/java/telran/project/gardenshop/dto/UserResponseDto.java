@@ -20,5 +20,4 @@ public class UserResponseDto {
     private String role;
 
     private List<FavoriteResponseDto> favorites;
-
 }

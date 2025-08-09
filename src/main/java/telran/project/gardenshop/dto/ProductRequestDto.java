@@ -28,5 +28,4 @@ public class ProductRequestDto {
     @NotNull(message = "Category ID must not be null")
     @Min(value = 1, message = "Category ID must be a positive number")
     private Long categoryId;
-
 }

@@ -12,10 +12,8 @@ import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.exception.FavoriteAlreadyExistsException;
 import telran.project.gardenshop.exception.FavoriteNotFoundException;
 import telran.project.gardenshop.repository.FavoriteRepository;
-
 import java.util.List;
 import java.util.Optional;
-
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

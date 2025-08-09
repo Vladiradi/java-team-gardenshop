@@ -1,6 +1,5 @@
 package telran.project.gardenshop.entity;
 
-import telran.project.gardenshop.entity.Product;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,5 +32,4 @@ public class Category {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Product> products;
-
 }

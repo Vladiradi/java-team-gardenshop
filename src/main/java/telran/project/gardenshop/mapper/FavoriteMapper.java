@@ -6,17 +6,16 @@ import telran.project.gardenshop.dto.FavoriteResponseDto;
 import telran.project.gardenshop.entity.Favorite;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
-
 import java.time.LocalDateTime;
 
 @Mapper(componentModel = "spring")
 public interface FavoriteMapper {
 
-    @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "product.id", target = "productId")
-    @Mapping(source = "product.name", target = "productName")
-    @Mapping(source = "product.price", target = "price")
-    @Mapping(source = "product.imageUrl", target = "imageUrl")
+    @Mapping(target = "userId", expression = "java(favorite.getUser() != null ? favorite.getUser().getId() : null)")
+    @Mapping(target = "productId", expression = "java(favorite.getProduct() != null ? favorite.getProduct().getId() : null)")
+    @Mapping(target = "productName", expression = "java(favorite.getProduct() != null ? favorite.getProduct().getName() : null)")
+    @Mapping(target = "price", expression = "java(favorite.getProduct() != null && favorite.getProduct().getPrice() != null ? favorite.getProduct().getPrice().doubleValue() : null)")
+    @Mapping(target = "imageUrl", expression = "java(favorite.getProduct() != null ? favorite.getProduct().getImageUrl() : null)")
     FavoriteResponseDto toDto(Favorite favorite);
 
     default Favorite toEntity(User user, Product product) {

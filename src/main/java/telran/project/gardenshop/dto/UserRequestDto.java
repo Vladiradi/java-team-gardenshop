@@ -27,5 +27,4 @@ public class UserRequestDto {
     private String phoneNumber;
 
     private String password;
-
 }

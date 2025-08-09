@@ -14,10 +14,8 @@ import telran.project.gardenshop.entity.CartItem;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.mapper.CartItemMapper;
 import telran.project.gardenshop.repository.CartItemRepository;
-
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -40,9 +38,13 @@ class CartItemServiceImplTest {
     private CartItemServiceImpl cartItemService;
 
     private Cart cart;
+
     private Product product;
+
     private CartItem cartItem;
+
     private CartItemRequestDto requestDto;
+
     private CartItemResponseDto responseDto;
 
     @BeforeEach

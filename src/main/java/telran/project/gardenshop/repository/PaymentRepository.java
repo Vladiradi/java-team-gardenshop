@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
+
     Optional<Payment> findByOrderId(Long orderId);
+
     List<Payment> findAllByOrderId(Long orderId);
 }

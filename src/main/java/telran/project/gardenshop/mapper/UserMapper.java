@@ -6,8 +6,8 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import telran.project.gardenshop.dto.*;
 import telran.project.gardenshop.entity.*;
-
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -23,16 +23,21 @@ public interface UserMapper {
 
     @Named("mapFavorites")
     static List<FavoriteResponseDto> mapFavorites(List<Favorite> favorites) {
-        if (favorites == null) return null;
+        if (favorites == null || favorites.isEmpty()) {
+            return List.of();
+        }
 
         return favorites.stream()
+                .filter(Objects::nonNull)
                 .map(fav -> FavoriteResponseDto.builder()
                         .id(fav.getId())
-                        .userId(fav.getUser().getId())
-                        .productId(fav.getProduct().getId())
-                        .productName(fav.getProduct().getName())
-                        .price(fav.getProduct().getPrice().doubleValue())
-                        .imageUrl(fav.getProduct().getImageUrl())
+                        .userId(fav.getUser() != null ? fav.getUser().getId() : null)
+                        .productId(fav.getProduct() != null ? fav.getProduct().getId() : null)
+                        .productName(fav.getProduct() != null ? fav.getProduct().getName() : null)
+                        .price(fav.getProduct() != null && fav.getProduct().getPrice() != null
+                                ? fav.getProduct().getPrice().doubleValue()
+                                : null)
+                        .imageUrl(fav.getProduct() != null ? fav.getProduct().getImageUrl() : null)
                         .build())
                 .collect(Collectors.toList());
     }

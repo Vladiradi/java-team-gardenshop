@@ -22,5 +22,4 @@ public class CartItemResponseDto {
     private Double price;
 
     private String productName;
-
 }

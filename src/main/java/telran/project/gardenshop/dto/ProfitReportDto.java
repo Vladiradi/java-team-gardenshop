@@ -13,11 +13,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfitReportDto {
+
     private LocalDateTime startDate;
+
     private LocalDateTime endDate;
+
     private BigDecimal totalRevenue;
+
     private BigDecimal totalCost;
+
     private BigDecimal totalProfit;
+
     private Long totalOrders;
+
     private Long totalItemsSold;
 } 

@@ -13,13 +13,11 @@ import telran.project.gardenshop.entity.*;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.OrderItemRepository;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -39,7 +37,9 @@ class ReportServiceImplTest {
     private ReportServiceImpl reportService;
 
     private Order order1, order2;
+
     private Product product1, product2;
+
     private OrderItem item1, item2, item3;
 
     @BeforeEach
@@ -113,14 +113,12 @@ class ReportServiceImplTest {
 
     @Test
     void getTopProductsBySales() {
-        // Given
+
         when(orderRepository.findAllByStatus(OrderStatus.DELIVERED))
                 .thenReturn(Arrays.asList(order1));
 
-        // When
         List<ProductReportDto> result = reportService.getTopProductsBySales(5);
 
-        // Then
         assertNotNull(result);
         assertEquals(2, result.size());
         
@@ -140,17 +138,15 @@ class ReportServiceImplTest {
 
     @Test
     void getProfitReport() {
-        // Given
+
         LocalDateTime startDate = LocalDateTime.now().minusDays(30);
         LocalDateTime endDate = LocalDateTime.now();
         
         when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                 .thenReturn(Collections.singletonList(order1));
 
-        // When
         ProfitReportDto result = reportService.getProfitReport(startDate, endDate);
 
-        // Then
         assertNotNull(result);
         assertEquals(startDate, result.getStartDate());
         assertEquals(endDate, result.getEndDate());
@@ -163,14 +159,12 @@ class ReportServiceImplTest {
 
     @Test
     void getPendingPaymentOrders() {
-        // Given
+
         when(orderRepository.findAllByStatusAndCreatedAtBefore(eq(OrderStatus.NEW), any(LocalDateTime.class)))
                 .thenReturn(Arrays.asList(order2));
 
-        // When
         List<PendingPaymentReportDto> result = reportService.getPendingPaymentOrders(7);
 
-        // Then
         assertNotNull(result);
         assertEquals(1, result.size());
         

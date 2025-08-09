@@ -1,11 +1,9 @@
 package telran.project.gardenshop.service;
 
 import org.junit.jupiter.api.DisplayName;
-
 import telran.project.gardenshop.exception.CartNotFoundException;
 import telran.project.gardenshop.exception.UserNotFoundException;
 import telran.project.gardenshop.mapper.CartMapper;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,9 +14,7 @@ import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.repository.CartRepository;
 import telran.project.gardenshop.repository.UserRepository;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

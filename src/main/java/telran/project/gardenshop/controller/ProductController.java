@@ -1,7 +1,6 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/v1/products")
 @RequiredArgsConstructor
-//@SecurityRequirement(name = "bearerAuth")
 public class ProductController {
 
     private final ProductService productService;

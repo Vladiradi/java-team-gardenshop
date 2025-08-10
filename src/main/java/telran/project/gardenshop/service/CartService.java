@@ -1,13 +1,19 @@
 package telran.project.gardenshop.service;
 
-import telran.project.gardenshop.dto.CartResponseDto;
 import telran.project.gardenshop.entity.Cart;
+import telran.project.gardenshop.entity.User;
 
 public interface CartService {
 
-    CartResponseDto addToCart(Long userId);
+    Cart getByUser(User user);
 
-    Cart getCartByUserId(Long userId);
+    Cart getOrCreateForCurrentUser();
 
-    Cart getCartById(Long cartId);
+    Cart update(Cart cart);
+
+    Cart addItem(Long productId);
+
+    Cart updateItem(Long cartItemId, Integer quantity);
+
+    Cart deleteItem(Long cartItemId);
 }

@@ -7,7 +7,6 @@ import telran.project.gardenshop.entity.Cart;
 
 @Mapper(componentModel = "spring")
 public interface CartMapper {
-
     @Mapping(source = "user.id", target = "userId")
     CartResponseDto toDto(Cart cart);
 }

@@ -41,6 +41,20 @@ public class FavoriteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(favoriteMapper.toDto(saved));
     }
 
+    @Operation(summary = "Update a favorite (user/product)")
+    @PutMapping("/{id}")
+    public ResponseEntity<FavoriteResponseDto> update(@PathVariable Long id,
+                                                      @Valid @RequestBody FavoriteRequestDto dto) {
+        Favorite updated = Favorite.builder()
+                .id(id)
+                .user(User.builder().id(dto.getUserId()).build())
+                .product(Product.builder().id(dto.getProductId()).build())
+                .build();
+
+        Favorite saved = favoriteService.updateFavorite(id, updated);
+        return ResponseEntity.ok(favoriteMapper.toDto(saved));
+    }
+
     @Operation(summary = "Remove product from user's favorites")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable Long id) {

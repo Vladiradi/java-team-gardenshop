@@ -143,7 +143,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     public void cancelOrder(Long orderId) {
         Order order = getOrderById(orderId);
         order.setStatus(OrderStatus.CANCELLED);

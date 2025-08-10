@@ -13,7 +13,6 @@ public interface OrderService {
 
     List<Order> getOrdersForCurrent();
 
-    //
     List<Order> getOrdersByUserId(Long userId);
 
     List<Order> getActiveOrders();

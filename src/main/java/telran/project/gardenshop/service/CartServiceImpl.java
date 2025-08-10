@@ -17,7 +17,6 @@ import telran.project.gardenshop.repository.UserRepository;
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
-//    private final UserRepository userRepository;
     private final CartMapper cartMapper;
     private final UserService userService;
 

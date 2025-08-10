@@ -8,10 +8,8 @@ import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.CartItem;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.OrderItem;
-import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.enums.OrderStatus;
-import telran.project.gardenshop.exception.OrderItemNotFoundException;
 import telran.project.gardenshop.exception.OrderNotFoundException;
 import telran.project.gardenshop.repository.OrderItemRepository;
 import telran.project.gardenshop.repository.OrderRepository;
@@ -20,6 +18,9 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +29,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final UserService userService;
-    private final ProductService productService;
     private final CartService cartService;
 
     private Order findOrderById(Long id) {
@@ -36,31 +36,24 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new OrderNotFoundException(id));
     }
 
-    @SuppressWarnings("unused")
-    private OrderItem findOrderItemById(Long id) {
-        return orderItemRepository.findById(id)
-                .orElseThrow(() -> new OrderItemNotFoundException(id));
-    }
-
-
     @Override
-    public Order getOrderById(Long orderId) {
+    public Order getById(Long orderId) {
         return findOrderById(orderId);
     }
 
     @Override
-    public List<Order> getOrdersForCurrent() {
+    public List<Order> getForCurrent() {
         Long userId = userService.getCurrentUser().getId();
         return orderRepository.findAllByUserId(userId);
     }
 
     @Override
-    public List<Order> getOrdersByUserId(Long userId) {
+    public List<Order> getByUserId(Long userId) {
         return orderRepository.findAllByUserId(userId);
     }
 
     @Override
-    public List<Order> getActiveOrders() {
+    public List<Order> getActive() {
         return orderRepository.findAllByStatusNotIn(List.of(OrderStatus.CANCELLED, OrderStatus.DELIVERED));
     }
 
@@ -70,17 +63,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public BigDecimal getTotalAmount(Long orderId) {
+    public BigDecimal getTotal(Long orderId) {
         Order order = findOrderById(orderId);
         return order.getItems().stream()
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-
     @Override
     @Transactional
-    public Order createOrderForCurrentUser(OrderCreateRequestDto dto) {
+    public Order createForCurrent(OrderCreateRequestDto dto) {
         User user = userService.getCurrentUser();
         // cart from current user
         Cart cart = cartService.getOrCreateForCurrentUser();
@@ -102,12 +94,11 @@ public class OrderServiceImpl implements OrderService {
         order = orderRepository.save(order);
 
         for (CartItem cartItem : cart.getItems()) {
-            Product product = cartItem.getProduct();
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
-                    .product(product)
+                    .product(cartItem.getProduct())
                     .quantity(cartItem.getQuantity())
-                    .price(product.getPrice()) // фиксируем цену на момент заказа
+                    .price(cartItem.getProduct().getPrice()) // фиксируем цену на момент заказа
                     .build();
             orderItemRepository.save(orderItem);
             order.getItems().add(orderItem);
@@ -119,9 +110,83 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
+    private void editCartItemList(CartItem cartItem, List<CartItem> cartItems, int quantityToTake) {
+        if (cartItem.getQuantity() <= quantityToTake) {
+            cartItems.remove(cartItem);
+        } else {
+            cartItem.setQuantity(cartItem.getQuantity() - quantityToTake);
+        }
+    }
+
+    private Optional<CartItem> findCartItemByProductId(List<CartItem> cartItems, Long productId) {
+        return cartItems.stream()
+                .filter(ci -> ci.getProduct().getId().equals(productId))
+                .findFirst();
+    }
+
     @Override
     @Transactional
-    public void deleteOrder(Long orderId) {
+    public Order createForCurrent(OrderCreateRequestDto dto, Map<Long, Integer> productIdPerQuantityMap) {
+        User user = userService.getCurrentUser();
+        Cart cart = cartService.getOrCreateForCurrentUser();
+
+        List<CartItem> cartItems = cart.getItems();
+        if (cartItems == null || cartItems.isEmpty()) {
+            throw new IllegalStateException("Cannot create an order with an empty cart");
+        }
+
+        // Build a map: productId -> CartItem for quick lookups
+        Map<Long, CartItem> productIdToCartItem = cartItems.stream()
+                .collect(Collectors.toMap(ci -> ci.getProduct().getId(), ci -> ci));
+
+        Order order = Order.builder()
+                .user(user)
+                .status(OrderStatus.NEW)
+                .deliveryMethod(dto.getDeliveryMethod().name())
+                .deliveryAddress(dto.getAddress())
+                .contactName(dto.getContactName())
+                .createdAt(dto.getCreatedAt() != null ? dto.getCreatedAt() : OffsetDateTime.now())
+                .items(new ArrayList<>())
+                .build();
+
+        order = orderRepository.save(order);
+
+        // ading  only requested items  + adjust cart
+        productIdPerQuantityMap.forEach((productId, qtyRequested) -> {
+            if (qtyRequested == null || qtyRequested <= 0) {
+                return; // skip invalid or zero quantities
+            }
+            CartItem cartItem = productIdToCartItem.get(productId);
+            if (cartItem != null) {
+                int qtyToAdd = Math.min(qtyRequested, cartItem.getQuantity());
+
+                OrderItem orderItem = OrderItem.builder()
+                        .order(order)
+                        .product(cartItem.getProduct())
+                        .quantity(qtyToAdd)
+                        .price(cartItem.getProduct().getPrice()) // lock price at order time
+                        .build();
+                orderItemRepository.save(orderItem);
+                order.getItems().add(orderItem);
+
+                // reduce/remove from cart
+                editCartItemList(cartItem, cartItems, qtyToAdd);
+            }
+        });
+
+        if (order.getItems().isEmpty()) {
+            throw new IllegalStateException("Order is empty");
+        }
+
+        // changes
+        cartService.update(cart);
+
+        return orderRepository.save(order);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long orderId) {
         Order order = findOrderById(orderId);
         orderRepository.delete(order);
     }
@@ -136,7 +201,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void cancelOrder(Long orderId) {
+    public void cancel(Long orderId) {
         Order order = findOrderById(orderId);
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);

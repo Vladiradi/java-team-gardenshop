@@ -4,28 +4,22 @@ import telran.project.gardenshop.dto.OrderCreateRequestDto;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.enums.OrderStatus;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrderService {
 
-    Order getOrderById(Long orderId);
+    // get order
+    Order getById(Long id);
+    List<Order> getForCurrentUser();
+    List<Order> getByUserId(Long userId);
+    List<Order> getActive();
+    List<Order> getAll();
 
-    List<Order> getOrdersForCurrent();
+    // create and change
+    Order createForCurrentUser(OrderCreateRequestDto dto);
+    Order createForCurrentUser(OrderCreateRequestDto dto, java.util.Map<Long, Integer> productIdPerQuantityMap);
+    Order updateStatus(Long id, OrderStatus status);
+    Order cancel(Long id);
 
-    List<Order> getOrdersByUserId(Long userId);
-
-    List<Order> getActiveOrders();
-
-    List<Order> findAll();
-
-    BigDecimal getTotalAmount(Long orderId);
-
-    Order createOrderForCurrentUser(OrderCreateRequestDto dto);
-
-    void deleteOrder(Long orderId);
-
-    Order updateStatus(Long orderId, OrderStatus status);
-
-    void cancelOrder(Long orderId);
+    void delete(Long id);
 }

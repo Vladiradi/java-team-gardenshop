@@ -3,22 +3,19 @@ package telran.project.gardenshop.service;
 import telran.project.gardenshop.dto.UserEditDto;
 import telran.project.gardenshop.entity.User;
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
-    User createUser(User user);
+    List<User> getAll();
 
-    User getUserById(Long id);
+    User getById(Long id);
 
-    List<User> getAllUsers();
+    User getByEmail(String email);
 
-    User updateUser(Long id, User updated);
+    User getCurrent();
 
-    void deleteUser(Long id);
+    User create(User user);
 
-    User updateUser(Long id, UserEditDto dto);
+    User update(User user);
 
-    Optional<User> getUserByEmail(String email);
-
-    User getCurrentUser();
+    void delete();
 }

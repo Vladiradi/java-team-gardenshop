@@ -13,11 +13,5 @@ public class CartController {
 
     private final CartService cartService;
 
-    @PostMapping("/add/{userId}")
-    public ResponseEntity<CartResponseDto> addToCart(@PathVariable Long userId) {
 
-        CartResponseDto cart = cartService.addToCart(userId);
-
-        return ResponseEntity.ok(cart);
-    }
 }

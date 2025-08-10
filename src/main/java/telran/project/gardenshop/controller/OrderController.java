@@ -34,22 +34,6 @@ public interface OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     OrderResponseDto create(@RequestBody @Valid OrderCreateRequestDto orderCreateRequestDto);
 
-    @PostMapping("/items")
-    @PreAuthorize("hasRole('USER')")
-    @ResponseStatus(HttpStatus.CREATED)
-    OrderResponseDto addItem(@RequestParam @Positive Long orderId,
-                             @RequestParam @Positive Long productId,
-                             @RequestParam @Positive Integer quantity);
-
-    @PutMapping("/items")
-    @PreAuthorize("hasRole('USER')")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    OrderResponseDto updateItem(@RequestParam @Positive Long orderItemId,
-                                @RequestParam @Positive Integer quantity);
-
-    @PreAuthorize("hasRole('USER')")
-    @DeleteMapping("/items/{orderItemId}")
-    OrderResponseDto removeItem(@PathVariable @Positive Long orderItemId);
 
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{orderId}")

@@ -31,7 +31,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment createPayment(Long orderId, PaymentMethod method) {
-        Order order = orderService.getOrderById(orderId);
+        Order order = orderService.getById(orderId);
 
         Payment payment = Payment.builder()
                 .order(order)

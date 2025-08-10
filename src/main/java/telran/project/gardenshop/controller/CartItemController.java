@@ -62,12 +62,5 @@ public class CartItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Clear all items from cart")
-    @SwaggerResponses.CartCleared
-    @DeleteMapping
-    public ResponseEntity<Void> clearCart(
-            @PathVariable Long cartId) {
-        cartItemService.clearCart(cartId);
-        return ResponseEntity.noContent().build();
-    }
+
 }

@@ -9,48 +9,48 @@ import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.exception.CartNotFoundException;
 import telran.project.gardenshop.exception.UserNotFoundException;
 import telran.project.gardenshop.mapper.CartMapper;
+import telran.project.gardenshop.repository.CartItemRepository;
 import telran.project.gardenshop.repository.CartRepository;
 import telran.project.gardenshop.repository.UserRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
     private final CartMapper cartMapper;
     private final UserService userService;
 
-    @Override
-    public CartResponseDto getByUser(User user) {
-        Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new CartNotFoundException("Cart for user with id " + user.getId() + " not found"));
-        return cartMapper.toDto(cart);
-    }
 
     @Override
-    public CartResponseDto getOrCreateForCurrentUser() {
-        User currentUser = userService.getCurrentUser()
-                .orElseThrow(() -> new UserNotFoundException("Current user not found"));
-        Cart cart = cartRepository.findByUser(currentUser)
+    public Cart get() {
+        User currentUser = userService.getCurrent();
+
+        return cartRepository.findByUser(currentUser)
                 .orElseGet(() -> {
                     Cart newCart = Cart.builder()
                             .user(currentUser)
                             .build();
                     return cartRepository.save(newCart);
                 });
-        return cartMapper.toDto(cart);
     }
 
     @Override
-    public CartResponseDto update(Cart cart) {
-        Cart updatedCart = cartRepository.save(cart);
-        return cartMapper.toDto(updatedCart);
+    public Cart update(Cart cart) {
+        return cartRepository.save(cart);
     }
 
     @Override
-    public CartResponseDto addItem(Long productId) {
-        User currentUser = userService.getCurrentUser()
-                .orElseThrow(() -> new UserNotFoundException("Current user not found"));
+    public void deleteItems(List<CartItem> cartItems) {
+        cartItems.forEach(item -> { cartItemRepository.deleteById(item.getId()); });
+    }
+
+    @Override
+    public Cart addItem(Long productId) {
+        User currentUser = userService.getCurrent();
         Cart cart = cartRepository.findByUser(currentUser)
                 .orElseGet(() -> {
                     Cart newCart = Cart.builder()
@@ -68,7 +68,8 @@ public class CartServiceImpl implements CartService {
             existingItem.setQuantity(existingItem.getQuantity() + 1);
         } else {
             CartItem newItem = CartItem.builder()
-                    .product(userService.getProductById(productId)) // Assuming userService has a method to get product
+                    //TODO
+                    //.product(userService.getProductById(productId)) // Assuming userService has a method to get product
                     .quantity(1)
                     .cart(cart)
                     .build();
@@ -76,13 +77,12 @@ public class CartServiceImpl implements CartService {
         }
 
         Cart savedCart = cartRepository.save(cart);
-        return cartMapper.toDto(savedCart);
+        return savedCart;
     }
 
     @Override
-    public CartResponseDto updateItem(Long cartItemId, Integer quantity) {
-        User currentUser = userService.getCurrentUser()
-                .orElseThrow(() -> new UserNotFoundException("Current user not found"));
+    public Cart updateItem(Long cartItemId, Integer quantity) {
+        User currentUser = userService.getCurrent();
         Cart cart = cartRepository.findByUser(currentUser)
                 .orElseThrow(() -> new CartNotFoundException("Cart for current user not found"));
 
@@ -92,14 +92,12 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new CartNotFoundException("Cart item with id " + cartItemId + " not found"));
 
         item.setQuantity(quantity);
-        Cart savedCart = cartRepository.save(cart);
-        return cartMapper.toDto(savedCart);
+        return cartRepository.save(cart);
     }
 
     @Override
-    public CartResponseDto deleteItem(Long cartItemId) {
-        User currentUser = userService.getCurrentUser()
-                .orElseThrow(() -> new UserNotFoundException("Current user not found"));
+    public Cart deleteItem(Long cartItemId) {
+        User currentUser = userService.getCurrent();
         Cart cart = cartRepository.findByUser(currentUser)
                 .orElseThrow(() -> new CartNotFoundException("Cart for current user not found"));
 
@@ -108,7 +106,6 @@ public class CartServiceImpl implements CartService {
             throw new CartNotFoundException("Cart item with id " + cartItemId + " not found");
         }
 
-        Cart savedCart = cartRepository.save(cart);
-        return cartMapper.toDto(savedCart);
+        return cartRepository.save(cart);
     }
 }

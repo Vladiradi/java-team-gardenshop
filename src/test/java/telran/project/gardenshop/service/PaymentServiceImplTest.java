@@ -37,7 +37,7 @@ class PaymentServiceImplTest {
         Long orderId = 1L;
         Order order = Order.builder().id(orderId).build();
 
-        when(orderService.getOrderById(orderId)).thenReturn(order);
+        when(orderService.getById(orderId)).thenReturn(order);
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Payment payment = paymentService.createPayment(orderId, PaymentMethod.CARD);
@@ -47,21 +47,21 @@ class PaymentServiceImplTest {
         assertEquals(PaymentStatus.UNPAID, payment.getStatus());
         assertEquals(PaymentMethod.CARD, payment.getMethod());
 
-        verify(orderService).getOrderById(orderId);
+        verify(orderService).getById(orderId);
         verify(paymentRepository).save(any(Payment.class));
     }
 
     @Test
     void createPayment_whenOrderNotFound_thenThrowException() {
         Long orderId = 99L;
-        when(orderService.getOrderById(orderId))
+        when(orderService.getById(orderId))
                 .thenThrow(new OrderNotFoundException("Order not found with id: " + orderId));
 
         OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () ->
                 paymentService.createPayment(orderId, PaymentMethod.CASH));
 
         assertEquals("Order not found with id: " + orderId, ex.getMessage());
-        verify(orderService).getOrderById(orderId);
+        verify(orderService).getById(orderId);
         verifyNoMoreInteractions(paymentRepository);
     }
 

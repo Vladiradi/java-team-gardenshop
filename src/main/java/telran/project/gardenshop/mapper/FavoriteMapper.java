@@ -19,9 +19,6 @@ public interface FavoriteMapper {
     FavoriteResponseDto toDto(Favorite favorite);
 
     default Favorite toEntity(User user, Product product) {
-        if (user == null || product == null) {
-            return null;
-        }
         return Favorite.builder()
                 .user(user)
                 .product(product)

@@ -1,39 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<databaseChangeLog-->
+<!--        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"-->
+<!--        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-->
+<!--                            https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">-->
 
-    <changeSet id="reset-postgres-001" author="gardenshop" context="reset" runInTransaction="true">
-        <preConditions onFail="MARK_RAN">
-            <dbms type="postgresql"/>
-        </preConditions>
-
-
-        <sql dbms="postgresql" splitStatements="false" endDelimiter=";">
-            <![CDATA[
-DO $$
-DECLARE
-    r RECORD;
-BEGIN
-    FOR r IN
-        SELECT table_schema, table_name
-        FROM information_schema.tables
-        WHERE table_type = 'BASE TABLE'
-          AND table_schema = 'public'
-          AND table_name NOT IN (
-              'databasechangelog','databasechangeloglock',
-              'DATABASECHANGELOG','DATABASECHANGELOGLOCK'
-          )
-    LOOP
-        EXECUTE format('TRUNCATE TABLE %I.%I RESTART IDENTITY CASCADE;', r.table_schema, r.table_name);
-    END LOOP;
-END $$;
-            ]]>
-        </sql>
+<!--    <changeSet id="reset-postgres-001" author="gardenshop" context="reset" runInTransaction="true">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <dbms type="postgresql"/>-->
+<!--        </preConditions>-->
 
 
-        <rollback/>
-    </changeSet>
-</databaseChangeLog>
+<!--        <sql dbms="postgresql" splitStatements="false" endDelimiter=";">-->
+<!--            <![CDATA[-->
+<!--DO $$-->
+<!--DECLARE-->
+<!--    r RECORD;-->
+<!--BEGIN-->
+<!--    FOR r IN-->
+<!--        SELECT table_schema, table_name-->
+<!--        FROM information_schema.tables-->
+<!--        WHERE table_type = 'BASE TABLE'-->
+<!--          AND table_schema = 'public'-->
+<!--          AND table_name NOT IN (-->
+<!--              'databasechangelog','databasechangeloglock',-->
+<!--              'DATABASECHANGELOG','DATABASECHANGELOGLOCK'-->
+<!--          )-->
+<!--    LOOP-->
+<!--        EXECUTE format('TRUNCATE TABLE %I.%I RESTART IDENTITY CASCADE;', r.table_schema, r.table_name);-->
+<!--    END LOOP;-->
+<!--END $$;-->
+<!--            ]]>-->
+<!--        </sql>-->
+
+
+<!--        <rollback/>-->
+<!--    </changeSet>-->
+<!--</databaseChangeLog>-->

@@ -87,10 +87,10 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderItem> items = cart.getItems().stream()
                 .map(i -> OrderItem.builder().order(order)
-                .product(i.getProduct())
-                .quantity(i.getQuantity())
-                .price(i.getProduct().getPrice())
-                .build()).toList();
+                        .product(i.getProduct())
+                        .quantity(i.getQuantity())
+                        .price(i.getProduct().getPrice())
+                        .build()).toList();
 
         cartService.deleteItems(cart.getItems());
 

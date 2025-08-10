@@ -90,25 +90,62 @@ public class OrderServiceImpl implements OrderService {
                 .createdAt(dto.getCreatedAt() != null ? dto.getCreatedAt() : OffsetDateTime.now())
                 .items(new ArrayList<>())
                 .build();
+        List<OrderItem> items = orderItemRepository.saveAll(cart.getItems());
 
-        order = orderRepository.save(order);
 
-        for (CartItem cartItem : cart.getItems()) {
-            OrderItem orderItem = OrderItem.builder()
-                    .order(order)
-                    .product(cartItem.getProduct())
-                    .quantity(cartItem.getQuantity())
-                    .price(cartItem.getProduct().getPrice()) // фиксируем цену на момент заказа
-                    .build();
-            orderItemRepository.save(orderItem);
-            order.getItems().add(orderItem);
-        }
+//        for (CartItem cartItem : cart.getItems()) {
+//            OrderItem orderItem = OrderItem.builder()
+//                    .order(order)
+//                    .product(cartItem.getProduct())
+//                    .quantity(cartItem.getQuantity())
+//                    .price(cartItem.getProduct().getPrice())
+//                    .build();
+//            orderItemRepository.save(orderItem);
+//            order.getItems().add(orderItem);
+//        }
 
-        // clear cart using CartService
+        order.getItems().addAll(items);
         cartService.clearCurrent();
 
         return orderRepository.save(order);
     }
+
+
+    //----------------------
+    @Override
+    @Transactional
+    public Order create(String deliveryAddress, DeliveryMethod deliveryMethod, String contactPhone, Map<Long, Integer> productIdPerQuantityMap) {
+        AppUser user = userService.getCurrent();
+
+        Order order = Order.builder()
+                .user(user)
+                .deliveryAddress(deliveryAddress)
+                .contactPhone(contactPhone != null ? contactPhone : user.getPhoneNumber())
+                .deliveryMethod(deliveryMethod)
+                .build();
+
+        Cart cart = cartService.getByUser(user);
+        List<CartItem> cartItems = cart.getItems();
+
+        Map<Long, CartItem> productIdPerCartItemMap = cartItems.stream()
+                .collect(Collectors.toMap(cartItem -> cartItem.getProduct().getProductId(), cartItem -> cartItem));
+
+        productIdPerQuantityMap.forEach((productId, quantity) -> {
+            if (productIdPerCartItemMap.containsKey(productId)) {
+                CartItem cartItem = productIdPerCartItemMap.get(productId);
+                order.getItems().add(createOrderItem(quantity, cartItem, order));
+                editCartItemList(cartItem, cartItems, quantity);
+            }
+        });
+        checkOrderNotEmpty(order);
+        order.setTotalAmount(getTotalAmount(order));
+
+        cartService.update(cart);
+
+        return orderRepository.save(order);
+    }
+    //----------------------
+
 
     private void editCartItemList(CartItem cartItem, List<CartItem> cartItems, int quantityToTake) {
         if (cartItem.getQuantity() <= quantityToTake) {
@@ -135,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalStateException("Cannot create an order with an empty cart");
         }
 
-        // Build a map: productId -> CartItem for quick lookups
+
         Map<Long, CartItem> productIdToCartItem = cartItems.stream()
                 .collect(Collectors.toMap(ci -> ci.getProduct().getId(), ci -> ci));
 

@@ -17,7 +17,6 @@ public interface OrderService {
 
     // create and change
     Order createForCurrentUser(OrderCreateRequestDto dto);
-    Order createForCurrentUser(OrderCreateRequestDto dto, java.util.Map<Long, Integer> productIdPerQuantityMap);
     Order updateStatus(Long id, OrderStatus status);
     Order cancel(Long id);
 

@@ -1,6 +1,5 @@
 package telran.project.gardenshop.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +16,6 @@ import telran.project.gardenshop.exception.EmptyCartException;
 import telran.project.gardenshop.exception.InsufficientQuantityException;
 import telran.project.gardenshop.exception.OrderNotFoundException;
 import telran.project.gardenshop.exception.ProductNotInCartException;
-import telran.project.gardenshop.repository.OrderItemRepository;
 import telran.project.gardenshop.repository.OrderRepository;
 
 @Service
@@ -26,13 +24,10 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final OrderItemRepository orderItemRepository;
-
     private final UserService userService;
 
     private final CartService cartService;
 
-    private final ProductService productService;
 
     private Order findOrderById(Long id) {
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
@@ -78,13 +73,13 @@ public class OrderServiceImpl implements OrderService {
         order.getItems().addAll(orderItems);
 
         // Update cart items
-        updateCartItems(cart);
+        cartService.update(cart);
         // Save the order
         return orderRepository.save(order);
     }
 
     private void validateCartNotEmpty(Cart cart) {
-        if (cart == null || cart.getItems() == null || cart.getItems().isEmpty()) {
+        if (cart.getItems().isEmpty()) {
             throw new EmptyCartException("Cannot create an order with an empty cart");
         }
     }
@@ -92,11 +87,9 @@ public class OrderServiceImpl implements OrderService {
     private Order buildOrder(User user, OrderCreateRequestDto dto) {
         return Order.builder()
                 .user(user)
-                .status(OrderStatus.NEW)
                 .deliveryMethod(dto.getDeliveryMethod().name())
-                .deliveryAddress(dto.getDeliveryAddress()).contactName(user.getFullName())
-                .createdAt(LocalDateTime.now())
-                .items(new ArrayList<>())
+                .deliveryAddress(dto.getDeliveryAddress())
+                .contactName(user.getFullName())
                 .build();
     }
 
@@ -122,10 +115,6 @@ public class OrderServiceImpl implements OrderService {
         if (cartItem.getQuantity() < itemDto.getQuantity()) {
             throw new InsufficientQuantityException(itemDto.getProductId(), cartItem.getQuantity(), itemDto.getQuantity());
         }
-    }
-
-    private void updateCartItems(Cart cart) {
-        cartService.update(cart);
     }
 
     private void editCartItemList(CartItem cartItem, List<CartItem> cartItems, int quantityToTake) {

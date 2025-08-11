@@ -393,7 +393,7 @@ class ReportServiceImplTest {
     }
 
     @Test
-    void getTopProductsByCancellations_ShouldReturnTopCancelledProducts() {
+    void getTopProductsByCancellations_ShouldReturnTopCancelledProductsByQuantity() {
         // Given
         Order cancelledOrder = Order.builder()
                 .id(2L)
@@ -416,7 +416,40 @@ class ReportServiceImplTest {
         assertEquals(2L, product.getProductId());
         assertEquals("Product 2", product.getProductName());
         assertEquals(1L, product.getTotalQuantityCancelled());
-        assertEquals(1L, product.getCancellationCount());
+    }
+
+    @Test
+    void getTopProductsByCancellations_ShouldSortByTotalQuantityCancelled() {
+        // Given
+        Order cancelledOrder1 = Order.builder()
+                .id(2L)
+                .user(order1.getUser())
+                .status(OrderStatus.CANCELLED)
+                .createdAt(LocalDateTime.now().minusDays(15))
+                .items(Arrays.asList(item2)) // 2 units cancelled
+                .build();
+
+        Order cancelledOrder2 = Order.builder()
+                .id(3L)
+                .user(order1.getUser())
+                .status(OrderStatus.CANCELLED)
+                .createdAt(LocalDateTime.now().minusDays(10))
+                .items(Arrays.asList(item1)) // 3 units cancelled
+                .build();
+
+        when(orderRepository.findAllByStatus(OrderStatus.CANCELLED))
+                .thenReturn(Arrays.asList(cancelledOrder1, cancelledOrder2));
+
+        // When
+        List<CancelledProductReportDto> result = reportService.getTopProductsByCancellations(5);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+        // First product should have highest totalQuantityCancelled (3)
+        assertEquals(1L, result.get(0).getProductId());
+        assertEquals(2L, result.get(0).getTotalQuantityCancelled());
     }
 
     @Test

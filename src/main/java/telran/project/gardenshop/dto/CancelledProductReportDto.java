@@ -21,6 +21,4 @@ public class CancelledProductReportDto {
     private BigDecimal productPrice;
 
     private Long totalQuantityCancelled;
-
-    private Long cancellationCount;
-} 
+}

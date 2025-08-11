@@ -316,16 +316,14 @@ public class ReportServiceImpl implements ReportService {
                                 .productImageUrl(product.getImageUrl())
                                 .productPrice(product.getPrice())
                                 .totalQuantityCancelled(0L)
-                                .cancellationCount(0L)
                                 .build());
 
                 stats.setTotalQuantityCancelled(stats.getTotalQuantityCancelled() + item.getQuantity());
-                stats.setCancellationCount(stats.getCancellationCount() + 1);
             }
         }
 
         return productStats.values().stream()
-                .sorted(Comparator.comparing(CancelledProductReportDto::getCancellationCount).reversed())
+                .sorted(Comparator.comparing(CancelledProductReportDto::getTotalQuantityCancelled).reversed())
                 .limit(limit)
                 .collect(Collectors.toList());
     }

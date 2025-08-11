@@ -78,20 +78,18 @@ class ReportControllerTest {
     }
 
     @Test
-    void getTopCancelledProducts_ShouldReturnTopCancelledProducts() throws Exception {
+    void getTopCancelledProducts_ShouldReturnTopCancelledProductsByQuantity() throws Exception {
         // Given
         List<CancelledProductReportDto> topCancelledProducts = Arrays.asList(
                 CancelledProductReportDto.builder()
                         .productId(1L)
                         .productName("Product 1")
-                        .totalQuantityCancelled(5L)
-                        .cancellationCount(3L)
+                        .totalQuantityCancelled(10L)  // Highest quantity cancelled
                         .build(),
                 CancelledProductReportDto.builder()
                         .productId(2L)
                         .productName("Product 2")
-                        .totalQuantityCancelled(3L)
-                        .cancellationCount(2L)
+                        .totalQuantityCancelled(5L)   // Lower quantity cancelled
                         .build()
         );
 
@@ -103,12 +101,10 @@ class ReportControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].productId").value(1))
                 .andExpect(jsonPath("$[0].productName").value("Product 1"))
-                .andExpect(jsonPath("$[0].totalQuantityCancelled").value(5))
-                .andExpect(jsonPath("$[0].cancellationCount").value(3))
+                .andExpect(jsonPath("$[0].totalQuantityCancelled").value(10))
                 .andExpect(jsonPath("$[1].productId").value(2))
                 .andExpect(jsonPath("$[1].productName").value("Product 2"))
-                .andExpect(jsonPath("$[1].totalQuantityCancelled").value(3))
-                .andExpect(jsonPath("$[1].cancellationCount").value(2));
+                .andExpect(jsonPath("$[1].totalQuantityCancelled").value(5));
     }
 
     @Test

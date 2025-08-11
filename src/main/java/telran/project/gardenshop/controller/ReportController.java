@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
+import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
 import telran.project.gardenshop.service.ReportService;
 
@@ -37,11 +38,35 @@ public class ReportController {
         return ResponseEntity.ok(profitReport);
     }
 
+    @GetMapping("/profit/grouped")
+    @Operation(summary = "Get profit report grouped by time period (HOUR, DAY, WEEK, MONTH)")
+    public ResponseEntity<GroupedProfitReportDto> getGroupedProfitReport(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(defaultValue = "DAY") String groupBy) {
+        
+        // Validate groupBy parameter
+        if (!isValidGroupBy(groupBy)) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        GroupedProfitReportDto groupedReport = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
+        return ResponseEntity.ok(groupedReport);
+    }
+
     @GetMapping("/pending-payments")
     @Operation(summary = "Get orders pending payment for more than N days")
     public ResponseEntity<List<PendingPaymentReportDto>> getPendingPaymentOrders(
             @RequestParam(defaultValue = "7") int daysOlder) {
         List<PendingPaymentReportDto> pendingOrders = reportService.getPendingPaymentOrders(daysOlder);
         return ResponseEntity.ok(pendingOrders);
+    }
+
+    private boolean isValidGroupBy(String groupBy) {
+        return groupBy != null && 
+               (groupBy.equalsIgnoreCase("HOUR") || 
+                groupBy.equalsIgnoreCase("DAY") || 
+                groupBy.equalsIgnoreCase("WEEK") || 
+                groupBy.equalsIgnoreCase("MONTH"));
     }
 } 

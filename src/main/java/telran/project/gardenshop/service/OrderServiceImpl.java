@@ -1,41 +1,41 @@
 package telran.project.gardenshop.service;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import telran.project.gardenshop.dto.OrderCreateRequestDto;
-import telran.project.gardenshop.entity.Cart;
-import telran.project.gardenshop.entity.CartItem;
-import telran.project.gardenshop.entity.Order;
-import telran.project.gardenshop.entity.OrderItem;
-import telran.project.gardenshop.entity.User;
-import telran.project.gardenshop.enums.DeliveryMethod;
-import telran.project.gardenshop.enums.OrderStatus;
-import telran.project.gardenshop.exception.OrderNotFoundException;
-import telran.project.gardenshop.repository.OrderItemRepository;
-import telran.project.gardenshop.repository.OrderRepository;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import telran.project.gardenshop.dto.OrderCreateRequestDto;
+import telran.project.gardenshop.dto.OrderItemRequestDto;
+import telran.project.gardenshop.entity.*;
+import telran.project.gardenshop.enums.OrderStatus;
+import telran.project.gardenshop.exception.EmptyCartException;
+import telran.project.gardenshop.exception.InsufficientQuantityException;
+import telran.project.gardenshop.exception.OrderNotFoundException;
+import telran.project.gardenshop.exception.ProductNotInCartException;
+import telran.project.gardenshop.repository.OrderItemRepository;
+import telran.project.gardenshop.repository.OrderRepository;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+
     private final OrderItemRepository orderItemRepository;
+
     private final UserService userService;
+
     private final CartService cartService;
 
+    private final ProductService productService;
+
     private Order findOrderById(Long id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException(id));
+        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
     }
 
     @Override
@@ -66,37 +66,66 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order createForCurrentUser(OrderCreateRequestDto dto) {
+    public Order create(OrderCreateRequestDto dto) {
         User user = userService.getCurrent();
         Cart cart = cartService.get();
 
-        if (cart.getItems() == null || cart.getItems().isEmpty()) {
-            throw new IllegalStateException("Cannot create an order with an empty cart");
-        }
+        validateCartNotEmpty(cart);
 
-        Order order = Order.builder()
+        Order order = buildOrder(user, dto);
+        List<OrderItem> orderItems = createOrderItemsFromCart(dto, cart, order);
+
+        order.getItems().addAll(orderItems);
+
+        // Update cart items
+        updateCartItems(cart);
+        // Save the order
+        return orderRepository.save(order);
+    }
+
+    private void validateCartNotEmpty(Cart cart) {
+        if (cart == null || cart.getItems() == null || cart.getItems().isEmpty()) {
+            throw new EmptyCartException("Cannot create an order with an empty cart");
+        }
+    }
+
+    private Order buildOrder(User user, OrderCreateRequestDto dto) {
+        return Order.builder()
                 .user(user)
                 .status(OrderStatus.NEW)
                 .deliveryMethod(dto.getDeliveryMethod().name())
-                .deliveryAddress(dto.getAddress())
-                .contactName(dto.getContactName())
-                .createdAt(dto.getCreatedAt() != null ? dto.getCreatedAt() : LocalDateTime.now())
+                .deliveryAddress(dto.getDeliveryAddress()).contactName(user.getFullName())
+                .createdAt(LocalDateTime.now())
                 .items(new ArrayList<>())
                 .build();
+    }
 
-        List<OrderItem> items = cart.getItems().stream()
-                .map(i -> OrderItem.builder().order(order)
-                        .product(i.getProduct())
-                        .quantity(i.getQuantity())
-                        .price(i.getProduct().getPrice())
-                        .build()).toList();
+    private List<OrderItem> createOrderItemsFromCart(OrderCreateRequestDto dto, Cart cart, Order order) {
+        return dto.getItems().stream()
+                .map(itemDto -> processOrderItem(itemDto, cart, order))
+                .toList();
+    }
 
-        cartService.deleteItems(cart.getItems());
+    private OrderItem processOrderItem(OrderItemRequestDto itemDto, Cart cart, Order order) {
+        CartItem cartItem = findCartItemByProductId(cart.getItems(), itemDto.getProductId()).orElseThrow(() -> new ProductNotInCartException(itemDto.getProductId()));
 
-        items = orderItemRepository.saveAll(items);
-        order.getItems().addAll(items);
+        validateQuantity(cartItem, itemDto);
 
-        return orderRepository.save(order);
+        OrderItem orderItem = OrderItem.builder().order(order).product(cartItem.getProduct()).quantity(itemDto.getQuantity()).price(cartItem.getProduct().getPrice()).build();
+
+        editCartItemList(cartItem, cart.getItems(), itemDto.getQuantity());
+
+        return orderItem;
+    }
+
+    private void validateQuantity(CartItem cartItem, OrderItemRequestDto itemDto) {
+        if (cartItem.getQuantity() < itemDto.getQuantity()) {
+            throw new InsufficientQuantityException(itemDto.getProductId(), cartItem.getQuantity(), itemDto.getQuantity());
+        }
+    }
+
+    private void updateCartItems(Cart cart) {
+        cartService.update(cart);
     }
 
     private void editCartItemList(CartItem cartItem, List<CartItem> cartItems, int quantityToTake) {
@@ -108,9 +137,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Optional<CartItem> findCartItemByProductId(List<CartItem> cartItems, Long productId) {
-        return cartItems.stream()
-                .filter(ci -> ci.getProduct().getId().equals(productId))
-                .findFirst();
+        return cartItems.stream().filter(ci -> ci.getProduct().getId().equals(productId)).findFirst();
     }
 
     @Override

@@ -59,6 +59,32 @@ public class GlobalExceptionHandler {
         return response;
     }
 
+    @ExceptionHandler({
+            EmptyCartException.class,
+            ProductNotInCartException.class,
+            InsufficientQuantityException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleOrderCreationExceptions(RuntimeException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("code", "ORDER_CREATION_ERROR");
+        response.put("message", ex.getMessage());
+        
+        // Add additional details for specific exceptions
+        if (ex instanceof ProductNotInCartException) {
+            ProductNotInCartException pnce = (ProductNotInCartException) ex;
+            response.put("productId", pnce.getProductId());
+        } else if (ex instanceof InsufficientQuantityException) {
+            InsufficientQuantityException iqe = (InsufficientQuantityException) ex;
+            response.put("productId", iqe.getProductId());
+            response.put("availableQuantity", iqe.getAvailableQuantity());
+            response.put("requestedQuantity", iqe.getRequestedQuantity());
+        }
+        
+        return response;
+    }
+
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

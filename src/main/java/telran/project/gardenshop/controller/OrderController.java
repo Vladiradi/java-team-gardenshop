@@ -65,7 +65,7 @@ public class OrderController {
     @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponseDto create(@RequestBody @Valid OrderCreateRequestDto orderCreateRequestDto) {
-        var created = orderService.createForCurrentUser(orderCreateRequestDto);
+        var created = orderService.create(orderCreateRequestDto);
         return orderMapper.toDto(created);
     }
 

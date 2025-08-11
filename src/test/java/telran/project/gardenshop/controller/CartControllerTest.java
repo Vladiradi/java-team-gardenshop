@@ -105,7 +105,7 @@ class CartControllerTest {
     void deleteItem_ReturnsNoContent() throws Exception {
         Long cartItemId = 7L;
 
-        doNothing().when(cartService).deleteItem(cartItemId);
+        when(cartService.deleteItem(cartItemId)).thenReturn(new Cart());
 
         mockMvc.perform(delete("/v1/cart/items/{cartItemId}", cartItemId))
                 .andExpect(status().isNoContent());

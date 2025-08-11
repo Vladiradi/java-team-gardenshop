@@ -14,7 +14,7 @@ public interface OrderService {
     List<Order> getActive();
     List<Order> getAll();
 
-    Order createForCurrentUser(OrderCreateRequestDto dto);
+    Order create(OrderCreateRequestDto dto);
     Order updateStatus(Long id, OrderStatus status);
     Order cancel(Long id);
 

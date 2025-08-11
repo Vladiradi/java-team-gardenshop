@@ -61,9 +61,7 @@ public class OrderServiceImpl implements OrderService {
 
         order.getItems().addAll(orderItems);
 
-        // Update cart items
         cartService.update(cart);
-        // Save the order
         return orderRepository.save(order);
     }
 

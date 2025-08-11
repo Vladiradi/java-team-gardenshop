@@ -74,7 +74,6 @@ public class GlobalExceptionHandler {
         response.put("code", "ORDER_CREATION_ERROR");
         response.put("message", ex.getMessage());
 
-        // Add additional details for specific exceptions
         if (ex instanceof ProductNotInCartException) {
             ProductNotInCartException pnce = (ProductNotInCartException) ex;
             response.put("productId", pnce.getProductId());
@@ -87,7 +86,6 @@ public class GlobalExceptionHandler {
 
         return response;
     }
-
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

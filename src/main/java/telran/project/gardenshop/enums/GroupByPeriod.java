@@ -2,9 +2,6 @@ package telran.project.gardenshop.enums;
 
 import lombok.Getter;
 
-/**
- * Enum representing the time periods for grouping profit reports
- */
 @Getter
 public enum GroupByPeriod {
     HOUR("HOUR"),

@@ -23,9 +23,9 @@ public interface OrderMapper {
 
     @Mapping(target = "orderId", source = "order.id")
     @Mapping(target = "status", expression = "java(order.getStatus() != null ? order.getStatus().name() : null)")
-    @Mapping(target = "products", source = "order.items") // uses OrderItemMapper
-    @Mapping(target = "totalPrice", ignore = true) // set in @AfterMapping
-    @Mapping(target = "createdAt", ignore = true) // set in @AfterMapping
+    @Mapping(target = "products", source = "order.items")
+    @Mapping(target = "totalPrice", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "deliveryAddress", source = "order.deliveryAddress")
     @Mapping(target = "recipientName", source = "order.contactName")
     OrderHistoryDto toHistoryDto(Order order, @Context String recipientPhone);

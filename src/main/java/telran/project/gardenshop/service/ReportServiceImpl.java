@@ -79,16 +79,13 @@ public class ReportServiceImpl implements ReportService {
             return createEmptyGroupedReport(startDate, endDate, groupBy);
         }
 
-        // Group orders by time period
         Map<String, List<Order>> groupedOrders = groupOrdersByTimePeriod(ordersInPeriod, groupBy);
 
-        // Calculate grouped data
         List<GroupedProfitReportDto.GroupedProfitData> groupedData = groupedOrders.entrySet().stream()
                 .map(entry -> calculateGroupedProfitData(entry.getKey(), entry.getValue(), groupBy))
                 .sorted((g1, g2) -> g1.getPeriodStart().compareTo(g2.getPeriodStart()))
                 .collect(Collectors.toList());
 
-        // Calculate totals
         BigDecimal totalRevenue = groupedData.stream()
                 .map(GroupedProfitReportDto.GroupedProfitData::getRevenue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -199,7 +196,7 @@ public class ReportServiceImpl implements ReportService {
             case DAY:
                 return LocalDate.parse(periodKey).atTime(23, 59, 59);
             case WEEK:
-                // periodKey format: "Week YYYY-MM-DD"
+                //YYYY-MM-DD
                 String datePart = periodKey.substring(5); // Remove "Week " prefix
                 LocalDate weekStart = LocalDate.parse(datePart);
                 return weekStart.plusDays(6).atTime(23, 59, 59);

@@ -1,3 +1,4 @@
+
 package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import telran.project.gardenshop.exception.UserWithEmailAlreadyExistsException;
 import telran.project.gardenshop.mapper.UserMapper;
 import telran.project.gardenshop.repository.UserRepository;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,48 +23,55 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public User create(User user) {
+    public User createUser(User user) {
         emailCheck(user.getEmail());
         user.setRole(Role.USER);
         return userRepository.save(user);
     }
 
     @Override
-    public User getById(Long id) {
+    public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    @Override
+    public User updateUser(Long id, User updated) {
+        return null;
+    }
 
     @Override
-    public User update(UserEditDto dto) {
-        User user = getCurrent();
+    public User updateUser(Long id, UserEditDto dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
         if (!user.getEmail().equals(dto.getEmail())) {
             emailCheck(dto.getEmail());
         }
+
         userMapper.updateUserFromDto(dto, user);
+
         return userRepository.save(user);
     }
 
     @Override
-    public void delete() {
-        User user = getCurrent();
+    public void deleteUser(Long id) {
+        User user = getUserById(id);
         userRepository.delete(user);
     }
 
     @Override
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
-    public User getCurrent() {
+    public User getCurrentUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 

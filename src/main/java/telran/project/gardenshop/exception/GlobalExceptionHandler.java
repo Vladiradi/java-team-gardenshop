@@ -5,6 +5,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +64,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             EmptyCartException.class,
             ProductNotInCartException.class,
+            MethodArgumentTypeMismatchException.class,
             InsufficientQuantityException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -70,7 +73,7 @@ public class GlobalExceptionHandler {
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("code", "ORDER_CREATION_ERROR");
         response.put("message", ex.getMessage());
-        
+
         // Add additional details for specific exceptions
         if (ex instanceof ProductNotInCartException) {
             ProductNotInCartException pnce = (ProductNotInCartException) ex;
@@ -81,7 +84,7 @@ public class GlobalExceptionHandler {
             response.put("availableQuantity", iqe.getAvailableQuantity());
             response.put("requestedQuantity", iqe.getRequestedQuantity());
         }
-        
+
         return response;
     }
 

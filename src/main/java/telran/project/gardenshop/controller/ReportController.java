@@ -1,6 +1,8 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
+import telran.project.gardenshop.enums.GroupByPeriod;
 import telran.project.gardenshop.service.ReportService;
 
 import java.time.LocalDateTime;
@@ -41,16 +44,26 @@ public class ReportController {
     @GetMapping("/profit/grouped")
     @Operation(summary = "Get profit report grouped by time period (HOUR, DAY, WEEK, MONTH)")
     public ResponseEntity<GroupedProfitReportDto> getGroupedProfitReport(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-            @RequestParam(defaultValue = "DAY") String groupBy) {
-        
-        // Validate groupBy parameter
-        if (!isValidGroupBy(groupBy)) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) 
+            @Parameter(description = "Start date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)", 
+                      example = "2024-01-01T00:00:00",
+                      schema = @Schema(type = "string", format = "date-time"))
+            LocalDateTime startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) 
+            @Parameter(description = "End date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)", 
+                      example = "2024-12-31T23:59:59",
+                      schema = @Schema(type = "string", format = "date-time"))
+            LocalDateTime endDate,
+            @RequestParam(defaultValue = "DAY") 
+            @Parameter(description = "Grouping period", 
+                      schema = @Schema(allowableValues = {"HOUR", "DAY", "WEEK", "MONTH"}, 
+                                     defaultValue = "DAY"))
+            String groupBy) {
+        GroupByPeriod groupByPeriod = GroupByPeriod.fromString(groupBy);
+        if (groupByPeriod == null) {
             return ResponseEntity.badRequest().build();
         }
-        
-        GroupedProfitReportDto groupedReport = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
+        GroupedProfitReportDto groupedReport = reportService.getGroupedProfitReport(startDate, endDate, groupByPeriod);
         return ResponseEntity.ok(groupedReport);
     }
 
@@ -60,13 +73,5 @@ public class ReportController {
             @RequestParam(defaultValue = "7") int daysOlder) {
         List<PendingPaymentReportDto> pendingOrders = reportService.getPendingPaymentOrders(daysOlder);
         return ResponseEntity.ok(pendingOrders);
-    }
-
-    private boolean isValidGroupBy(String groupBy) {
-        return groupBy != null && 
-               (groupBy.equalsIgnoreCase("HOUR") || 
-                groupBy.equalsIgnoreCase("DAY") || 
-                groupBy.equalsIgnoreCase("WEEK") || 
-                groupBy.equalsIgnoreCase("MONTH"));
     }
 } 

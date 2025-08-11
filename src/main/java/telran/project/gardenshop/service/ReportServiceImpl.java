@@ -10,6 +10,7 @@ import telran.project.gardenshop.dto.OrderItemResponseDto;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.OrderItem;
 import telran.project.gardenshop.enums.OrderStatus;
+import telran.project.gardenshop.enums.GroupByPeriod;
 import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.OrderItemRepository;
 import java.math.BigDecimal;
@@ -112,7 +113,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public GroupedProfitReportDto getGroupedProfitReport(LocalDateTime startDate, LocalDateTime endDate, String groupBy) {
+    public GroupedProfitReportDto getGroupedProfitReport(LocalDateTime startDate, LocalDateTime endDate, GroupByPeriod groupBy) {
         List<Order> ordersInPeriod = orderRepository.findAllByCreatedAtBetweenAndStatus(
                 startDate, endDate, OrderStatus.DELIVERED);
 
@@ -148,7 +149,7 @@ public class ReportServiceImpl implements ReportService {
         return GroupedProfitReportDto.builder()
                 .startDate(startDate)
                 .endDate(endDate)
-                .groupBy(groupBy.toUpperCase())
+                .groupBy(groupBy.name())
                 .groupedData(groupedData)
                 .totalRevenue(totalRevenue)
                 .totalCost(totalCost)
@@ -159,29 +160,29 @@ public class ReportServiceImpl implements ReportService {
                 .build();
     }
 
-    private Map<String, List<Order>> groupOrdersByTimePeriod(List<Order> orders, String groupBy) {
+    private Map<String, List<Order>> groupOrdersByTimePeriod(List<Order> orders, GroupByPeriod groupBy) {
         return orders.stream()
                 .collect(Collectors.groupingBy(order -> getPeriodKey(order.getCreatedAt(), groupBy)));
     }
 
-    private String getPeriodKey(LocalDateTime dateTime, String groupBy) {
-        switch (groupBy.toUpperCase()) {
-            case "HOUR":
+    private String getPeriodKey(LocalDateTime dateTime, GroupByPeriod groupBy) {
+        switch (groupBy) {
+            case HOUR:
                 return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
-            case "DAY":
+            case DAY:
                 return dateTime.toLocalDate().toString();
-            case "WEEK":
+            case WEEK:
                 LocalDate date = dateTime.toLocalDate();
                 LocalDate weekStart = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
                 return "Week " + weekStart.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            case "MONTH":
+            case MONTH:
                 return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"));
             default:
                 return dateTime.toLocalDate().toString();
         }
     }
 
-    private GroupedProfitReportDto.GroupedProfitData calculateGroupedProfitData(String periodKey, List<Order> orders, String groupBy) {
+    private GroupedProfitReportDto.GroupedProfitData calculateGroupedProfitData(String periodKey, List<Order> orders, GroupByPeriod groupBy) {
         BigDecimal revenue = orders.stream()
                 .flatMap(order -> order.getItems().stream())
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
@@ -214,37 +215,37 @@ public class ReportServiceImpl implements ReportService {
                 .build();
     }
 
-    private LocalDateTime getPeriodStart(String periodKey, String groupBy) {
-        switch (groupBy.toUpperCase()) {
-            case "HOUR":
+    private LocalDateTime getPeriodStart(String periodKey, GroupByPeriod groupBy) {
+        switch (groupBy) {
+            case HOUR:
                 return LocalDateTime.parse(periodKey + ":00", 
                     java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            case "DAY":
+            case DAY:
                 return LocalDate.parse(periodKey).atStartOfDay();
-            case "WEEK":
+            case WEEK:
                 // periodKey format: "Week YYYY-MM-DD"
                 String datePart = periodKey.substring(5); // Remove "Week " prefix
                 return LocalDate.parse(datePart).atStartOfDay();
-            case "MONTH":
+            case MONTH:
                 return LocalDate.parse(periodKey + "-01").atStartOfDay();
             default:
                 return LocalDate.parse(periodKey).atStartOfDay();
         }
     }
 
-    private LocalDateTime getPeriodEnd(String periodKey, String groupBy) {
-        switch (groupBy.toUpperCase()) {
-            case "HOUR":
+    private LocalDateTime getPeriodEnd(String periodKey, GroupByPeriod groupBy) {
+        switch (groupBy) {
+            case HOUR:
                 return LocalDateTime.parse(periodKey + ":00", 
                     java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
-            case "DAY":
+            case DAY:
                 return LocalDate.parse(periodKey).atTime(23, 59, 59);
-            case "WEEK":
+            case WEEK:
                 // periodKey format: "Week YYYY-MM-DD"
                 String datePart = periodKey.substring(5); // Remove "Week " prefix
                 LocalDate weekStart = LocalDate.parse(datePart);
                 return weekStart.plusDays(6).atTime(23, 59, 59);
-            case "MONTH":
+            case MONTH:
                 LocalDate monthStart = LocalDate.parse(periodKey + "-01");
                 return monthStart.plusMonths(1).minusDays(1).atTime(23, 59, 59);
             default:
@@ -252,11 +253,11 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
-    private GroupedProfitReportDto createEmptyGroupedReport(LocalDateTime startDate, LocalDateTime endDate, String groupBy) {
+    private GroupedProfitReportDto createEmptyGroupedReport(LocalDateTime startDate, LocalDateTime endDate, GroupByPeriod groupBy) {
         return GroupedProfitReportDto.builder()
                 .startDate(startDate)
                 .endDate(endDate)
-                .groupBy(groupBy.toUpperCase())
+                .groupBy(groupBy.name())
                 .groupedData(new ArrayList<>())
                 .totalRevenue(BigDecimal.ZERO)
                 .totalCost(BigDecimal.ZERO)

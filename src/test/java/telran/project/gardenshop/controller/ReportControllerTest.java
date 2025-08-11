@@ -11,6 +11,7 @@ import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
+import telran.project.gardenshop.enums.GroupByPeriod;
 import telran.project.gardenshop.service.ReportService;
 import telran.project.gardenshop.service.security.JwtFilter;
 import telran.project.gardenshop.service.security.JwtService;
@@ -155,7 +156,7 @@ class ReportControllerTest {
                 .totalItemsSold(50L)
                 .build();
 
-        when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(groupBy))).thenReturn(groupedReport);
+        when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(GroupByPeriod.DAY))).thenReturn(groupedReport);
 
         // When & Then
         mockMvc.perform(get("/v1/reports/profit/grouped")
@@ -206,7 +207,7 @@ class ReportControllerTest {
                 .totalItemsSold(12L)
                 .build();
 
-        when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(groupBy))).thenReturn(groupedReport);
+        when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(GroupByPeriod.HOUR))).thenReturn(groupedReport);
 
         // When & Then
         mockMvc.perform(get("/v1/reports/profit/grouped")
@@ -237,7 +238,7 @@ class ReportControllerTest {
                 .totalItemsSold(0L)
                 .build();
 
-        when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq("DAY"))).thenReturn(groupedReport);
+        when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(GroupByPeriod.DAY))).thenReturn(groupedReport);
 
         // When & Then
         mockMvc.perform(get("/v1/reports/profit/grouped")

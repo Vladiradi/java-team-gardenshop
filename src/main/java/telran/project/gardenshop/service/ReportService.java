@@ -4,6 +4,7 @@ import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
+import telran.project.gardenshop.enums.GroupByPeriod;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ReportService {
 
     ProfitReportDto getProfitReport(LocalDateTime startDate, LocalDateTime endDate);
 
-    GroupedProfitReportDto getGroupedProfitReport(LocalDateTime startDate, LocalDateTime endDate, String groupBy);
+    GroupedProfitReportDto getGroupedProfitReport(LocalDateTime startDate, LocalDateTime endDate, GroupByPeriod groupBy);
 
     List<PendingPaymentReportDto> getPendingPaymentOrders(int daysOlder);
 }

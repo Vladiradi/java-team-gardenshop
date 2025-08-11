@@ -12,6 +12,7 @@ import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
 import telran.project.gardenshop.entity.*;
 import telran.project.gardenshop.enums.OrderStatus;
+import telran.project.gardenshop.enums.GroupByPeriod;
 import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.OrderItemRepository;
 import java.math.BigDecimal;
@@ -164,7 +165,7 @@ class ReportServiceImplTest {
         // Given
         LocalDateTime startDate = LocalDateTime.now().minusDays(7);
         LocalDateTime endDate = LocalDateTime.now();
-        String groupBy = "DAY";
+        GroupByPeriod groupBy = GroupByPeriod.DAY;
 
         when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                 .thenReturn(Arrays.asList(order1));
@@ -176,7 +177,7 @@ class ReportServiceImplTest {
         assertNotNull(result);
         assertEquals(startDate, result.getStartDate());
         assertEquals(endDate, result.getEndDate());
-        assertEquals("DAY", result.getGroupBy());
+        assertEquals(groupBy.name(), result.getGroupBy());
         assertEquals(BigDecimal.valueOf(400).doubleValue(), result.getTotalRevenue().doubleValue(), 0.001);
         assertEquals(BigDecimal.valueOf(240).doubleValue(), result.getTotalCost().doubleValue(), 0.001);
         assertEquals(BigDecimal.valueOf(160).doubleValue(), result.getTotalProfit().doubleValue(), 0.001);
@@ -204,7 +205,7 @@ class ReportServiceImplTest {
         // Given
         LocalDateTime startDate = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime endDate = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
-        String groupBy = "HOUR";
+        GroupByPeriod groupBy = GroupByPeriod.HOUR;
 
         when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                 .thenReturn(Arrays.asList(order1));
@@ -214,18 +215,18 @@ class ReportServiceImplTest {
 
         // Then
         assertNotNull(result);
-        assertEquals("HOUR", result.getGroupBy());
+        assertEquals(groupBy.name(), result.getGroupBy());
         assertNotNull(result.getGroupedData());
         assertEquals(1, result.getGroupedData().size());
     }
 
     @Test
-    void getGroupedProfitReport_WithWeekGrouping() {
+    void getGroupedProfitReport_WithWeekGrouping_ShouldReturnGroupedData() {
         // Given
         LocalDateTime startDate = LocalDateTime.now().minusWeeks(2);
         LocalDateTime endDate = LocalDateTime.now();
-        String groupBy = "WEEK";
-
+        GroupByPeriod groupBy = GroupByPeriod.WEEK;
+        
         when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                 .thenReturn(Arrays.asList(order1));
 
@@ -234,18 +235,18 @@ class ReportServiceImplTest {
 
         // Then
         assertNotNull(result);
-        assertEquals("WEEK", result.getGroupBy());
+        assertEquals(groupBy.name(), result.getGroupBy());
         assertNotNull(result.getGroupedData());
         assertEquals(1, result.getGroupedData().size());
     }
 
     @Test
-    void getGroupedProfitReport_WithMonthGrouping() {
+    void getGroupedProfitReport_WithMonthGrouping_ShouldReturnGroupedData() {
         // Given
         LocalDateTime startDate = LocalDateTime.now().minusMonths(3);
         LocalDateTime endDate = LocalDateTime.now();
-        String groupBy = "MONTH";
-
+        GroupByPeriod groupBy = GroupByPeriod.MONTH;
+        
         when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                 .thenReturn(Arrays.asList(order1));
 
@@ -254,18 +255,18 @@ class ReportServiceImplTest {
 
         // Then
         assertNotNull(result);
-        assertEquals("MONTH", result.getGroupBy());
+        assertEquals(groupBy.name(), result.getGroupBy());
         assertNotNull(result.getGroupedData());
         assertEquals(1, result.getGroupedData().size());
     }
 
     @Test
-    void getGroupedProfitReport_WithNoOrders() {
+    void getGroupedProfitReport_WithNoOrders_ShouldReturnEmptyReport() {
         // Given
         LocalDateTime startDate = LocalDateTime.now().minusDays(7);
         LocalDateTime endDate = LocalDateTime.now();
-        String groupBy = "DAY";
-
+        GroupByPeriod groupBy = GroupByPeriod.DAY;
+        
         when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                 .thenReturn(Collections.emptyList());
 
@@ -276,7 +277,7 @@ class ReportServiceImplTest {
         assertNotNull(result);
         assertEquals(startDate, result.getStartDate());
         assertEquals(endDate, result.getEndDate());
-        assertEquals("DAY", result.getGroupBy());
+        assertEquals(groupBy.name(), result.getGroupBy());
         assertEquals(BigDecimal.ZERO, result.getTotalRevenue());
         assertEquals(BigDecimal.ZERO, result.getTotalCost());
         assertEquals(BigDecimal.ZERO, result.getTotalProfit());
@@ -291,7 +292,7 @@ class ReportServiceImplTest {
         // Given
         LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.of(2024, 1, 3, 23, 59, 59);
-        String groupBy = "DAY";
+        GroupByPeriod groupBy = GroupByPeriod.DAY;
 
         // Create orders for different days with fixed timestamps
         Order orderDay1 = Order.builder()
@@ -318,7 +319,7 @@ class ReportServiceImplTest {
 
         // Then
         assertNotNull(result);
-        assertEquals("DAY", result.getGroupBy());
+        assertEquals(groupBy.name(), result.getGroupBy());
         assertNotNull(result.getGroupedData());
         assertEquals(2, result.getGroupedData().size());
 

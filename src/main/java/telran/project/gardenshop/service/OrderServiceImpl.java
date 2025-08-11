@@ -68,7 +68,6 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Order createForCurrentUser(OrderCreateRequestDto dto) {
         User user = userService.getCurrent();
-        // cart from current user
         Cart cart = cartService.get();
 
         if (cart.getItems() == null || cart.getItems().isEmpty()) {

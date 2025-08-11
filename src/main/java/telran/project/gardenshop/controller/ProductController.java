@@ -62,7 +62,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/edit")
-    @Operation(summary = "Полное редактирование товара (title, description, price)")
+    @Operation(summary = "Edit product (title, description, price)")
     public ResponseEntity<ProductResponseDto> editProduct(
             @PathVariable Long id,
             @RequestBody ProductEditDto dto) {

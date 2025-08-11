@@ -14,7 +14,6 @@ import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.mapper.OrderMapper;
 import telran.project.gardenshop.service.OrderService;
-import telran.project.gardenshop.service.UserService;
 
 import java.util.List;
 
@@ -25,14 +24,12 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
-    private final UserService userService;
     private final OrderMapper orderMapper;
 
     @GetMapping("/history")
     @PreAuthorize("hasRole('USER')")
     public List<OrderShortResponseDto> getAllForCurrentUser() {
-        var currentUser = userService.getCurrentUser();
-        return orderService.getOrdersByUserId(currentUser.getId())
+        return orderService.getForCurrentUser()
                 .stream()
                 .map(orderMapper::toShortDto)
                 .toList();
@@ -41,8 +38,7 @@ public class OrderController {
     @GetMapping("/history/delivered")
     @PreAuthorize("hasRole('USER')")
     public List<OrderResponseDto> getAllDeliveredForCurrentUser() {
-        var currentUser = userService.getCurrentUser();
-        return orderService.getOrdersByUserId(currentUser.getId())
+        return orderService.getForCurrentUser()
                 .stream()
                 .filter(o -> o.getStatus() == OrderStatus.DELIVERED)
                 .map(orderMapper::toDto)
@@ -52,7 +48,7 @@ public class OrderController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public List<OrderShortResponseDto> getAll() {
-        return orderService.getActiveOrders()
+        return orderService.getActive()
                 .stream()
                 .map(orderMapper::toShortDto)
                 .toList();
@@ -61,7 +57,7 @@ public class OrderController {
     @GetMapping("/{orderId}")
     @PreAuthorize("hasRole('USER')")
     public OrderResponseDto getById(@PathVariable @Positive Long orderId) {
-        Order order = orderService.getOrderById(orderId);
+        Order order = orderService.getById(orderId);
         return orderMapper.toDto(order);
     }
 
@@ -69,42 +65,14 @@ public class OrderController {
     @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponseDto create(@RequestBody @Valid OrderCreateRequestDto orderCreateRequestDto) {
-        var currentUser = userService.getCurrentUser();
-        var created = orderService.createOrder(currentUser.getId(), orderCreateRequestDto);
+        var created = orderService.createForCurrentUser(orderCreateRequestDto);
         return orderMapper.toDto(created);
-    }
-
-    @PostMapping("/items")
-    @PreAuthorize("hasRole('USER')")
-    @ResponseStatus(HttpStatus.CREATED)
-    public OrderResponseDto addItem(@RequestParam @Positive Long orderId,
-                                    @RequestParam @Positive Long productId,
-                                    @RequestParam @Positive Integer quantity) {
-        var updated = orderService.addItem(orderId, productId, quantity);
-        return orderMapper.toDto(updated);
-    }
-
-    @PutMapping("/items")
-    @PreAuthorize("hasRole('USER')")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public OrderResponseDto updateItem(@RequestParam @Positive Long orderItemId,
-                                       @RequestParam @Positive Integer quantity) {
-        var updated = orderService.updateItem(orderItemId, quantity);
-        return orderMapper.toDto(updated);
-    }
-
-    @DeleteMapping("/items/{orderItemId}")
-    @PreAuthorize("hasRole('USER')")
-    public OrderResponseDto removeItem(@PathVariable @Positive Long orderItemId) {
-        var updated = orderService.removeItem(orderItemId);
-        return orderMapper.toDto(updated);
     }
 
     @DeleteMapping("/{orderId}")
     @PreAuthorize("hasRole('USER')")
     public OrderResponseDto delete(@PathVariable @Positive Long orderId) {
-        orderService.cancelOrder(orderId);
-        var cancelled = orderService.getOrderById(orderId);
+        var cancelled = orderService.cancel(orderId);
         return orderMapper.toDto(cancelled);
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import telran.project.gardenshop.dto.OrderCreateRequestDto;
 import telran.project.gardenshop.dto.OrderResponseDto;
 import telran.project.gardenshop.entity.Order;
+import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.mapper.OrderMapper;
 import telran.project.gardenshop.service.OrderService;
 import telran.project.gardenshop.service.UserService;
@@ -65,14 +66,14 @@ class OrderControllerTest {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        when(orderService.getOrderById(orderId)).thenReturn(order);
+        when(orderService.getById(orderId)).thenReturn(order);
         when(orderMapper.toDto(order)).thenReturn(responseDto);
 
         mockMvc.perform(get("/v1/orders/{orderId}", orderId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(orderId.intValue())));
 
-        verify(orderService).getOrderById(orderId);
+        verify(orderService).getById(orderId);
         verify(orderMapper).toDto(order);
     }
 
@@ -81,6 +82,9 @@ class OrderControllerTest {
     @Test
     void testCreateOrder() throws Exception {
         Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+
         OrderCreateRequestDto createDto = new OrderCreateRequestDto();
         createDto.setDeliveryMethod(telran.project.gardenshop.enums.DeliveryMethod.COURIER);
         createDto.setAddress("123 Street");
@@ -94,7 +98,8 @@ class OrderControllerTest {
                 .id(100L)
                 .build();
 
-        when(orderService.createOrder(eq(userId), any(OrderCreateRequestDto.class))).thenReturn(order);
+        when(orderService.createForCurrentUser(any(OrderCreateRequestDto.class))).thenReturn(order);
+        when(userService.getCurrent()).thenReturn(user);
         when(orderMapper.toDto(order)).thenReturn(responseDto);
 
         mockMvc.perform(post("/v1/orders/{userId}", userId)
@@ -103,7 +108,7 @@ class OrderControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(100)));
 
-        verify(orderService).createOrder(eq(userId), any(OrderCreateRequestDto.class));
+        verify(orderService).createForCurrentUser(any(OrderCreateRequestDto.class));
         verify(orderMapper).toDto(order);
     }
 }

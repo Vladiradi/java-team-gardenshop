@@ -1,86 +1,46 @@
 package telran.project.gardenshop.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import telran.project.gardenshop.dto.CartItemRequestDto;
-import telran.project.gardenshop.dto.CartItemResponseDto;
-import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.CartItem;
-import telran.project.gardenshop.entity.Product;
-import telran.project.gardenshop.mapper.CartItemMapper;
+import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.repository.CartItemRepository;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemRepository cartItemRepository;
-    private final ProductService productService;
-    private final CartService cartService;
-    private final CartItemMapper cartItemMapper;
+    private final UserService userService;
 
     @Override
-    @Transactional
-    public CartItemResponseDto addItemToCart(Long cartId, CartItemRequestDto requestDto) {
-        Cart cart = cartService.getCartById(cartId);
-        Product product = productService.getProductById(requestDto.getProductId());
+    public CartItem getById(Long cartItemId) {
+        // user from SecurityContext
+        String email = SecurityContextHolder.getContext().getAuthentication() != null
+                ? SecurityContextHolder.getContext().getAuthentication().getName()
+                : null;
 
-        CartItem existingItem = cartItemRepository.findByCartAndProduct(cart, product)
-                .orElse(null);
-
-        if (existingItem != null) {
-            existingItem.setQuantity(existingItem.getQuantity() + requestDto.getQuantity());
-            return cartItemMapper.toDto(cartItemRepository.save(existingItem));
-        } else {
-            CartItem newItem = CartItem.builder()
-                    .cart(cart)
-                    .product(product)
-                    .quantity(requestDto.getQuantity())
-                    .price(requestDto.getPrice())
-                    .build();
-            return cartItemMapper.toDto(cartItemRepository.save(newItem));
-        }
-    }
-
-    @Override
-    @Transactional
-    public CartItemResponseDto updateItemQuantity(Long cartId, Long productId, Integer newQuantity) {
-        if (newQuantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than 0");
+        if (email == null) {
+            throw new UsernameNotFoundException("Anonymous access is not allowed");
         }
 
-        Cart cart = cartService.getCartById(cartId);
-        Product product = productService.getProductById(productId);
+        User current = userService.getUserByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
 
-        CartItem item = cartItemRepository.findByCartAndProduct(cart, product)
-                .orElseThrow(() -> new EntityNotFoundException("Cart item not found"));
+        // took item and checking that it belong to our current user
+        CartItem item = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new EntityNotFoundException("CartItem with id " + cartItemId + " not found"));
 
-        item.setQuantity(newQuantity);
-        return cartItemMapper.toDto(cartItemRepository.save(item));
-    }
+        if (item.getCart() == null || item.getCart().getUser() == null
+                || !item.getCart().getUser().getId().equals(current.getId())) {
+            // masking like EntityNotFound +security
+            throw new EntityNotFoundException("CartItem with id " + cartItemId + " not found");
+        }
 
-    @Override
-    public void removeItemFromCart(Long cartId, Long productId) {
-        Cart cart = cartService.getCartById(cartId);
-        Product product = productService.getProductById(productId);
-        cartItemRepository.deleteByCartAndProduct(cart, product);
-    }
-
-    @Override
-    public List<CartItemResponseDto> getCartItems(Long cartId) {
-        Cart cart = cartService.getCartById(cartId);
-        return cartItemRepository.findByCart(cart).stream()
-                .map(cartItemMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public void clearCart(Long cartId) {
-        Cart cart = cartService.getCartById(cartId);
-        cartItemRepository.deleteAllByCart(cart);
+        return item;
     }
 }

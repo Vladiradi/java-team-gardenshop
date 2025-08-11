@@ -22,7 +22,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Override
     public Favorite addToFavorites(Favorite favorite) {
-        User user = userService.getUserById(favorite.getUser().getId());
+        User user = userService.getCurrent();
         Product product = productService.getProductById(favorite.getProduct().getId());
 
         if(favoriteRepository.findByUserIdAndProductId(user.getId(), product.getId()).isPresent()) {
@@ -56,7 +56,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public Favorite updateFavorite(Long id, Favorite updatedFavorite) {
         Favorite existingFavorite = getFavoriteById(id);
-        User user = userService.getUserById(updatedFavorite.getUser().getId());
+        User user = userService.getCurrent();
         Product product = productService.getProductById(updatedFavorite.getProduct().getId());
         existingFavorite.setUser(user);
         existingFavorite.setProduct(product);

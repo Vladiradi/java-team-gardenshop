@@ -2,8 +2,13 @@ package telran.project.gardenshop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import telran.project.gardenshop.enums.OrderStatus;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,7 +33,8 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus status;
+    @Builder.Default
+    private OrderStatus status = OrderStatus.NEW;
 
     @Column(nullable = false)
     private String deliveryMethod;
@@ -40,11 +46,14 @@ public class Order {
     private String contactName;
 
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items;
+    @Builder.Default
+    private List<OrderItem> items = new ArrayList<>();
 }

@@ -5,6 +5,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +58,33 @@ public class GlobalExceptionHandler {
         response.put("status", HttpStatus.CONFLICT.value());
         response.put("code", "ALREADY_EXISTS");
         response.put("message", ex.getMessage());
+        return response;
+    }
+
+    @ExceptionHandler({
+            EmptyCartException.class,
+            ProductNotInCartException.class,
+            MethodArgumentTypeMismatchException.class,
+            InsufficientQuantityException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleOrderCreationExceptions(RuntimeException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("code", "ORDER_CREATION_ERROR");
+        response.put("message", ex.getMessage());
+
+        // Add additional details for specific exceptions
+        if (ex instanceof ProductNotInCartException) {
+            ProductNotInCartException pnce = (ProductNotInCartException) ex;
+            response.put("productId", pnce.getProductId());
+        } else if (ex instanceof InsufficientQuantityException) {
+            InsufficientQuantityException iqe = (InsufficientQuantityException) ex;
+            response.put("productId", iqe.getProductId());
+            response.put("availableQuantity", iqe.getAvailableQuantity());
+            response.put("requestedQuantity", iqe.getRequestedQuantity());
+        }
+
         return response;
     }
 

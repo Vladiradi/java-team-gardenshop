@@ -24,6 +24,8 @@ public class ProfitReportDto {
 
     private BigDecimal totalProfit;
 
+    private BigDecimal profitMargin;
+
     private Long totalOrders;
 
     private Long totalItemsSold;

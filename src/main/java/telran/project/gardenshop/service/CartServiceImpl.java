@@ -20,10 +20,8 @@ import java.util.List;
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
-    private final CartMapper cartMapper;
-    private final UserService userService;
 
+    private final UserService userService;
 
     @Override
     public Cart get() {
@@ -44,20 +42,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void deleteItems(List<CartItem> cartItems) {
-        cartItems.forEach(item -> { cartItemRepository.deleteById(item.getId()); });
-    }
-
-    @Override
     public Cart addItem(Long productId) {
-        User currentUser = userService.getCurrent();
-        Cart cart = cartRepository.findByUser(currentUser)
-                .orElseGet(() -> {
-                    Cart newCart = Cart.builder()
-                            .user(currentUser)
-                            .build();
-                    return cartRepository.save(newCart);
-                });
+        Cart cart = get();
 
         CartItem existingItem = cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
@@ -74,15 +60,12 @@ public class CartServiceImpl implements CartService {
             cart.getItems().add(newItem);
         }
 
-        Cart savedCart = cartRepository.save(cart);
-        return savedCart;
+        return cartRepository.save(cart);
     }
 
     @Override
     public Cart updateItem(Long cartItemId, Integer quantity) {
-        User currentUser = userService.getCurrent();
-        Cart cart = cartRepository.findByUser(currentUser)
-                .orElseThrow(() -> new CartNotFoundException("Cart for current user not found"));
+        Cart cart = get();
 
         CartItem item = cart.getItems().stream()
                 .filter(cartItem -> cartItem.getId().equals(cartItemId))
@@ -95,9 +78,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart deleteItem(Long cartItemId) {
-        User currentUser = userService.getCurrent();
-        Cart cart = cartRepository.findByUser(currentUser)
-                .orElseThrow(() -> new CartNotFoundException("Cart for current user not found"));
+        Cart cart = get();
 
         boolean removed = cart.getItems().removeIf(item -> item.getId().equals(cartItemId));
         if (!removed) {

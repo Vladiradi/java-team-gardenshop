@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductReportDto {
+public class CancelledProductReportDto {
 
     private Long productId;
 
@@ -20,7 +20,5 @@ public class ProductReportDto {
 
     private BigDecimal productPrice;
 
-    private Long totalQuantitySold;
-
-    private BigDecimal totalRevenue;
-} 
+    private Long totalQuantityCancelled;
+}

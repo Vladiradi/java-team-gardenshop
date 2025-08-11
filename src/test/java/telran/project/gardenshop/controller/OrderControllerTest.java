@@ -29,6 +29,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import telran.project.gardenshop.dto.OrderItemRequestDto;
+import java.util.List;
 
 @WebMvcTest(OrderController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -87,9 +89,18 @@ class OrderControllerTest {
 
         OrderCreateRequestDto createDto = new OrderCreateRequestDto();
         createDto.setDeliveryMethod(telran.project.gardenshop.enums.DeliveryMethod.COURIER);
-        createDto.setAddress("123 Street");
-        createDto.setContactName("John");
-        createDto.setCreatedAt(LocalDateTime.now());
+        createDto.setDeliveryAddress("123 Street");
+        
+        // Create items for the order
+        OrderItemRequestDto item1 = OrderItemRequestDto.builder()
+                .productId(1L)
+                .quantity(2)
+                .build();
+        OrderItemRequestDto item2 = OrderItemRequestDto.builder()
+                .productId(2L)
+                .quantity(1)
+                .build();
+        createDto.setItems(List.of(item1, item2));
 
         Order order = new Order();
         order.setId(100L);
@@ -98,17 +109,17 @@ class OrderControllerTest {
                 .id(100L)
                 .build();
 
-        when(orderService.createForCurrentUser(any(OrderCreateRequestDto.class))).thenReturn(order);
+        when(orderService.create(any(OrderCreateRequestDto.class))).thenReturn(order);
         when(userService.getCurrent()).thenReturn(user);
         when(orderMapper.toDto(order)).thenReturn(responseDto);
 
-        mockMvc.perform(post("/v1/orders/{userId}", userId)
+        mockMvc.perform(post("/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(100)));
 
-        verify(orderService).createForCurrentUser(any(OrderCreateRequestDto.class));
+        verify(orderService).create(any(OrderCreateRequestDto.class));
         verify(orderMapper).toDto(order);
     }
 }

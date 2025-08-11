@@ -10,12 +10,10 @@ public interface OrderService {
 
     Order getById(Long id);
     List<Order> getForCurrentUser();
-    List<Order> getByUserId(Long userId);
     List<Order> getActive();
     List<Order> getAll();
 
     Order create(OrderCreateRequestDto dto);
-    Order updateStatus(Long id, OrderStatus status);
     Order cancel(Long id);
 
     void delete(Long id);

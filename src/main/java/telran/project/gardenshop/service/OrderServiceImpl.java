@@ -28,11 +28,6 @@ public class OrderServiceImpl implements OrderService {
 
     private final CartService cartService;
 
-
-    private Order findOrderById(Long id) {
-        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
-    }
-
     @Override
     public Order getById(Long orderId) {
         return findOrderById(orderId);
@@ -41,11 +36,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getForCurrentUser() {
         Long userId = userService.getCurrent().getId();
-        return orderRepository.findAllByUserId(userId);
-    }
-
-    @Override
-    public List<Order> getByUserId(Long userId) {
         return orderRepository.findAllByUserId(userId);
     }
 
@@ -76,6 +66,23 @@ public class OrderServiceImpl implements OrderService {
         cartService.update(cart);
         // Save the order
         return orderRepository.save(order);
+    }
+
+    @Override
+    public void delete(Long orderId) {
+        Order order = findOrderById(orderId);
+        orderRepository.delete(order);
+    }
+
+    @Override
+    public Order cancel(Long orderId) {
+        Order order = findOrderById(orderId);
+        order.setStatus(OrderStatus.CANCELLED);
+        return orderRepository.save(order);
+    }
+
+    private Order findOrderById(Long id) {
+        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
     }
 
     private void validateCartNotEmpty(Cart cart) {
@@ -129,23 +136,4 @@ public class OrderServiceImpl implements OrderService {
         return cartItems.stream().filter(ci -> ci.getProduct().getId().equals(productId)).findFirst();
     }
 
-    @Override
-    public void delete(Long orderId) {
-        Order order = findOrderById(orderId);
-        orderRepository.delete(order);
-    }
-
-    @Override
-    public Order updateStatus(Long orderId, OrderStatus status) {
-        Order order = findOrderById(orderId);
-        order.setStatus(status);
-        return orderRepository.save(order);
-    }
-
-    @Override
-    public Order cancel(Long orderId) {
-        Order order = findOrderById(orderId);
-        order.setStatus(OrderStatus.CANCELLED);
-        return orderRepository.save(order);
-    }
 }

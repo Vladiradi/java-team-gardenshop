@@ -68,8 +68,6 @@ public class CartServiceImpl implements CartService {
             existingItem.setQuantity(existingItem.getQuantity() + 1);
         } else {
             CartItem newItem = CartItem.builder()
-                    //TODO
-                    //.product(userService.getProductById(productId)) // Assuming userService has a method to get product
                     .quantity(1)
                     .cart(cart)
                     .build();

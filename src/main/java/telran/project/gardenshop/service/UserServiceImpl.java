@@ -1,7 +1,7 @@
-
 package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import telran.project.gardenshop.dto.UserEditDto;
@@ -11,6 +11,7 @@ import telran.project.gardenshop.exception.UserNotFoundException;
 import telran.project.gardenshop.exception.UserWithEmailAlreadyExistsException;
 import telran.project.gardenshop.mapper.UserMapper;
 import telran.project.gardenshop.repository.UserRepository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,6 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final UserMapper userMapper;
 
     @Override
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Long id, User updated) {
-        return null;
+        return null; // оставлено как в твоём коде
     }
 
     @Override
@@ -71,8 +71,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public User getCurrent() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null || "anonymousUser".equals(auth.getPrincipal())) {
+            throw new UserNotFoundException("No authenticated user");
+        }
+        return (User) auth.getPrincipal();
     }
 
     private void emailCheck(String email) {

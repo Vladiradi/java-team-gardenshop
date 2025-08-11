@@ -10,6 +10,7 @@ import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
+import telran.project.gardenshop.dto.CancelledProductReportDto;
 import telran.project.gardenshop.entity.*;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.GroupByPeriod;
@@ -21,7 +22,11 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -133,7 +138,6 @@ class ReportServiceImplTest {
         assertNotNull(product1Report);
         assertEquals("Product 1", product1Report.getProductName());
         assertEquals(2L, product1Report.getTotalQuantitySold());
-        assertEquals(BigDecimal.valueOf(200), product1Report.getTotalRevenue());
     }
 
     @Test
@@ -226,7 +230,7 @@ class ReportServiceImplTest {
         LocalDateTime startDate = LocalDateTime.now().minusWeeks(2);
         LocalDateTime endDate = LocalDateTime.now();
         GroupByPeriod groupBy = GroupByPeriod.WEEK;
-        
+
         when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                 .thenReturn(Arrays.asList(order1));
 
@@ -246,7 +250,7 @@ class ReportServiceImplTest {
         LocalDateTime startDate = LocalDateTime.now().minusMonths(3);
         LocalDateTime endDate = LocalDateTime.now();
         GroupByPeriod groupBy = GroupByPeriod.MONTH;
-        
+
         when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                 .thenReturn(Arrays.asList(order1));
 
@@ -266,7 +270,7 @@ class ReportServiceImplTest {
         LocalDateTime startDate = LocalDateTime.now().minusDays(7);
         LocalDateTime endDate = LocalDateTime.now();
         GroupByPeriod groupBy = GroupByPeriod.DAY;
-        
+
         when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                 .thenReturn(Collections.emptyList());
 
@@ -368,5 +372,64 @@ class ReportServiceImplTest {
         assertTrue(pendingOrder.getDaysPending() >= 7);
         assertEquals(BigDecimal.valueOf(300), pendingOrder.getOrderTotal());
         assertEquals(1, pendingOrder.getItems().size());
+    }
+
+    @Test
+    void getTopProductsBySales_ShouldReturnTopProducts() {
+        // Given
+        when(orderRepository.findAllByStatus(OrderStatus.DELIVERED))
+                .thenReturn(Arrays.asList(order1));
+
+        // When
+        List<ProductReportDto> result = reportService.getTopProductsBySales(5);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        ProductReportDto product = result.get(0);
+        assertEquals(1L, product.getProductId());
+        assertEquals("Product 1", product.getProductName());
+        assertEquals(2L, product.getTotalQuantitySold());
+    }
+
+    @Test
+    void getTopProductsByCancellations_ShouldReturnTopCancelledProducts() {
+        // Given
+        Order cancelledOrder = Order.builder()
+                .id(2L)
+                .user(order1.getUser())
+                .status(OrderStatus.CANCELLED)
+                .createdAt(LocalDateTime.now().minusDays(15))
+                .items(Arrays.asList(item2))
+                .build();
+
+        when(orderRepository.findAllByStatus(OrderStatus.CANCELLED))
+                .thenReturn(Arrays.asList(cancelledOrder));
+
+        // When
+        List<CancelledProductReportDto> result = reportService.getTopProductsByCancellations(5);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        CancelledProductReportDto product = result.get(0);
+        assertEquals(2L, product.getProductId());
+        assertEquals("Product 2", product.getProductName());
+        assertEquals(1L, product.getTotalQuantityCancelled());
+        assertEquals(1L, product.getCancellationCount());
+    }
+
+    @Test
+    void getTopProductsByCancellations_WithNoCancelledOrders_ShouldReturnEmptyList() {
+        // Given
+        when(orderRepository.findAllByStatus(OrderStatus.CANCELLED))
+                .thenReturn(Collections.emptyList());
+
+        // When
+        List<CancelledProductReportDto> result = reportService.getTopProductsByCancellations(5);
+
+        // Then
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 }

@@ -11,6 +11,7 @@ import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
+import telran.project.gardenshop.dto.CancelledProductReportDto;
 import telran.project.gardenshop.enums.GroupByPeriod;
 import telran.project.gardenshop.service.ReportService;
 
@@ -25,11 +26,25 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/top-products")
-    @Operation(summary = "Get top N products by sales")
+    @Operation(summary = "Get top products by sales quantity")
     public ResponseEntity<List<ProductReportDto>> getTopProductsBySales(
-            @RequestParam(defaultValue = "10") int limit) {
+            @RequestParam(defaultValue = "5")
+            @Parameter(description = "Number of top products to return",
+                      schema = @Schema(minimum = "1", defaultValue = "5"))
+            int limit) {
         List<ProductReportDto> topProducts = reportService.getTopProductsBySales(limit);
         return ResponseEntity.ok(topProducts);
+    }
+
+    @GetMapping("/top-cancelled-products")
+    @Operation(summary = "Get top products by cancellation frequency")
+    public ResponseEntity<List<CancelledProductReportDto>> getTopCancelledProducts(
+            @RequestParam(defaultValue = "5")
+            @Parameter(description = "Number of top cancelled products to return",
+                      schema = @Schema(minimum = "1", defaultValue = "5"))
+            int limit) {
+        List<CancelledProductReportDto> topCancelledProducts = reportService.getTopProductsByCancellations(limit);
+        return ResponseEntity.ok(topCancelledProducts);
     }
 
     @GetMapping("/profit")
@@ -44,19 +59,19 @@ public class ReportController {
     @GetMapping("/profit/grouped")
     @Operation(summary = "Get profit report grouped by time period (HOUR, DAY, WEEK, MONTH)")
     public ResponseEntity<GroupedProfitReportDto> getGroupedProfitReport(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) 
-            @Parameter(description = "Start date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)", 
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            @Parameter(description = "Start date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)",
                       example = "2024-01-01T00:00:00",
                       schema = @Schema(type = "string", format = "date-time"))
             LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) 
-            @Parameter(description = "End date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)", 
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            @Parameter(description = "End date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)",
                       example = "2024-12-31T23:59:59",
                       schema = @Schema(type = "string", format = "date-time"))
             LocalDateTime endDate,
-            @RequestParam(defaultValue = "DAY") 
-            @Parameter(description = "Grouping period", 
-                      schema = @Schema(allowableValues = {"HOUR", "DAY", "WEEK", "MONTH"}, 
+            @RequestParam(defaultValue = "DAY")
+            @Parameter(description = "Grouping period",
+                      schema = @Schema(allowableValues = {"HOUR", "DAY", "WEEK", "MONTH"},
                                      defaultValue = "DAY"))
             String groupBy) {
         GroupByPeriod groupByPeriod = GroupByPeriod.fromString(groupBy);
@@ -74,4 +89,4 @@ public class ReportController {
         List<PendingPaymentReportDto> pendingOrders = reportService.getPendingPaymentOrders(daysOlder);
         return ResponseEntity.ok(pendingOrders);
     }
-} 
+}

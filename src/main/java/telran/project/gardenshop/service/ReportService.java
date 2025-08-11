@@ -1,6 +1,7 @@
 package telran.project.gardenshop.service;
 
 import telran.project.gardenshop.dto.ProductReportDto;
+import telran.project.gardenshop.dto.CancelledProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
@@ -11,6 +12,8 @@ import java.util.List;
 public interface ReportService {
 
     List<ProductReportDto> getTopProductsBySales(int limit);
+
+    List<CancelledProductReportDto> getTopProductsByCancellations(int limit);
 
     ProfitReportDto getProfitReport(LocalDateTime startDate, LocalDateTime endDate);
 

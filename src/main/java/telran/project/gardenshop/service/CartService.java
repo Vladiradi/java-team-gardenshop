@@ -1,9 +1,7 @@
 package telran.project.gardenshop.service;
 
-import telran.project.gardenshop.dto.CartResponseDto;
 import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.CartItem;
-import telran.project.gardenshop.entity.User;
 
 import java.util.List;
 

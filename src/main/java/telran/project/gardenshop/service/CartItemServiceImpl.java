@@ -19,7 +19,6 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItem getById(Long cartItemId) {
-        // user from SecurityContext
         String email = SecurityContextHolder.getContext().getAuthentication() != null
                 ? SecurityContextHolder.getContext().getAuthentication().getName()
                 : null;
@@ -31,13 +30,11 @@ public class CartItemServiceImpl implements CartItemService {
         User current = userService.getUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
 
-        // took item and checking that it belong to our current user
         CartItem item = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new EntityNotFoundException("CartItem with id " + cartItemId + " not found"));
 
         if (item.getCart() == null || item.getCart().getUser() == null
                 || !item.getCart().getUser().getId().equals(current.getId())) {
-            // masking like EntityNotFound +security
             throw new EntityNotFoundException("CartItem with id " + cartItemId + " not found");
         }
 

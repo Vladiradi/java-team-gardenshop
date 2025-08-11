@@ -27,7 +27,7 @@ public class CartController {
     private final CartMapper cartMapper;
 
     @Operation(summary = "Get current user's cart",
-            description = "Возвращает корзину текущего пользователя. Если корзины нет — создаёт пустую.")
+            description = "Returns the current user's shopping cart. If there is no cart - creates an empty one")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "cart get",
                     content = @Content(schema = @Schema(implementation = CartResponseDto.class)))
@@ -41,9 +41,9 @@ public class CartController {
     @Operation(summary = "Add item to current cart",
             description = "adds 1 item by productId to the current user's cart")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Товар добавлен",
+            @ApiResponse(responseCode = "200", description = "Item added",
                     content = @Content(schema = @Schema(implementation = CartResponseDto.class))),
-            @ApiResponse(responseCode = "404", description = "Товар не найден")
+            @ApiResponse(responseCode = "404", description = "Item not found")
     })
     @PostMapping("/items")
     public ResponseEntity<CartResponseDto> addItem(@RequestParam Long productId) {
@@ -54,9 +54,9 @@ public class CartController {
     @Operation(summary = "Update quantity of cart item",
             description = "Изменяет количество позиции корзины по cartItemId.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Количество обновлено",
+            @ApiResponse(responseCode = "200", description = "Quantity updated",
                     content = @Content(schema = @Schema(implementation = CartResponseDto.class))),
-            @ApiResponse(responseCode = "404", description = "Позиция корзины не найдена")
+            @ApiResponse(responseCode = "404", description = "Cart item not found")
     })
     @PutMapping("/items/{cartItemId}")
     public ResponseEntity<CartResponseDto> updateItem(
@@ -67,10 +67,10 @@ public class CartController {
     }
 
     @Operation(summary = "Remove cart item",
-            description = "Удаляет позицию корзины по cartItemId.")
+            description = "Remove cart item with cartItemId.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Удалено"),
-            @ApiResponse(responseCode = "404", description = "Позиция корзины не найдена")
+            @ApiResponse(responseCode = "204", description = "Removed"),
+            @ApiResponse(responseCode = "404", description = "Cart item not found")
     })
     @DeleteMapping("/items/{cartItemId}")
     public ResponseEntity<Void> deleteItem(@PathVariable Long cartItemId) {

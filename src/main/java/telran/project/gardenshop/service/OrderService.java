@@ -8,14 +8,12 @@ import java.util.List;
 
 public interface OrderService {
 
-    // get order
     Order getById(Long id);
     List<Order> getForCurrentUser();
     List<Order> getByUserId(Long userId);
     List<Order> getActive();
     List<Order> getAll();
 
-    // create and change
     Order createForCurrentUser(OrderCreateRequestDto dto);
     Order updateStatus(Long id, OrderStatus status);
     Order cancel(Long id);

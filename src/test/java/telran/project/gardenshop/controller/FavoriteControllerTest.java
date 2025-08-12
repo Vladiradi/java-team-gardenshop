@@ -94,12 +94,11 @@ class FavoriteControllerTest {
     @Test
     void getAllFavoritesByUser_success() throws Exception {
         List<Favorite> favorites = List.of(favorite);
-        List<FavoriteResponseDto> dtos = List.of(responseDto);
 
-        when(favoriteService.getAllByUserId(1L)).thenReturn(favorites);
+        when(favoriteService.getAll()).thenReturn(favorites);
         when(favoriteMapper.toDto(any(Favorite.class))).thenReturn(responseDto);
 
-        mockMvc.perform(get("/v1/favorites/user/{userId}", 1L))
+        mockMvc.perform(get("/v1/favorites", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].userId").value(1))
                 .andExpect(jsonPath("$[0].productId").value(2));

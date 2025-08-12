@@ -62,11 +62,11 @@ public class FavoriteController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Get all favorite products by user ID")
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<FavoriteResponseDto>> getAll(@PathVariable Long userId) {
+    @Operation(summary = "Get all favorite products")
+    @GetMapping
+    public ResponseEntity<List<FavoriteResponseDto>> getAll() {
         return ResponseEntity.ok(
-                favoriteService.getAllByUserId(userId).stream()
+                favoriteService.getAll().stream()
                         .map(favoriteMapper::toDto)
                         .collect(Collectors.toList()));
     }

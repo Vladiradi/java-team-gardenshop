@@ -13,7 +13,6 @@ import telran.project.gardenshop.dto.CategoryResponseDto;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.mapper.CategoryMapper;
 import telran.project.gardenshop.service.CategoryService;
-import telran.project.gardenshop.service.security.JwtService;
 import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -35,9 +34,6 @@ class CategoryControllerTest {
 
     @MockBean
     private CategoryMapper categoryMapper;
-
-    @MockBean
-    private JwtService jwtService;
 
     @Test
     void createCategory_validInput_returnsCreated() throws Exception {
@@ -62,12 +58,12 @@ class CategoryControllerTest {
         when(categoryMapper.toDto(any(Category.class))).thenReturn(responseDto);
 
         mockMvc.perform(post("/v1/categories")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                            {
-                                "name": "Flowers"
-                            }
-                            """))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "name": "Flowers"
+                        }
+                        """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Flowers"));
@@ -143,13 +139,13 @@ class CategoryControllerTest {
         when(categoryMapper.toDto(updatedCategory)).thenReturn(responseDto);
 
         mockMvc.perform(put("/v1/categories/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                            {
-                                "name": "New Flowers",
-                                "description": "New description"
-                            }
-                            """))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "name": "New Flowers",
+                            "description": "New description"
+                        }
+                        """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value("New Flowers"));

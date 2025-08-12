@@ -11,8 +11,6 @@ import telran.project.gardenshop.entity.Payment;
 import telran.project.gardenshop.enums.PaymentMethod;
 import telran.project.gardenshop.enums.PaymentStatus;
 import telran.project.gardenshop.service.PaymentService;
-import telran.project.gardenshop.service.security.JwtFilter;
-import telran.project.gardenshop.service.security.JwtService;
 import java.time.LocalDateTime;
 import java.util.List;
 import static org.mockito.ArgumentMatchers.eq;
@@ -25,109 +23,103 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 public class PaymentControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private PaymentService paymentService;
+        @MockBean
+        private PaymentService paymentService;
 
-    @MockBean
-    private JwtService jwtService;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockBean
-    private JwtFilter jwtFilter;
+        @Test
+        void createPayment_returnsCreatedPayment() throws Exception {
+                Payment payment = Payment.builder()
+                                .id(1L)
+                                .status(PaymentStatus.UNPAID)
+                                .method(PaymentMethod.CARD)
+                                .createdAt(LocalDateTime.now())
+                                .build();
 
-    @Autowired
-    private ObjectMapper objectMapper;
+                when(paymentService.createPayment(eq(1L), eq(PaymentMethod.CARD))).thenReturn(payment);
 
-    @Test
-    void createPayment_returnsCreatedPayment() throws Exception {
-        Payment payment = Payment.builder()
-                .id(1L)
-                .status(PaymentStatus.UNPAID)
-                .method(PaymentMethod.CARD)
-                .createdAt(LocalDateTime.now())
-                .build();
+                mockMvc.perform(post("/v1/payments")
+                                .param("orderId", "1")
+                                .param("method", "CARD"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(payment.getId()))
+                                .andExpect(jsonPath("$.status").value(payment.getStatus().name()))
+                                .andExpect(jsonPath("$.method").value(payment.getMethod().name()));
+        }
 
-        when(paymentService.createPayment(eq(1L), eq(PaymentMethod.CARD))).thenReturn(payment);
+        @Test
+        void getPaymentById_returnsPayment() throws Exception {
+                Payment payment = Payment.builder()
+                                .id(1L)
+                                .status(PaymentStatus.UNPAID)
+                                .method(PaymentMethod.CARD)
+                                .createdAt(LocalDateTime.now())
+                                .build();
 
-        mockMvc.perform(post("/v1/payments")
-                        .param("orderId", "1")
-                        .param("method", "CARD"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(payment.getId()))
-                .andExpect(jsonPath("$.status").value(payment.getStatus().name()))
-                .andExpect(jsonPath("$.method").value(payment.getMethod().name()));
-    }
+                when(paymentService.getPaymentById(1L)).thenReturn(payment);
 
-    @Test
-    void getPaymentById_returnsPayment() throws Exception {
-        Payment payment = Payment.builder()
-                .id(1L)
-                .status(PaymentStatus.UNPAID)
-                .method(PaymentMethod.CARD)
-                .createdAt(LocalDateTime.now())
-                .build();
+                mockMvc.perform(get("/v1/payments/{id}", 1L))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(payment.getId()))
+                                .andExpect(jsonPath("$.status").value(payment.getStatus().name()))
+                                .andExpect(jsonPath("$.method").value(payment.getMethod().name()));
+        }
 
-        when(paymentService.getPaymentById(1L)).thenReturn(payment);
+        @Test
+        void getAllPayments_returnsList() throws Exception {
+                Payment payment1 = Payment.builder()
+                                .id(1L)
+                                .status(PaymentStatus.UNPAID)
+                                .method(PaymentMethod.CARD)
+                                .createdAt(LocalDateTime.now())
+                                .build();
 
-        mockMvc.perform(get("/v1/payments/{id}", 1L))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(payment.getId()))
-                .andExpect(jsonPath("$.status").value(payment.getStatus().name()))
-                .andExpect(jsonPath("$.method").value(payment.getMethod().name()));
-    }
+                Payment payment2 = Payment.builder()
+                                .id(2L)
+                                .status(PaymentStatus.PAID)
+                                .method(PaymentMethod.CASH)
+                                .createdAt(LocalDateTime.now())
+                                .build();
 
-    @Test
-    void getAllPayments_returnsList() throws Exception {
-        Payment payment1 = Payment.builder()
-                .id(1L)
-                .status(PaymentStatus.UNPAID)
-                .method(PaymentMethod.CARD)
-                .createdAt(LocalDateTime.now())
-                .build();
+                when(paymentService.getAllPayments()).thenReturn(List.of(payment1, payment2));
 
-        Payment payment2 = Payment.builder()
-                .id(2L)
-                .status(PaymentStatus.PAID)
-                .method(PaymentMethod.CASH)
-                .createdAt(LocalDateTime.now())
-                .build();
+                mockMvc.perform(get("/v1/payments"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(2))
+                                .andExpect(jsonPath("$[0].id").value(payment1.getId()))
+                                .andExpect(jsonPath("$[1].id").value(payment2.getId()));
+        }
 
-        when(paymentService.getAllPayments()).thenReturn(List.of(payment1, payment2));
+        @Test
+        void updatePaymentStatus_returnsUpdatedPayment() throws Exception {
+                Payment updatedPayment = Payment.builder()
+                                .id(1L)
+                                .status(PaymentStatus.PAID)
+                                .method(PaymentMethod.CARD)
+                                .createdAt(LocalDateTime.now())
+                                .build();
 
-        mockMvc.perform(get("/v1/payments"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value(payment1.getId()))
-                .andExpect(jsonPath("$[1].id").value(payment2.getId()));
-    }
+                when(paymentService.updatePaymentStatus(1L, PaymentStatus.PAID)).thenReturn(updatedPayment);
 
-    @Test
-    void updatePaymentStatus_returnsUpdatedPayment() throws Exception {
-        Payment updatedPayment = Payment.builder()
-                .id(1L)
-                .status(PaymentStatus.PAID)
-                .method(PaymentMethod.CARD)
-                .createdAt(LocalDateTime.now())
-                .build();
+                mockMvc.perform(put("/v1/payments/{id}/status", 1L)
+                                .param("status", "PAID"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(updatedPayment.getId()))
+                                .andExpect(jsonPath("$.status").value(updatedPayment.getStatus().name()));
+        }
 
-        when(paymentService.updatePaymentStatus(1L, PaymentStatus.PAID)).thenReturn(updatedPayment);
+        @Test
+        void deletePayment_returnsNoContent() throws Exception {
+                doNothing().when(paymentService).deletePayment(1L);
 
-        mockMvc.perform(put("/v1/payments/{id}/status", 1L)
-                        .param("status", "PAID"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(updatedPayment.getId()))
-                .andExpect(jsonPath("$.status").value(updatedPayment.getStatus().name()));
-    }
+                mockMvc.perform(delete("/v1/payments/{id}", 1L))
+                                .andExpect(status().isOk());
 
-    @Test
-    void deletePayment_returnsNoContent() throws Exception {
-        doNothing().when(paymentService).deletePayment(1L);
-
-        mockMvc.perform(delete("/v1/payments/{id}", 1L))
-                .andExpect(status().isOk());
-
-        verify(paymentService, times(1)).deletePayment(1L);
-    }
+                verify(paymentService, times(1)).deletePayment(1L);
+        }
 }

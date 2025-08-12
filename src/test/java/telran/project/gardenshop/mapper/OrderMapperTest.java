@@ -32,7 +32,6 @@ class OrderMapperTest {
     @MockBean
     private JwtFilter jwtFilter;
 
-
     @Test
     void testToDto() {
         Order order = buildSampleOrder();

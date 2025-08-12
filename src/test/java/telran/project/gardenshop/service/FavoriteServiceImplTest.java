@@ -12,14 +12,12 @@ import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.exception.FavoriteAlreadyExistsException;
 import telran.project.gardenshop.exception.FavoriteNotFoundException;
 import telran.project.gardenshop.repository.FavoriteRepository;
+
 import java.util.List;
 import java.util.Optional;
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceImplTest {
@@ -49,7 +47,7 @@ class FavoriteServiceImplTest {
 
     @Test
     void addToFavorites_success() {
-        when(userService.getUserById(1L)).thenReturn(user);
+        when(userService.getCurrent()).thenReturn(user);
         when(productService.getProductById(2L)).thenReturn(product);
         when(favoriteRepository.findByUserIdAndProductId(1L, 2L)).thenReturn(Optional.empty());
         when(favoriteRepository.save(any(Favorite.class))).thenReturn(favorite);
@@ -64,7 +62,7 @@ class FavoriteServiceImplTest {
 
     @Test
     void addToFavorites_alreadyExists_throwsException() {
-        when(userService.getUserById(1L)).thenReturn(user);
+        when(userService.getCurrent()).thenReturn(user);
         when(productService.getProductById(2L)).thenReturn(product);
         when(favoriteRepository.findByUserIdAndProductId(1L, 2L)).thenReturn(Optional.of(favorite));
 
@@ -130,7 +128,7 @@ class FavoriteServiceImplTest {
                 .build();
 
         when(favoriteRepository.findById(1L)).thenReturn(Optional.of(existingFavorite));
-        when(userService.getUserById(3L)).thenReturn(updatedFavorite.getUser());
+        when(userService.getCurrent()).thenReturn(updatedFavorite.getUser());
         when(productService.getProductById(4L)).thenReturn(updatedFavorite.getProduct());
         when(favoriteRepository.save(existingFavorite)).thenReturn(existingFavorite);
 

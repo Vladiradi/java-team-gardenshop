@@ -44,7 +44,7 @@ public class SchedulerServiceTest {
                                 .status(OrderStatus.NEW)
                                 .build();
 
-                when(orderRepository.findAllByStatusAndCreatedAtBefore(OrderStatus.NEW, any(LocalDateTime.class)))
+                when(orderRepository.findAllByStatusAndCreatedAtBefore(eq(OrderStatus.NEW), any(LocalDateTime.class)))
                                 .thenReturn(List.of(oldOrder, recentOrder));
                 when(paymentService.isPaymentStatus(1L, PaymentStatus.UNPAID)).thenReturn(true);
                 when(paymentService.isPaymentStatus(2L, PaymentStatus.UNPAID)).thenReturn(false);
@@ -73,7 +73,7 @@ public class SchedulerServiceTest {
                                 .status(OrderStatus.PAID)
                                 .build();
 
-                when(orderRepository.findAllByStatusAndCreatedAtBefore(OrderStatus.PAID, any(LocalDateTime.class)))
+                when(orderRepository.findAllByStatusAndCreatedAtBefore(eq(OrderStatus.PAID), any(LocalDateTime.class)))
                                 .thenReturn(List.of(order));
                 when(paymentService.isPaymentStatus(3L, PaymentStatus.PAID)).thenReturn(false);
 
@@ -94,7 +94,7 @@ public class SchedulerServiceTest {
                                 .status(OrderStatus.PAID)
                                 .build();
 
-                when(orderRepository.findAllByStatusAndCreatedAtBefore(OrderStatus.PAID, any(LocalDateTime.class)))
+                when(orderRepository.findAllByStatusAndCreatedAtBefore(eq(OrderStatus.PAID), any(LocalDateTime.class)))
                                 .thenReturn(List.of(order));
                 when(paymentService.isPaymentStatus(4L, PaymentStatus.PAID)).thenReturn(true);
 

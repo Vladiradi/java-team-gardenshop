@@ -5,13 +5,11 @@ import java.util.List;
 
 public interface FavoriteService {
 
-    Favorite addToFavorites(Favorite favorite);
+    Favorite addToFavorites(Long productId);
 
     void removeFromFavorites(Long id);
 
     List<Favorite> getAll();
 
     Favorite getFavoriteById(Long id);
-
-    Favorite updateFavorite(Long id, Favorite updatedFavorite);
 }

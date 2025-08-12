@@ -8,6 +8,7 @@ import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.exception.FavoriteAlreadyExistsException;
 import telran.project.gardenshop.exception.FavoriteNotFoundException;
 import telran.project.gardenshop.repository.FavoriteRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,24 +22,34 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final ProductService productService;
 
     @Override
-    public Favorite addToFavorites(Favorite favorite) {
+    public Favorite addToFavorites(Long productId) {
         User user = userService.getCurrent();
-        Product product = productService.getProductById(favorite.getProduct().getId());
+        Product product = productService.getProductById(productId);
 
         if(favoriteRepository.findByUserIdAndProductId(user.getId(), product.getId()).isPresent()) {
             throw new FavoriteAlreadyExistsException(user.getId(), product.getId());
         }
 
-        favorite.setUser(user);
-        favorite.setProduct(product);
+        Favorite favorite = Favorite.builder()
+                .user(user)
+                .product(product)
+                .createdAt(LocalDateTime.now())
+                .build();
 
         return favoriteRepository.save(favorite);
     }
 
     @Override
     public void removeFromFavorites(Long id) {
+        User currentUser = userService.getCurrent();
         Favorite favorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new FavoriteNotFoundException(id));
+        
+        // Ensure the favorite belongs to the current user
+        if (!favorite.getUser().getId().equals(currentUser.getId())) {
+            throw new FavoriteNotFoundException(id);
+        }
+        
         favoriteRepository.delete(favorite);
     }
 
@@ -50,18 +61,15 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Override
     public Favorite getFavoriteById(Long id) {
-        return favoriteRepository.findById(id)
+        User currentUser = userService.getCurrent();
+        Favorite favorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new FavoriteNotFoundException(id));
-    }
-
-    @Override
-    public Favorite updateFavorite(Long id, Favorite updatedFavorite) {
-        Favorite existingFavorite = getFavoriteById(id);
-        User user = userService.getCurrent();
-        Product product = productService.getProductById(updatedFavorite.getProduct().getId());
-        existingFavorite.setUser(user);
-        existingFavorite.setProduct(product);
-
-        return favoriteRepository.save(existingFavorite);
+        
+        // Ensure the favorite belongs to the current user
+        if (!favorite.getUser().getId().equals(currentUser.getId())) {
+            throw new FavoriteNotFoundException(id);
+        }
+        
+        return favorite;
     }
 }

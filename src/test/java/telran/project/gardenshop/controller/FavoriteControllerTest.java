@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FavoriteController.class)
-@AutoConfigureMockMvc(addFilters = false)  // disable  security for test
+@AutoConfigureMockMvc(addFilters = false)  // disable security for test
 class FavoriteControllerTest {
 
     @Autowired
@@ -61,18 +61,13 @@ class FavoriteControllerTest {
 
     @Test
     void addFavorite_success() throws Exception {
-        FavoriteRequestDto requestDto = new FavoriteRequestDto();
-        requestDto.setUserId(1L);
-        requestDto.setProductId(2L);
-
-        when(favoriteService.addToFavorites(any(Favorite.class))).thenReturn(favorite);
+        when(favoriteService.addToFavorites(2L)).thenReturn(favorite);
         when(favoriteMapper.toDto(any(Favorite.class))).thenReturn(responseDto);
 
         mockMvc.perform(post("/v1/favorites")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {
-                                "userId": 1,
                                 "productId": 2
                             }
                             """))
@@ -98,9 +93,20 @@ class FavoriteControllerTest {
         when(favoriteService.getAll()).thenReturn(favorites);
         when(favoriteMapper.toDto(any(Favorite.class))).thenReturn(responseDto);
 
-        mockMvc.perform(get("/v1/favorites", 1L))
+        mockMvc.perform(get("/v1/favorites"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].userId").value(1))
                 .andExpect(jsonPath("$[0].productId").value(2));
+    }
+
+    @Test
+    void getFavoriteById_success() throws Exception {
+        when(favoriteService.getFavoriteById(1L)).thenReturn(favorite);
+        when(favoriteMapper.toDto(any(Favorite.class))).thenReturn(responseDto);
+
+        mockMvc.perform(get("/v1/favorites/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(1))
+                .andExpect(jsonPath("$.productId").value(2));
     }
 }

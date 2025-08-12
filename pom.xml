@@ -128,6 +128,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Authentification -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
@@ -145,7 +146,9 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.12.5</version>
         </dependency>
+        <!-- Authentification -->
 
+        <!-- Security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>

@@ -2,6 +2,11 @@ package telran.project.gardenshop.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import org.hibernate.annotations.CreationTimestamp;
+
+import org.hibernate.annotations.UpdateTimestamp;
+
 import telran.project.gardenshop.enums.PaymentMethod;
 import telran.project.gardenshop.enums.PaymentStatus;
 import java.time.LocalDateTime;
@@ -36,19 +41,10 @@ public class Payment {
     private PaymentMethod method;
 
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    @PrePersist
-    public void onPrePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void onPreUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }

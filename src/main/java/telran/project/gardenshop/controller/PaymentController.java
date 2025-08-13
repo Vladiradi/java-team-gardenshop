@@ -1,11 +1,14 @@
 package telran.project.gardenshop.controller;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.*;
+
 import telran.project.gardenshop.service.PaymentService;
 import telran.project.gardenshop.entity.Payment;
 import telran.project.gardenshop.enums.PaymentMethod;
 import telran.project.gardenshop.enums.PaymentStatus;
+
 import java.util.List;
 
 @RestController
@@ -38,6 +41,7 @@ public class PaymentController {
             @RequestParam PaymentStatus status) {
         return paymentService.updatePaymentStatus(id, status);
     }
+
     @DeleteMapping("/{id}")
     public void deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);

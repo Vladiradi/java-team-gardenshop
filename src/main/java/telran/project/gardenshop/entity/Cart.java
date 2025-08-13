@@ -23,8 +23,10 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "cart_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @Builder.Default
     private List<CartItem> items = new ArrayList<>();
 }

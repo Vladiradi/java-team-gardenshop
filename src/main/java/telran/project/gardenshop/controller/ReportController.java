@@ -3,10 +3,13 @@ package telran.project.gardenshop.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
@@ -30,7 +33,7 @@ public class ReportController {
     public ResponseEntity<List<ProductReportDto>> getTopProductsBySales(
             @RequestParam(defaultValue = "10")
             @Parameter(description = "Number of top products to return",
-                      schema = @Schema(minimum = "1", defaultValue = "10"))
+                    schema = @Schema(minimum = "1", defaultValue = "10"))
             int limit) {
         List<ProductReportDto> topProducts = reportService.getTopProductsBySales(limit);
         return ResponseEntity.ok(topProducts);
@@ -41,7 +44,7 @@ public class ReportController {
     public ResponseEntity<List<CancelledProductReportDto>> getTopCancelledProducts(
             @RequestParam(defaultValue = "10")
             @Parameter(description = "Number of top cancelled products to return",
-                      schema = @Schema(minimum = "1", defaultValue = "10"))
+                    schema = @Schema(minimum = "1", defaultValue = "10"))
             int limit) {
         List<CancelledProductReportDto> topCancelledProducts = reportService.getTopProductsByCancellations(limit);
         return ResponseEntity.ok(topCancelledProducts);
@@ -52,13 +55,13 @@ public class ReportController {
     public ResponseEntity<ProfitReportDto> getProfitReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @Parameter(description = "Start date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)",
-                      example = "2024-01-01T00:00:00",
-                      schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-01-01T00:00:00"))
+                    example = "2024-01-01T00:00:00",
+                    schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-01-01T00:00:00"))
             LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @Parameter(description = "End date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)",
-                      example = "2024-12-31T23:59:59",
-                      schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-12-31T23:59:59"))
+                    example = "2024-12-31T23:59:59",
+                    schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-12-31T23:59:59"))
             LocalDateTime endDate) {
         ProfitReportDto profitReport = reportService.getProfitReport(startDate, endDate);
         return ResponseEntity.ok(profitReport);
@@ -69,18 +72,18 @@ public class ReportController {
     public ResponseEntity<GroupedProfitReportDto> getGroupedProfitReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @Parameter(description = "Start date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)",
-                      example = "2024-01-01T00:00:00",
-                      schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-01-01T00:00:00"))
+                    example = "2024-01-01T00:00:00",
+                    schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-01-01T00:00:00"))
             LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @Parameter(description = "End date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)",
-                      example = "2024-12-31T23:59:59",
-                      schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-12-31T23:59:59"))
+                    example = "2024-12-31T23:59:59",
+                    schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-12-31T23:59:59"))
             LocalDateTime endDate,
             @RequestParam(defaultValue = "DAY")
             @Parameter(description = "Grouping period",
-                      schema = @Schema(allowableValues = {"HOUR", "DAY", "WEEK", "MONTH"},
-                                      defaultValue = "DAY"))
+                    schema = @Schema(allowableValues = {"HOUR", "DAY", "WEEK", "MONTH"},
+                            defaultValue = "DAY"))
             String groupBy) {
         GroupByPeriod groupByPeriod = GroupByPeriod.fromString(groupBy);
         if (groupByPeriod == null) {
@@ -95,7 +98,7 @@ public class ReportController {
     public ResponseEntity<List<PendingPaymentReportDto>> getPendingPaymentOrders(
             @RequestParam(defaultValue = "7")
             @Parameter(description = "Number of days older than which to find pending payments",
-                      schema = @Schema(minimum = "1", defaultValue = "7"))
+                    schema = @Schema(minimum = "1", defaultValue = "7"))
             int daysOlder) {
         List<PendingPaymentReportDto> pendingOrders = reportService.getPendingPaymentOrders(daysOlder);
         return ResponseEntity.ok(pendingOrders);

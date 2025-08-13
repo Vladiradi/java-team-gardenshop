@@ -21,8 +21,8 @@ public class UserRequestDto {
     @NotNull(message = "Phone number must not be null")
     @NotBlank(message = "Phone number must not be blank")
     @Pattern(
-        regexp = "^\\+?\\d{10,15}$",
-        message = "Phone number must contain 10 to 15 digits and may start with '+'"
+            regexp = "^\\+?\\d{10,15}$",
+            message = "Phone number must contain 10 to 15 digits and may start with '+'"
     )
     private String phoneNumber;
 

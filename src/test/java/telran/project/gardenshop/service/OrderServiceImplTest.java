@@ -86,7 +86,7 @@ class OrderServiceImplTest {
 
         CartItem cartItem1 = CartItem.builder()
                 .id(1L)
-                .cart(cart)
+             //   .cart(cart)
                 .product(product1)
                 .quantity(3)  // >= requested quantity (2)
                 .price(100d)
@@ -94,7 +94,7 @@ class OrderServiceImplTest {
 
         CartItem cartItem2 = CartItem.builder()
                 .id(2L)
-                .cart(cart)
+               // .cart(cart)
                 .product(product2)
                 .quantity(2)  // >= requested quantity (1)
                 .price(50d)

@@ -37,8 +37,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Override
     public void removeFromFavorites(Long id) {
-        Favorite favorite = favoriteRepository.findById(id)
-                .orElseThrow(() -> new FavoriteNotFoundException(id));
+        Favorite favorite = getFavoriteById(id);
         favoriteRepository.delete(favorite);
     }
 

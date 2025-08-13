@@ -53,9 +53,6 @@ class OrderServiceImplIT {
     private CartService cartService;
 
     @MockBean
-    private CartItemService cartItemService;
-
-    @MockBean
     private UserService userService;
 
     @MockBean
@@ -89,7 +86,7 @@ class OrderServiceImplIT {
 
         CartItem cartItem = CartItem.builder()
                 .id(1L)
-                .cart(cart)
+                //.cart(cart)
                 .product(product)
                 .quantity(3)  // >= requested quantity (2)
                 .price(10d)

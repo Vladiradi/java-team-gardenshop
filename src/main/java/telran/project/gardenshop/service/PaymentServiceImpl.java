@@ -2,8 +2,10 @@ package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.Payment;
 import telran.project.gardenshop.enums.PaymentStatus;
@@ -11,6 +13,7 @@ import telran.project.gardenshop.enums.PaymentMethod;
 import telran.project.gardenshop.exception.PaymentNotFoundException;
 import telran.project.gardenshop.repository.PaymentRepository;
 import telran.project.gardenshop.exception.PaymentAlreadyExistsException;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +29,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private Payment findPaymentOrThrow(Long id) {
         return paymentRepository.findById(id)
-            .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + id));
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + id));
     }
 
     @Override
@@ -82,10 +85,10 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Optional<Payment> updatePaymentStatusByOrderId(Long orderId, PaymentStatus status) {
         return paymentRepository.findByOrderId(orderId)
-            .map(payment -> {
-                payment.setStatus(status);
-                payment.setUpdatedAt(LocalDateTime.now());
-                return paymentRepository.save(payment);
-            });
+                .map(payment -> {
+                    payment.setStatus(status);
+                    payment.setUpdatedAt(LocalDateTime.now());
+                    return paymentRepository.save(payment);
+                });
     }
 }

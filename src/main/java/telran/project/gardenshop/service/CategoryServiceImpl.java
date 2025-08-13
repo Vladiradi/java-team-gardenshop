@@ -1,12 +1,15 @@
 package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import telran.project.gardenshop.dto.CategoryEditDto;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.mapper.CategoryMapper;
 import telran.project.gardenshop.repository.CategoryRepository;
 import telran.project.gardenshop.exception.CategoryNotFoundException;
+
 import java.util.List;
 
 @Service

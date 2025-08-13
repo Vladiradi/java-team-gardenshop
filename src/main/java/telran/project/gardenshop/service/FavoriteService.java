@@ -1,6 +1,7 @@
 package telran.project.gardenshop.service;
 
 import telran.project.gardenshop.entity.Favorite;
+
 import java.util.List;
 
 public interface FavoriteService {

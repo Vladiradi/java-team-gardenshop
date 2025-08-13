@@ -108,7 +108,12 @@ public class OrderServiceImpl implements OrderService {
 
         validateQuantity(cartItem, itemDto);
 
-        OrderItem orderItem = OrderItem.builder().order(order).product(cartItem.getProduct()).quantity(itemDto.getQuantity()).price(cartItem.getProduct().getPrice()).build();
+        OrderItem orderItem = OrderItem.builder()
+                .order(order)
+                .product(cartItem.getProduct())
+                .quantity(itemDto.getQuantity())
+                .price(cartItem.getProduct().getPrice())
+                .build();
 
         editCartItemList(cartItem, cart.getItems(), itemDto.getQuantity());
 

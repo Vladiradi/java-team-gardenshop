@@ -46,8 +46,4 @@ public class User {
     @EqualsAndHashCode.Exclude
     @Builder.Default
     private List<Favorite> favorites = new ArrayList<>();
-
-    public List<Favorite> getFavorites() {
-        return favorites != null ? favorites : new ArrayList<>();
-    }
 }

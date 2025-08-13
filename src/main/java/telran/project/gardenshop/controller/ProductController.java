@@ -1,10 +1,13 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import telran.project.gardenshop.utilities.ProductSpecification;
 import telran.project.gardenshop.repository.ProductRepository;
 import telran.project.gardenshop.dto.ProductEditDto;
@@ -13,8 +16,10 @@ import telran.project.gardenshop.dto.ProductResponseDto;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.mapper.ProductMapper;
 import telran.project.gardenshop.service.ProductService;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
 import jakarta.validation.Valid;
 
 @RestController

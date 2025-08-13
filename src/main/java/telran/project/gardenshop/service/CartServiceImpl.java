@@ -1,10 +1,13 @@
 package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import telran.project.gardenshop.dto.CartResponseDto;
 import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.CartItem;
+import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.exception.CartNotFoundException;
 import telran.project.gardenshop.exception.UserNotFoundException;
@@ -22,6 +25,8 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
 
     private final UserService userService;
+
+    private final ProductService productService;
 
     @Override
     public Cart get() {
@@ -53,9 +58,11 @@ public class CartServiceImpl implements CartService {
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + 1);
         } else {
+            Product product = productService.getProductById(productId);
             CartItem newItem = CartItem.builder()
                     .quantity(1)
-                    .cart(cart)
+                    .product(product)
+                    .price(product.getPrice().doubleValue())
                     .build();
             cart.getItems().add(newItem);
         }

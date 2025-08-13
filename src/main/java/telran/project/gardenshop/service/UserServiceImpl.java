@@ -76,7 +76,8 @@ public class UserServiceImpl implements UserService {
         if (auth == null || auth.getPrincipal() == null || "anonymousUser".equals(auth.getPrincipal())) {
             throw new UserNotFoundException("No authenticated user");
         }
-        return (User) auth.getPrincipal();
+
+        return getUserByEmail(auth.getName()).get();
     }
 
     private void emailCheck(String email) {

@@ -9,11 +9,15 @@ import java.util.List;
 public interface OrderService {
 
     Order getById(Long id);
+
     List<Order> getForCurrentUser();
+
     List<Order> getActive();
+
     List<Order> getAll();
 
     Order create(OrderCreateRequestDto dto);
+
     Order cancel(Long id);
 
     void delete(Long id);

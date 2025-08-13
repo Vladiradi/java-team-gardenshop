@@ -1,7 +1,9 @@
 package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
 import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
@@ -15,6 +17,7 @@ import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.GroupByPeriod;
 import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.OrderItemRepository;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -35,10 +38,10 @@ public class ReportServiceImpl implements ReportService {
 
     private final OrderRepository orderRepository;
 
+    /// SERVICE
 
     @Override
     public ProfitReportDto getProfitReport(LocalDateTime startDate, LocalDateTime endDate) {
-
         List<Order> ordersInPeriod = orderRepository.findAllByCreatedAtBetweenAndStatus(
                 startDate, endDate, OrderStatus.DELIVERED);
 
@@ -124,14 +127,15 @@ public class ReportServiceImpl implements ReportService {
         switch (groupBy) {
             case HOUR:
                 return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
-            case DAY:
-                return dateTime.toLocalDate().toString();
+//            case DAY:
+//                return dateTime.toLocalDate().toString();
             case WEEK:
                 LocalDate date = dateTime.toLocalDate();
                 LocalDate weekStart = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
                 return "Week " + weekStart.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             case MONTH:
                 return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"));
+            case DAY:
             default:
                 return dateTime.toLocalDate().toString();
         }
@@ -171,41 +175,35 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private LocalDateTime getPeriodStart(String periodKey, GroupByPeriod groupBy) {
-        switch (groupBy) {
-            case HOUR:
-                return LocalDateTime.parse(periodKey + ":00",
-                        java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            case DAY:
-                return LocalDate.parse(periodKey).atStartOfDay();
-            case WEEK:
+        return switch (groupBy) {
+            case HOUR -> LocalDateTime.parse(periodKey + ":00",
+                    java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            case DAY -> LocalDate.parse(periodKey).atStartOfDay();
+            case WEEK -> {
                 // periodKey format: "Week YYYY-MM-DD"
                 String datePart = periodKey.substring(5); // Remove "Week " prefix
-                return LocalDate.parse(datePart).atStartOfDay();
-            case MONTH:
-                return LocalDate.parse(periodKey + "-01").atStartOfDay();
-            default:
-                return LocalDate.parse(periodKey).atStartOfDay();
-        }
+                yield LocalDate.parse(datePart).atStartOfDay(); // Remove "Week " prefix
+            }
+            case MONTH -> LocalDate.parse(periodKey + "-01").atStartOfDay();
+        };
     }
 
     private LocalDateTime getPeriodEnd(String periodKey, GroupByPeriod groupBy) {
-        switch (groupBy) {
-            case HOUR:
-                return LocalDateTime.parse(periodKey + ":00",
-                        java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
-            case DAY:
-                return LocalDate.parse(periodKey).atTime(23, 59, 59);
-            case WEEK:
+        return switch (groupBy) {
+            case HOUR -> LocalDateTime.parse(periodKey + ":00",
+                    java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
+            case DAY -> LocalDate.parse(periodKey).atTime(23, 59, 59);
+            case WEEK -> {
                 //YYYY-MM-DD
                 String datePart = periodKey.substring(5); // Remove "Week " prefix
                 LocalDate weekStart = LocalDate.parse(datePart);
-                return weekStart.plusDays(6).atTime(23, 59, 59);
-            case MONTH:
+                yield weekStart.plusDays(6).atTime(23, 59, 59);
+            }
+            case MONTH -> {
                 LocalDate monthStart = LocalDate.parse(periodKey + "-01");
-                return monthStart.plusMonths(1).minusDays(1).atTime(23, 59, 59);
-            default:
-                return LocalDate.parse(periodKey).atTime(23, 59, 59);
-        }
+                yield monthStart.plusMonths(1).minusDays(1).atTime(23, 59, 59);
+            }
+        };
     }
 
     private GroupedProfitReportDto createEmptyGroupedReport(LocalDateTime startDate, LocalDateTime endDate, GroupByPeriod groupBy) {
@@ -324,5 +322,4 @@ public class ReportServiceImpl implements ReportService {
                 .limit(limit)
                 .collect(Collectors.toList());
     }
-
 }

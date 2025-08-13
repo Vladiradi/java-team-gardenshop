@@ -147,4 +147,65 @@
                              constraintName="uc_payments_order_id"/>
     </changeSet>
 
+    <changeSet id="009-add-cart" author="vladiradi">
+        <createTable tableName="carts">
+            <column
+                    name="id"
+                    type="SERIAL">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_carts"/>
+            </column>
+            <column name="user_id"
+                    type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="carts"
+                                 constraintName="FK_CARTS_ON_USER"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="010-add-cart-item" author="vladiradi">
+        <createTable tableName="cart_items">
+            <column
+                    name="id"
+                    type="SERIAL">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_cart_items"/>
+            </column>
+            <column name="product_id"
+                    type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity"
+                    type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price"
+                    type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cart_id"
+                    type="INTEGER"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="cart_id"
+                                 baseTableName="cart_items"
+                                 constraintName="FK_CART_ITEMS_ON_CART"
+                                 referencedColumnNames="id"
+                                 referencedTableName="carts"/>
+
+
+        <addForeignKeyConstraint baseColumnNames="product_id"
+                                 baseTableName="cart_items"
+                                 constraintName="FK_CART_ITEMS_ON_PRODUCT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="products"/>
+    </changeSet>
+
 </databaseChangeLog>

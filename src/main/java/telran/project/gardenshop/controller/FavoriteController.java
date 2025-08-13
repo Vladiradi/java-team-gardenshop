@@ -1,11 +1,14 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
 import telran.project.gardenshop.dto.FavoriteRequestDto;
 import telran.project.gardenshop.dto.FavoriteResponseDto;
 import telran.project.gardenshop.entity.Favorite;
@@ -13,7 +16,9 @@ import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.mapper.FavoriteMapper;
 import telran.project.gardenshop.service.FavoriteService;
+
 import io.swagger.v3.oas.annotations.Operation;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;

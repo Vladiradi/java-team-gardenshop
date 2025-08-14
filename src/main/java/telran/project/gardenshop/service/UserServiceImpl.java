@@ -20,6 +20,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
     private final UserMapper userMapper;
 
     @Override
@@ -40,10 +41,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-    @Override
-    public User updateUser(Long id, User updated) {
-        return null; // оставлено как в твоём коде
-    }
 
     @Override
     public User updateUser(Long id, UserEditDto dto) {

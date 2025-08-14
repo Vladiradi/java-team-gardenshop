@@ -21,7 +21,6 @@ public enum GroupByPeriod {
                 return period;
             }
         }
-
         return null;
     }
 

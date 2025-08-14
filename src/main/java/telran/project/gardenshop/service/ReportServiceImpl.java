@@ -38,8 +38,6 @@ public class ReportServiceImpl implements ReportService {
 
     private final OrderRepository orderRepository;
 
-    /// SERVICE
-
     @Override
     public ProfitReportDto getProfitReport(LocalDateTime startDate, LocalDateTime endDate) {
         List<Order> ordersInPeriod = orderRepository.findAllByCreatedAtBetweenAndStatus(
@@ -127,14 +125,15 @@ public class ReportServiceImpl implements ReportService {
         switch (groupBy) {
             case HOUR:
                 return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
-//            case DAY:
-//                return dateTime.toLocalDate().toString();
+
             case WEEK:
                 LocalDate date = dateTime.toLocalDate();
                 LocalDate weekStart = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
                 return "Week " + weekStart.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
             case MONTH:
                 return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"));
+
             case DAY:
             default:
                 return dateTime.toLocalDate().toString();
@@ -180,7 +179,6 @@ public class ReportServiceImpl implements ReportService {
                     java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             case DAY -> LocalDate.parse(periodKey).atStartOfDay();
             case WEEK -> {
-                // periodKey format: "Week YYYY-MM-DD"
                 String datePart = periodKey.substring(5); // Remove "Week " prefix
                 yield LocalDate.parse(datePart).atStartOfDay(); // Remove "Week " prefix
             }
@@ -193,9 +191,10 @@ public class ReportServiceImpl implements ReportService {
             case HOUR -> LocalDateTime.parse(periodKey + ":00",
                     java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
             case DAY -> LocalDate.parse(periodKey).atTime(23, 59, 59);
+
             case WEEK -> {
-                //YYYY-MM-DD
-                String datePart = periodKey.substring(5); // Remove "Week " prefix
+
+                String datePart = periodKey.substring(5);
                 LocalDate weekStart = LocalDate.parse(datePart);
                 yield weekStart.plusDays(6).atTime(23, 59, 59);
             }

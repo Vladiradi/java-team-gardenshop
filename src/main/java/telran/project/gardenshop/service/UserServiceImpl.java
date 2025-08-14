@@ -24,6 +24,21 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User getCurrent() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null || "anonymousUser".equals(auth.getPrincipal())) {
+            throw new UserNotFoundException("No authenticated user");
+        }
+
+        return getUserByEmail(auth.getName()).get();
+    }
+
+    @Override
     public User createUser(User user) {
         emailCheck(user.getEmail());
         user.setRole(Role.USER);
@@ -34,11 +49,6 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
     }
 
 
@@ -67,15 +77,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 
-    @Override
-    public User getCurrent() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth.getPrincipal() == null || "anonymousUser".equals(auth.getPrincipal())) {
-            throw new UserNotFoundException("No authenticated user");
-        }
-
-        return getUserByEmail(auth.getName()).get();
-    }
 
     private void emailCheck(String email) {
         if (userRepository.findByEmail(email).isPresent()) {

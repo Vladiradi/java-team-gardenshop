@@ -13,8 +13,6 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    User updateUser(Long id, User updated);
-
     void deleteUser(Long id);
 
     User updateUser(Long id, UserEditDto dto);

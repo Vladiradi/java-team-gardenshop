@@ -38,8 +38,6 @@ public class ReportServiceImpl implements ReportService {
 
     private final OrderRepository orderRepository;
 
-    /// SERVICE
-
     @Override
     public ProfitReportDto getProfitReport(LocalDateTime startDate, LocalDateTime endDate) {
         List<Order> ordersInPeriod = orderRepository.findAllByCreatedAtBetweenAndStatus(

@@ -41,11 +41,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long id, User updated) {
-        return null; // оставлено как в твоём коде
-    }
-
-    @Override
     public User updateUser(Long id, UserEditDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));

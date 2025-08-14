@@ -16,9 +16,9 @@ import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
 import telran.project.gardenshop.dto.CancelledProductReportDto;
 import telran.project.gardenshop.enums.GroupByPeriod;
-import telran.project.gardenshop.exception.InvalidGroupByPeriodException;
 import telran.project.gardenshop.service.ReportService;
 import telran.project.gardenshop.swagger.SwaggerResponses;
+import telran.project.gardenshop.utilities.GroupByPeriodUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,21 +59,19 @@ public class ReportController {
         @GetMapping("/profit/grouped")
         @Operation(summary = "Get profit report grouped by time period", description = "Returns profit report data grouped by specified time period. "
                         +
-                        "If invalid groupBy value is provided, returns 400 Bad Request with error details.")
+                        "If groupBy is not provided, null, or empty, DAY will be used as default. "
+                        +
+                        "Invalid groupBy values are handled globally with 400 Bad Request response.")
         @SwaggerResponses.GroupedProfitReportRetrieved
         public ResponseEntity<GroupedProfitReportDto> getGroupedProfitReport(
                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Start date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)", example = "2024-01-01T00:00:00", schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-01-01T00:00:00")) LocalDateTime startDate,
                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "End date for the report period (ISO format: YYYY-MM-DDTHH:mm:ss)", example = "2024-12-31T23:59:59", schema = @Schema(type = "string", format = "date-time", defaultValue = "2024-12-31T23:59:59")) LocalDateTime endDate,
                         @RequestParam(defaultValue = "DAY") @Parameter(description = "Grouping period. Must be one of: HOUR, DAY, WEEK, MONTH", schema = @Schema(allowableValues = {
                                         "HOUR", "DAY", "WEEK", "MONTH" }, defaultValue = "DAY")) String groupBy) {
-                try {
-                        GroupByPeriod groupByPeriod = GroupByPeriod.fromString(groupBy);
-                        GroupedProfitReportDto groupedReport = reportService.getGroupedProfitReport(startDate, endDate,
-                                        groupByPeriod);
-                        return ResponseEntity.ok(groupedReport);
-                } catch (InvalidGroupByPeriodException e) {
-                        return ResponseEntity.badRequest().build();
-                }
+                GroupByPeriod groupByPeriod = GroupByPeriodUtils.fromString(groupBy);
+                GroupedProfitReportDto groupedReport = reportService.getGroupedProfitReport(startDate, endDate,
+                                groupByPeriod);
+                return ResponseEntity.ok(groupedReport);
         }
 
         @GetMapping("/pending-payments")

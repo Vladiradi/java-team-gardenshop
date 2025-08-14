@@ -1,12 +1,12 @@
-package telran.project.gardenshop.enums;
+package telran.project.gardenshop.utilities;
 
 import org.junit.jupiter.api.Test;
+import telran.project.gardenshop.enums.GroupByPeriod;
 import telran.project.gardenshop.exception.InvalidGroupByPeriodException;
-import telran.project.gardenshop.utilities.GroupByPeriodUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GroupByPeriodTest {
+class GroupByPeriodUtilsTest {
 
     @Test
     void fromString_WithValidValues_ShouldReturnCorrectEnum() {
@@ -29,20 +29,10 @@ class GroupByPeriodTest {
     }
 
     @Test
-    void fromString_WithNullValue_ShouldReturnDayAsDefault() {
+    void fromString_WithNullOrEmptyValues_ShouldReturnDayAsDefault() {
         // Given & When & Then
         assertEquals(GroupByPeriod.DAY, GroupByPeriodUtils.fromString(null));
-    }
-
-    @Test
-    void fromString_WithEmptyValue_ShouldReturnDayAsDefault() {
-        // Given & When & Then
         assertEquals(GroupByPeriod.DAY, GroupByPeriodUtils.fromString(""));
-    }
-
-    @Test
-    void fromString_WithBlankValue_ShouldReturnDayAsDefault() {
-        // Given & When & Then
         assertEquals(GroupByPeriod.DAY, GroupByPeriodUtils.fromString("   "));
     }
 
@@ -58,19 +48,55 @@ class GroupByPeriodTest {
     }
 
     @Test
-    void name_ShouldReturnCorrectString() {
+    void isValid_WithValidValues_ShouldReturnTrue() {
         // Given & When & Then
+        assertTrue(GroupByPeriodUtils.isValid("HOUR"));
+        assertTrue(GroupByPeriodUtils.isValid("hour"));
+        assertTrue(GroupByPeriodUtils.isValid(" Day "));
+        assertTrue(GroupByPeriodUtils.isValid("WEEK"));
+        assertTrue(GroupByPeriodUtils.isValid("MONTH"));
+    }
+
+    @Test
+    void isValid_WithNullOrEmptyValues_ShouldReturnTrue() {
+        // Given & When & Then
+        assertTrue(GroupByPeriodUtils.isValid(null));
+        assertTrue(GroupByPeriodUtils.isValid(""));
+        assertTrue(GroupByPeriodUtils.isValid("   "));
+    }
+
+    @Test
+    void isValid_WithInvalidValues_ShouldReturnFalse() {
+        // Given & When & Then
+        assertFalse(GroupByPeriodUtils.isValid("INVALID"));
+        assertFalse(GroupByPeriodUtils.isValid("YEARS"));
+        assertFalse(GroupByPeriodUtils.isValid("SECONDS"));
+    }
+
+    @Test
+    void getValidValues_ShouldReturnAllEnumValues() {
+        // Given & When
+        String validValues = GroupByPeriodUtils.getValidValues();
+
+        // Then
+        assertEquals("HOUR, DAY, WEEK, MONTH", validValues);
+    }
+
+    @Test
+    void demonstrateCleanArchitecture() {
+        // Демонстрируем чистую архитектуру
+
+        // 1. Enum содержит только значения (без логики)
         assertEquals("HOUR", GroupByPeriod.HOUR.name());
         assertEquals("DAY", GroupByPeriod.DAY.name());
         assertEquals("WEEK", GroupByPeriod.WEEK.name());
         assertEquals("MONTH", GroupByPeriod.MONTH.name());
-    }
 
-    @Test
-    void fromString_WithDefaultValue_ShouldReturnDay() {
-        // Given & When & Then
-        assertEquals(GroupByPeriod.DAY, GroupByPeriodUtils.fromString("DAY"));
+        // 2. Вся логика находится в утилитном классе
         assertEquals(GroupByPeriod.DAY, GroupByPeriodUtils.fromString("day"));
-        assertEquals(GroupByPeriod.DAY, GroupByPeriodUtils.fromString(" Day "));
+        assertTrue(GroupByPeriodUtils.isValid("HOUR"));
+        assertEquals("HOUR, DAY, WEEK, MONTH", GroupByPeriodUtils.getValidValues());
+
+        System.out.println("✅ Чистая архитектура: enum содержит только значения, логика в утилитном классе!");
     }
 }

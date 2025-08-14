@@ -19,7 +19,7 @@ import telran.project.gardenshop.repository.OrderRepository;
 
 @Service
 @RequiredArgsConstructor
-public class OrderServiceImpl implements OrderService {
+public abstract class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 

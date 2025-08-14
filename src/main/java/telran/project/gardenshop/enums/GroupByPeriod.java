@@ -22,7 +22,7 @@ public enum GroupByPeriod {
             }
         }
 
-        return null;
+        return DAY;
     }
 
 }

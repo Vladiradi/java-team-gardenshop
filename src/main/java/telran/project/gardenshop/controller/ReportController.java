@@ -86,9 +86,7 @@ public class ReportController {
                             defaultValue = "DAY"))
             String groupBy) {
         GroupByPeriod groupByPeriod = GroupByPeriod.fromString(groupBy);
-        if (groupByPeriod == null) {
-            return ResponseEntity.badRequest().build();
-        }
+
         GroupedProfitReportDto groupedReport = reportService.getGroupedProfitReport(startDate, endDate, groupByPeriod);
         return ResponseEntity.ok(groupedReport);
     }

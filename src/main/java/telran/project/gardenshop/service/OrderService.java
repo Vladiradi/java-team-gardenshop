@@ -4,6 +4,7 @@ import telran.project.gardenshop.dto.OrderCreateRequestDto;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.enums.OrderStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderService {
@@ -21,4 +22,10 @@ public interface OrderService {
     Order cancel(Long id);
 
     void delete(Long id);
+
+    List<Order> getOrdersByStatus(OrderStatus orderStatus);
+
+    List<Order> getOrdersByStatusAndCreatedBefore(OrderStatus orderStatus, LocalDateTime cutoffDate);
+
+    List<Order> getOrdersByDateRangeAndStatus(LocalDateTime startDate, LocalDateTime endDate, OrderStatus orderStatus);
 }

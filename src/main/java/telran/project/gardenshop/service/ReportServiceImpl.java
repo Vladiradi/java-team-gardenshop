@@ -1,150 +1,205 @@
 package telran.project.gardenshop.service;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
-import telran.project.gardenshop.dto.ProductReportDto;
-import telran.project.gardenshop.dto.ProfitReportDto;
-import telran.project.gardenshop.dto.GroupedProfitReportDto;
-import telran.project.gardenshop.dto.PendingPaymentReportDto;
-import telran.project.gardenshop.dto.OrderItemResponseDto;
-import telran.project.gardenshop.dto.CancelledProductReportDto;
+import telran.project.gardenshop.dto.*;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.OrderItem;
 import telran.project.gardenshop.entity.Product;
-import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.GroupByPeriod;
-import telran.project.gardenshop.repository.OrderRepository;
-import telran.project.gardenshop.repository.OrderItemRepository;
+import telran.project.gardenshop.enums.OrderStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.time.DayOfWeek;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
-    /// SERVICE
+    // === Top products by sales ===
+    @Override
+    public List<ProductReportDto> getTopProductsBySales(int limit) {
+        List<Order> deliveredOrders = orderService.getOrdersByStatus(OrderStatus.DELIVERED);
 
+        return deliveredOrders.stream()
+                .flatMap(order -> order.getItems().stream())
+                .collect(Collectors.groupingBy(item -> item.getProduct().getId()))
+                .values().stream()
+                .map(items -> {
+                    Product product = items.get(0).getProduct();
+                    long totalQuantity = items.stream().mapToLong(OrderItem::getQuantity).sum();
+                    BigDecimal totalRevenue = items.stream()
+                            .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    return ProductReportDto.builder()
+                            .productId(product.getId())
+                            .productName(product.getName())
+                            .productImageUrl(product.getImageUrl())
+                            .productPrice(product.getPrice())
+                            .totalQuantitySold(totalQuantity)
+                            .totalRevenue(totalRevenue)
+                            .build();
+                })
+                .sorted(Comparator.comparing(ProductReportDto::getTotalQuantitySold).reversed())
+                .limit(limit)
+                .toList();
+    }
+
+    // === Top products by cancellations ===
+    @Override
+    public List<CancelledProductReportDto> getTopProductsByCancellations(int limit) {
+        List<Order> cancelledOrders = orderService.getOrdersByStatus(OrderStatus.CANCELLED);
+
+        Map<Long, List<OrderItem>> itemsByProduct = cancelledOrders.stream()
+                .flatMap(o -> o.getItems().stream())
+                .collect(Collectors.groupingBy(i -> i.getProduct().getId()));
+
+        return itemsByProduct.entrySet().stream()
+                .map(entry -> {
+                    Long productId = entry.getKey();
+                    List<OrderItem> items = entry.getValue();
+                    Product product = items.get(0).getProduct();
+                    long totalQuantityCancelled = items.stream().mapToLong(OrderItem::getQuantity).sum();
+
+                    return CancelledProductReportDto.builder()
+                            .productId(product.getId())
+                            .productName(product.getName())
+                            .productImageUrl(product.getImageUrl())
+                            .productPrice(product.getPrice())
+                            .totalQuantityCancelled(totalQuantityCancelled)
+                            .build();
+                })
+                .sorted(Comparator.comparing(CancelledProductReportDto::getTotalQuantityCancelled).reversed())
+                .limit(limit)
+                .toList();
+    }
+
+    // === Pending payment orders ===
+    @Override
+    public List<PendingPaymentReportDto> getPendingPaymentOrders(int daysOlder) {
+        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(daysOlder);
+        List<Order> pendingOrders = orderService.getOrdersByStatusAndCreatedBefore(OrderStatus.NEW, cutoffDate);
+
+        return pendingOrders.stream()
+                .map(order -> {
+                    BigDecimal orderTotal = order.getItems().stream()
+                            .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                    List<OrderItemResponseDto> items = order.getItems().stream()
+                            .map(i -> OrderItemResponseDto.builder()
+                                    .id(i.getId())
+                                    .productId(i.getProduct().getId())
+                                    .productName(i.getProduct().getName())
+                                    .productImageUrl(i.getProduct().getImageUrl())
+                                    .quantity(i.getQuantity())
+                                    .price(i.getPrice().doubleValue())
+                                    .build())
+                            .toList();
+
+                    return PendingPaymentReportDto.builder()
+                            .orderId(order.getId())
+                            .userId(order.getUser().getId())
+                            .userEmail(order.getUser().getEmail())
+                            .userFullName(order.getUser().getFullName())
+                            .orderCreatedAt(order.getCreatedAt())
+                            .daysPending(ChronoUnit.DAYS.between(order.getCreatedAt(), LocalDateTime.now()))
+                            .orderTotal(orderTotal)
+                            .items(items)
+                            .build();
+                })
+                .toList();
+    }
+
+    // === Profit report ===
     @Override
     public ProfitReportDto getProfitReport(LocalDateTime startDate, LocalDateTime endDate) {
-        List<Order> ordersInPeriod = orderRepository.findAllByCreatedAtBetweenAndStatus(
-                startDate, endDate, OrderStatus.DELIVERED);
-
-        BigDecimal totalRevenue = ordersInPeriod.stream()
-                .flatMap(order -> order.getItems().stream())
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal totalCost = totalRevenue.multiply(BigDecimal.valueOf(0.6));
-        BigDecimal totalProfit = totalRevenue.subtract(totalCost);
-        BigDecimal profitMargin = totalRevenue.compareTo(BigDecimal.ZERO) > 0
-                ? totalProfit.divide(totalRevenue, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100))
-                : BigDecimal.ZERO;
-
-        long totalOrders = ordersInPeriod.size();
-        long totalItemsSold = ordersInPeriod.stream()
-                .flatMapToLong(order -> order.getItems().stream().mapToLong(OrderItem::getQuantity))
-                .sum();
+        List<Order> orders = orderService.getOrdersByDateRangeAndStatus(startDate, endDate, OrderStatus.DELIVERED);
+        ProfitMetrics metrics = calculateMetrics(orders);
 
         return ProfitReportDto.builder()
                 .startDate(startDate)
                 .endDate(endDate)
-                .totalRevenue(totalRevenue)
-                .totalCost(totalCost)
-                .totalProfit(totalProfit)
-                .profitMargin(profitMargin)
-                .totalOrders(totalOrders)
-                .totalItemsSold(totalItemsSold)
+                .totalRevenue(metrics.revenue())
+                .totalCost(metrics.cost())
+                .totalProfit(metrics.profit())
+                .profitMargin(metrics.profitMargin())
+                .totalOrders(metrics.ordersCount())
+                .totalItemsSold(metrics.itemsSold())
                 .build();
     }
 
+    // === Grouped profit report ===
     @Override
     public GroupedProfitReportDto getGroupedProfitReport(LocalDateTime startDate, LocalDateTime endDate, GroupByPeriod groupBy) {
-        List<Order> ordersInPeriod = orderRepository.findAllByCreatedAtBetweenAndStatus(
-                startDate, endDate, OrderStatus.DELIVERED);
+        List<Order> orders = orderService.getOrdersByDateRangeAndStatus(startDate, endDate, OrderStatus.DELIVERED);
+        if (orders.isEmpty()) return createEmptyGroupedReport(startDate, endDate, groupBy);
 
-        if (ordersInPeriod.isEmpty()) {
-            return createEmptyGroupedReport(startDate, endDate, groupBy);
-        }
-
-        Map<String, List<Order>> groupedOrders = groupOrdersByTimePeriod(ordersInPeriod, groupBy);
+        Map<String, List<Order>> groupedOrders = orders.stream()
+                .collect(Collectors.groupingBy(o -> getPeriodKey(o.getCreatedAt(), groupBy)));
 
         List<GroupedProfitReportDto.GroupedProfitData> groupedData = groupedOrders.entrySet().stream()
-                .map(entry -> calculateGroupedProfitData(entry.getKey(), entry.getValue(), groupBy))
-                .sorted((g1, g2) -> g1.getPeriodStart().compareTo(g2.getPeriodStart()))
-                .collect(Collectors.toList());
+                .map(entry -> calculateGroupedProfitData(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(GroupedProfitReportDto.GroupedProfitData::getPeriodStart))
+                .toList();
 
-        BigDecimal totalRevenue = groupedData.stream()
-                .map(GroupedProfitReportDto.GroupedProfitData::getRevenue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal totalCost = totalRevenue.multiply(BigDecimal.valueOf(0.6));
-        BigDecimal totalProfit = totalRevenue.subtract(totalCost);
-        BigDecimal profitMargin = totalRevenue.compareTo(BigDecimal.ZERO) > 0
-                ? totalProfit.divide(totalRevenue, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100))
-                : BigDecimal.ZERO;
-
-        long totalOrders = ordersInPeriod.size();
-        long totalItemsSold = ordersInPeriod.stream()
-                .flatMapToLong(order -> order.getItems().stream().mapToLong(OrderItem::getQuantity))
-                .sum();
+        ProfitMetrics totals = calculateMetrics(orders);
 
         return GroupedProfitReportDto.builder()
                 .startDate(startDate)
                 .endDate(endDate)
                 .groupBy(groupBy.name())
                 .groupedData(groupedData)
-                .totalRevenue(totalRevenue)
-                .totalCost(totalCost)
-                .totalProfit(totalProfit)
-                .profitMargin(profitMargin)
-                .totalOrders(totalOrders)
-                .totalItemsSold(totalItemsSold)
+                .totalRevenue(totals.revenue())
+                .totalCost(totals.cost())
+                .totalProfit(totals.profit())
+                .profitMargin(totals.profitMargin())
+                .totalOrders(totals.ordersCount())
+                .totalItemsSold(totals.itemsSold())
                 .build();
     }
 
-    private Map<String, List<Order>> groupOrdersByTimePeriod(List<Order> orders, GroupByPeriod groupBy) {
-        return orders.stream()
-                .collect(Collectors.groupingBy(order -> getPeriodKey(order.getCreatedAt(), groupBy)));
-    }
+    // === Helper methods ===
 
     private String getPeriodKey(LocalDateTime dateTime, GroupByPeriod groupBy) {
-        switch (groupBy) {
-            case HOUR:
-                return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
-//            case DAY:
-//                return dateTime.toLocalDate().toString();
-            case WEEK:
-                LocalDate date = dateTime.toLocalDate();
-                LocalDate weekStart = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-                return "Week " + weekStart.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            case MONTH:
-                return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"));
-            case DAY:
-            default:
-                return dateTime.toLocalDate().toString();
-        }
+        return switch (groupBy) {
+            case HOUR -> dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
+            case WEEK -> {
+                LocalDate weekStart = dateTime.toLocalDate().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+                yield "Week " + weekStart.toString();
+            }
+            case MONTH -> dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"));
+            default -> dateTime.toLocalDate().toString();
+        };
     }
 
-    private GroupedProfitReportDto.GroupedProfitData calculateGroupedProfitData(String periodKey, List<Order> orders, GroupByPeriod groupBy) {
+    private GroupedProfitReportDto.GroupedProfitData calculateGroupedProfitData(String periodKey, List<Order> orders) {
+        ProfitMetrics metrics = calculateMetrics(orders);
+        LocalDateTime periodStart = orders.stream().map(Order::getCreatedAt).min(LocalDateTime::compareTo).orElse(LocalDateTime.now());
+
+        return GroupedProfitReportDto.GroupedProfitData.builder()
+                .periodLabel(periodKey)
+                .periodStart(periodStart)
+                .revenue(metrics.revenue())
+                .cost(metrics.cost())
+                .profit(metrics.profit())
+                .profitMargin(metrics.profitMargin())
+                .orderCount(metrics.ordersCount())
+                .itemsSold(metrics.itemsSold())
+                .build();
+    }
+
+    private ProfitMetrics calculateMetrics(List<Order> orders) {
         BigDecimal revenue = orders.stream()
-                .flatMap(order -> order.getItems().stream())
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .flatMap(o -> o.getItems().stream())
+                .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal cost = revenue.multiply(BigDecimal.valueOf(0.6));
@@ -153,57 +208,11 @@ public class ReportServiceImpl implements ReportService {
                 ? profit.divide(revenue, 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100))
                 : BigDecimal.ZERO;
 
-        long orderCount = orders.size();
         long itemsSold = orders.stream()
-                .flatMapToLong(order -> order.getItems().stream().mapToLong(OrderItem::getQuantity))
+                .flatMapToLong(o -> o.getItems().stream().mapToLong(OrderItem::getQuantity))
                 .sum();
 
-        LocalDateTime periodStart = getPeriodStart(periodKey, groupBy);
-        LocalDateTime periodEnd = getPeriodEnd(periodKey, groupBy);
-
-        return GroupedProfitReportDto.GroupedProfitData.builder()
-                .periodLabel(periodKey)
-                .periodStart(periodStart)
-                .periodEnd(periodEnd)
-                .revenue(revenue)
-                .cost(cost)
-                .profit(profit)
-                .profitMargin(profitMargin)
-                .orderCount(orderCount)
-                .itemsSold(itemsSold)
-                .build();
-    }
-
-    private LocalDateTime getPeriodStart(String periodKey, GroupByPeriod groupBy) {
-        return switch (groupBy) {
-            case HOUR -> LocalDateTime.parse(periodKey + ":00",
-                    java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            case DAY -> LocalDate.parse(periodKey).atStartOfDay();
-            case WEEK -> {
-                // periodKey format: "Week YYYY-MM-DD"
-                String datePart = periodKey.substring(5); // Remove "Week " prefix
-                yield LocalDate.parse(datePart).atStartOfDay(); // Remove "Week " prefix
-            }
-            case MONTH -> LocalDate.parse(periodKey + "-01").atStartOfDay();
-        };
-    }
-
-    private LocalDateTime getPeriodEnd(String periodKey, GroupByPeriod groupBy) {
-        return switch (groupBy) {
-            case HOUR -> LocalDateTime.parse(periodKey + ":00",
-                    java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
-            case DAY -> LocalDate.parse(periodKey).atTime(23, 59, 59);
-            case WEEK -> {
-                //YYYY-MM-DD
-                String datePart = periodKey.substring(5); // Remove "Week " prefix
-                LocalDate weekStart = LocalDate.parse(datePart);
-                yield weekStart.plusDays(6).atTime(23, 59, 59);
-            }
-            case MONTH -> {
-                LocalDate monthStart = LocalDate.parse(periodKey + "-01");
-                yield monthStart.plusMonths(1).minusDays(1).atTime(23, 59, 59);
-            }
-        };
+        return new ProfitMetrics(revenue, cost, profit, profitMargin, itemsSold, (long) orders.size());
     }
 
     private GroupedProfitReportDto createEmptyGroupedReport(LocalDateTime startDate, LocalDateTime endDate, GroupByPeriod groupBy) {
@@ -211,7 +220,7 @@ public class ReportServiceImpl implements ReportService {
                 .startDate(startDate)
                 .endDate(endDate)
                 .groupBy(groupBy.name())
-                .groupedData(new ArrayList<>())
+                .groupedData(Collections.emptyList())
                 .totalRevenue(BigDecimal.ZERO)
                 .totalCost(BigDecimal.ZERO)
                 .totalProfit(BigDecimal.ZERO)
@@ -221,105 +230,5 @@ public class ReportServiceImpl implements ReportService {
                 .build();
     }
 
-    @Override
-    public List<PendingPaymentReportDto> getPendingPaymentOrders(int daysOlder) {
-        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(daysOlder);
-
-        List<Order> pendingOrders = orderRepository.findAllByStatusAndCreatedAtBefore(
-                OrderStatus.NEW, cutoffDate);
-
-        return pendingOrders.stream()
-                .map(order -> {
-                    long daysPending = ChronoUnit.DAYS.between(order.getCreatedAt(), LocalDateTime.now());
-
-                    BigDecimal orderTotal = order.getItems().stream()
-                            .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                    List<OrderItemResponseDto> items = order.getItems().stream()
-                            .map(item -> OrderItemResponseDto.builder()
-                                    .id(item.getId())
-                                    .productId(item.getProduct().getId())
-                                    .productName(item.getProduct().getName())
-                                    .productImageUrl(item.getProduct().getImageUrl())
-                                    .quantity(item.getQuantity())
-                                    .price(item.getPrice().doubleValue())
-                                    .build())
-                            .collect(Collectors.toList());
-
-                    return PendingPaymentReportDto.builder()
-                            .orderId(order.getId())
-                            .userId(order.getUser().getId())
-                            .userEmail(order.getUser().getEmail())
-                            .userFullName(order.getUser().getFullName())
-                            .orderCreatedAt(order.getCreatedAt())
-                            .daysPending(daysPending)
-                            .orderTotal(orderTotal)
-                            .items(items)
-                            .build();
-                })
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ProductReportDto> getTopProductsBySales(int limit) {
-        List<Order> deliveredOrders = orderRepository.findAllByStatus(OrderStatus.DELIVERED);
-
-        Map<Long, ProductReportDto> productStats = new HashMap<>();
-
-        for (Order order : deliveredOrders) {
-            for (OrderItem item : order.getItems()) {
-                Product product = item.getProduct();
-                Long productId = product.getId();
-
-                ProductReportDto stats = productStats.computeIfAbsent(productId,
-                        k -> ProductReportDto.builder()
-                                .productId(productId)
-                                .productName(product.getName())
-                                .productImageUrl(product.getImageUrl())
-                                .productPrice(product.getPrice())
-                                .totalQuantitySold(0L)
-                                .totalRevenue(BigDecimal.ZERO)
-                                .build());
-
-                stats.setTotalQuantitySold(stats.getTotalQuantitySold() + item.getQuantity());
-                stats.setTotalRevenue(stats.getTotalRevenue().add(item.getPrice()));
-            }
-        }
-
-        return productStats.values().stream()
-                .sorted(Comparator.comparing(ProductReportDto::getTotalQuantitySold).reversed())
-                .limit(limit)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CancelledProductReportDto> getTopProductsByCancellations(int limit) {
-        List<Order> cancelledOrders = orderRepository.findAllByStatus(OrderStatus.CANCELLED);
-
-        Map<Long, CancelledProductReportDto> productStats = new HashMap<>();
-
-        for (Order order : cancelledOrders) {
-            for (OrderItem item : order.getItems()) {
-                Product product = item.getProduct();
-                Long productId = product.getId();
-
-                CancelledProductReportDto stats = productStats.computeIfAbsent(productId,
-                        k -> CancelledProductReportDto.builder()
-                                .productId(productId)
-                                .productName(product.getName())
-                                .productImageUrl(product.getImageUrl())
-                                .productPrice(product.getPrice())
-                                .totalQuantityCancelled(0L)
-                                .build());
-
-                stats.setTotalQuantityCancelled(stats.getTotalQuantityCancelled() + item.getQuantity());
-            }
-        }
-
-        return productStats.values().stream()
-                .sorted(Comparator.comparing(CancelledProductReportDto::getTotalQuantityCancelled).reversed())
-                .limit(limit)
-                .collect(Collectors.toList());
-    }
+    private record ProfitMetrics(BigDecimal revenue, BigDecimal cost, BigDecimal profit, BigDecimal profitMargin, long itemsSold, long ordersCount) {}
 }

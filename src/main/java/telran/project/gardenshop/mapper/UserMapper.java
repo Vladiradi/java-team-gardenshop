@@ -3,11 +3,14 @@ package telran.project.gardenshop.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import telran.project.gardenshop.dto.*;
-import telran.project.gardenshop.entity.*;
+
+import telran.project.gardenshop.dto.UserEditDto;
+import telran.project.gardenshop.dto.UserRequestDto;
+import telran.project.gardenshop.dto.UserResponseDto;
+import telran.project.gardenshop.entity.User;
 
 
-@Mapper(componentModel = "spring", uses = { FavoriteMapper.class })
+@Mapper(componentModel = "spring", uses = {FavoriteMapper.class})
 public interface UserMapper {
 
     User toEntity(UserRequestDto dto);

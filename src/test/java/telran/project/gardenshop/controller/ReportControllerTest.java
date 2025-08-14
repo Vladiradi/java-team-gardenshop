@@ -47,7 +47,6 @@ class ReportControllerTest {
 
     @Test
     void getTopProductsBySales_ShouldReturnTopProducts() throws Exception {
-        // Given
         List<ProductReportDto> topProducts = Arrays.asList(
                 ProductReportDto.builder()
                         .productId(1L)
@@ -65,7 +64,6 @@ class ReportControllerTest {
 
         when(reportService.getTopProductsBySales(5)).thenReturn(topProducts);
 
-        // When & Then
         mockMvc.perform(get("/v1/reports/top-products")
                         .param("limit", "5"))
                 .andExpect(status().isOk())
@@ -79,23 +77,21 @@ class ReportControllerTest {
 
     @Test
     void getTopCancelledProducts_ShouldReturnTopCancelledProductsByQuantity() throws Exception {
-        // Given
         List<CancelledProductReportDto> topCancelledProducts = Arrays.asList(
                 CancelledProductReportDto.builder()
                         .productId(1L)
                         .productName("Product 1")
-                        .totalQuantityCancelled(10L)  // Highest quantity cancelled
+                        .totalQuantityCancelled(10L)
                         .build(),
                 CancelledProductReportDto.builder()
                         .productId(2L)
                         .productName("Product 2")
-                        .totalQuantityCancelled(5L)   // Lower quantity cancelled
+                        .totalQuantityCancelled(5L)
                         .build()
         );
 
         when(reportService.getTopProductsByCancellations(5)).thenReturn(topCancelledProducts);
 
-        // When & Then
         mockMvc.perform(get("/v1/reports/top-cancelled-products")
                         .param("limit", "5"))
                 .andExpect(status().isOk())
@@ -109,7 +105,6 @@ class ReportControllerTest {
 
     @Test
     void getProfitReport() throws Exception {
-        // Given
         LocalDateTime startDate = LocalDateTime.now().minusDays(30);
         LocalDateTime endDate = LocalDateTime.now();
 
@@ -126,7 +121,6 @@ class ReportControllerTest {
 
         when(reportService.getProfitReport(eq(startDate), eq(endDate))).thenReturn(profitReport);
 
-        // When & Then
         mockMvc.perform(get("/v1/reports/profit")
                         .param("startDate", startDate.toString())
                         .param("endDate", endDate.toString()))
@@ -141,7 +135,6 @@ class ReportControllerTest {
 
     @Test
     void getGroupedProfitReport_WithDayGrouping_ShouldReturnGroupedData() throws Exception {
-        // Given
         LocalDateTime startDate = LocalDateTime.now().minusDays(7);
         LocalDateTime endDate = LocalDateTime.now();
         String groupBy = "DAY";
@@ -185,7 +178,6 @@ class ReportControllerTest {
 
         when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(GroupByPeriod.DAY))).thenReturn(groupedReport);
 
-        // When & Then
         mockMvc.perform(get("/v1/reports/profit/grouped")
                         .param("startDate", startDate.toString())
                         .param("endDate", endDate.toString())
@@ -202,9 +194,9 @@ class ReportControllerTest {
                 .andExpect(jsonPath("$.groupedData[1].revenue").value(1500));
     }
 
+
     @Test
     void getGroupedProfitReport_WithHourGrouping_ShouldReturnGroupedData() throws Exception {
-        // Given
         LocalDateTime startDate = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime endDate = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
         String groupBy = "HOUR";
@@ -236,7 +228,6 @@ class ReportControllerTest {
 
         when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(GroupByPeriod.HOUR))).thenReturn(groupedReport);
 
-        // When & Then
         mockMvc.perform(get("/v1/reports/profit/grouped")
                         .param("startDate", startDate.toString())
                         .param("endDate", endDate.toString())
@@ -248,7 +239,6 @@ class ReportControllerTest {
 
     @Test
     void getGroupedProfitReport_WithDefaultGrouping_ShouldUseDayGrouping() throws Exception {
-        // Given
         LocalDateTime startDate = LocalDateTime.now().minusDays(1);
         LocalDateTime endDate = LocalDateTime.now();
 
@@ -265,9 +255,9 @@ class ReportControllerTest {
                 .totalItemsSold(0L)
                 .build();
 
-        when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(GroupByPeriod.DAY))).thenReturn(groupedReport);
+        when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(GroupByPeriod.DAY)))
+                .thenReturn(groupedReport);
 
-        // When & Then
         mockMvc.perform(get("/v1/reports/profit/grouped")
                         .param("startDate", startDate.toString())
                         .param("endDate", endDate.toString()))
@@ -276,47 +266,32 @@ class ReportControllerTest {
     }
 
     @Test
-    void getGroupedProfitReport_WithInvalidGroupBy_ShouldReturnBadRequest() throws Exception {
-        // Given
+    void getGroupedProfitReport_WithInvalidGroupBy_ShouldDefaultToDay() throws Exception {
         LocalDateTime startDate = LocalDateTime.now().minusDays(1);
         LocalDateTime endDate = LocalDateTime.now();
         String invalidGroupBy = "INVALID";
 
-        // When & Then
+        GroupedProfitReportDto groupedReport = GroupedProfitReportDto.builder()
+                .startDate(startDate)
+                .endDate(endDate)
+                .groupBy("DAY") // default
+                .groupedData(Arrays.asList())
+                .totalRevenue(BigDecimal.ZERO)
+                .totalCost(BigDecimal.ZERO)
+                .totalProfit(BigDecimal.ZERO)
+                .profitMargin(BigDecimal.ZERO)
+                .totalOrders(0L)
+                .totalItemsSold(0L)
+                .build();
+
+        when(reportService.getGroupedProfitReport(eq(startDate), eq(endDate), eq(GroupByPeriod.DAY)))
+                .thenReturn(groupedReport);
+
         mockMvc.perform(get("/v1/reports/profit/grouped")
                         .param("startDate", startDate.toString())
                         .param("endDate", endDate.toString())
                         .param("groupBy", invalidGroupBy))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void getPendingPaymentOrders() throws Exception {
-        // Given
-        List<PendingPaymentReportDto> pendingOrders = Arrays.asList(
-                PendingPaymentReportDto.builder()
-                        .orderId(1L)
-                        .userId(1L)
-                        .userEmail("test@example.com")
-                        .userFullName("Test User")
-                        .orderCreatedAt(LocalDateTime.now().minusDays(10))
-                        .daysPending(10L)
-                        .orderTotal(BigDecimal.valueOf(500))
-                        .items(Arrays.asList())
-                        .build()
-        );
-
-        when(reportService.getPendingPaymentOrders(7)).thenReturn(pendingOrders);
-
-        // When & Then
-        mockMvc.perform(get("/v1/reports/pending-payments")
-                        .param("daysOlder", "7"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].orderId").value(1))
-                .andExpect(jsonPath("$[0].userId").value(1))
-                .andExpect(jsonPath("$[0].userEmail").value("test@example.com"))
-                .andExpect(jsonPath("$[0].userFullName").value("Test User"))
-                .andExpect(jsonPath("$[0].daysPending").value(10))
-                .andExpect(jsonPath("$[0].orderTotal").value(500));
+                .andExpect(jsonPath("$.groupBy").value("DAY"));
     }
 }

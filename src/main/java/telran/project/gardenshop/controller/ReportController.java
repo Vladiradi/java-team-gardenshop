@@ -84,12 +84,10 @@ public class ReportController {
             @Parameter(description = "Grouping period",
                     schema = @Schema(allowableValues = {"HOUR", "DAY", "WEEK", "MONTH"},
                             defaultValue = "DAY"))
-            String groupBy) {
-        GroupByPeriod groupByPeriod = GroupByPeriod.fromString(groupBy);
-        if (groupByPeriod == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        GroupedProfitReportDto groupedReport = reportService.getGroupedProfitReport(startDate, endDate, groupByPeriod);
+            GroupByPeriod groupBy) {
+//        GroupByPeriod groupByPeriod = GroupByPeriod.fromString(groupBy);
+
+        GroupedProfitReportDto groupedReport = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
         return ResponseEntity.ok(groupedReport);
     }
 

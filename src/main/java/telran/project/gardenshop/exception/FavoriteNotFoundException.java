@@ -5,7 +5,4 @@ public class FavoriteNotFoundException extends RuntimeException {
         super("Favorite with id " + id + " not found");
     }
 
-    public FavoriteNotFoundException(Long userId, Long productId) {
-        super("Favorite for user " + userId + " and product " + productId + " not found");
-    }
 }

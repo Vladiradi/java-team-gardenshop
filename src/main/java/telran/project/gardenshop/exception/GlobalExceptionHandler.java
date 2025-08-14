@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +48,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            UserAlreadyExistsException.class,
             FavoriteAlreadyExistsException.class
     })
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -73,16 +71,6 @@ public class GlobalExceptionHandler {
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("code", "ORDER_CREATION_ERROR");
         response.put("message", ex.getMessage());
-
-        if (ex instanceof ProductNotInCartException) {
-            ProductNotInCartException pnce = (ProductNotInCartException) ex;
-            response.put("productId", pnce.getProductId());
-        } else if (ex instanceof InsufficientQuantityException) {
-            InsufficientQuantityException iqe = (InsufficientQuantityException) ex;
-            response.put("productId", iqe.getProductId());
-            response.put("availableQuantity", iqe.getAvailableQuantity());
-            response.put("requestedQuantity", iqe.getRequestedQuantity());
-        }
 
         return response;
     }

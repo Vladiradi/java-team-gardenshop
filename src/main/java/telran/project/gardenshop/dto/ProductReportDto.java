@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import telran.project.gardenshop.enums.ProductReportType;
 
 import java.math.BigDecimal;
 
@@ -21,7 +22,9 @@ public class ProductReportDto {
 
     private BigDecimal productPrice;
 
-    private Long totalQuantitySold;
+    private Long totalQuantity;
 
     private BigDecimal totalRevenue;
+
+    private ProductReportType reportType;
 }

@@ -4,25 +4,25 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
 import telran.project.gardenshop.dto.OrderItemResponseDto;
-import telran.project.gardenshop.dto.CancelledProductReportDto;
+import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.OrderItem;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.GroupByPeriod;
+import telran.project.gardenshop.enums.ProductReportType;
 import telran.project.gardenshop.repository.OrderRepository;
-import telran.project.gardenshop.repository.OrderItemRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.DayOfWeek;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
@@ -126,15 +126,13 @@ public class ReportServiceImpl implements ReportService {
     private String getPeriodKey(LocalDateTime dateTime, GroupByPeriod groupBy) {
         switch (groupBy) {
             case HOUR:
-                return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
-//            case DAY:
-//                return dateTime.toLocalDate().toString();
+                return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00"));
             case WEEK:
                 LocalDate date = dateTime.toLocalDate();
                 LocalDate weekStart = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-                return "Week " + weekStart.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                return "Week " + weekStart.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             case MONTH:
-                return dateTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"));
+                return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM"));
             case DAY:
             default:
                 return dateTime.toLocalDate().toString();
@@ -177,7 +175,7 @@ public class ReportServiceImpl implements ReportService {
     private LocalDateTime getPeriodStart(String periodKey, GroupByPeriod groupBy) {
         return switch (groupBy) {
             case HOUR -> LocalDateTime.parse(periodKey + ":00",
-                    java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             case DAY -> LocalDate.parse(periodKey).atStartOfDay();
             case WEEK -> {
                 // periodKey format: "Week YYYY-MM-DD"
@@ -191,7 +189,7 @@ public class ReportServiceImpl implements ReportService {
     private LocalDateTime getPeriodEnd(String periodKey, GroupByPeriod groupBy) {
         return switch (groupBy) {
             case HOUR -> LocalDateTime.parse(periodKey + ":00",
-                    java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
             case DAY -> LocalDate.parse(periodKey).atTime(23, 59, 59);
             case WEEK -> {
                 //YYYY-MM-DD
@@ -262,12 +260,14 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<ProductReportDto> getTopProductsBySales(int limit) {
-        List<Order> deliveredOrders = orderRepository.findAllByStatus(OrderStatus.DELIVERED);
+    public List<ProductReportDto> getTopProductsByType(ProductReportType reportType, int limit) {
+        OrderStatus orderStatus = reportType == ProductReportType.SALES ?
+                OrderStatus.DELIVERED : OrderStatus.CANCELLED;
 
+        List<Order> orders = orderRepository.findAllByStatus(orderStatus);
         Map<Long, ProductReportDto> productStats = new HashMap<>();
 
-        for (Order order : deliveredOrders) {
+        for (Order order : orders) {
             for (OrderItem item : order.getItems()) {
                 Product product = item.getProduct();
                 Long productId = product.getId();
@@ -278,47 +278,22 @@ public class ReportServiceImpl implements ReportService {
                                 .productName(product.getName())
                                 .productImageUrl(product.getImageUrl())
                                 .productPrice(product.getPrice())
-                                .totalQuantitySold(0L)
+                                .totalQuantity(0L)
                                 .totalRevenue(BigDecimal.ZERO)
+                                .reportType(reportType)
                                 .build());
 
-                stats.setTotalQuantitySold(stats.getTotalQuantitySold() + item.getQuantity());
-                stats.setTotalRevenue(stats.getTotalRevenue().add(item.getPrice()));
+                stats.setTotalQuantity(stats.getTotalQuantity() + item.getQuantity());
+
+                // Only calculate revenue for sales reports
+                if (reportType == ProductReportType.SALES) {
+                    stats.setTotalRevenue(stats.getTotalRevenue().add(item.getPrice()));
+                }
             }
         }
 
         return productStats.values().stream()
-                .sorted(Comparator.comparing(ProductReportDto::getTotalQuantitySold).reversed())
-                .limit(limit)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CancelledProductReportDto> getTopProductsByCancellations(int limit) {
-        List<Order> cancelledOrders = orderRepository.findAllByStatus(OrderStatus.CANCELLED);
-
-        Map<Long, CancelledProductReportDto> productStats = new HashMap<>();
-
-        for (Order order : cancelledOrders) {
-            for (OrderItem item : order.getItems()) {
-                Product product = item.getProduct();
-                Long productId = product.getId();
-
-                CancelledProductReportDto stats = productStats.computeIfAbsent(productId,
-                        k -> CancelledProductReportDto.builder()
-                                .productId(productId)
-                                .productName(product.getName())
-                                .productImageUrl(product.getImageUrl())
-                                .productPrice(product.getPrice())
-                                .totalQuantityCancelled(0L)
-                                .build());
-
-                stats.setTotalQuantityCancelled(stats.getTotalQuantityCancelled() + item.getQuantity());
-            }
-        }
-
-        return productStats.values().stream()
-                .sorted(Comparator.comparing(CancelledProductReportDto::getTotalQuantityCancelled).reversed())
+                .sorted(Comparator.comparing(ProductReportDto::getTotalQuantity).reversed())
                 .limit(limit)
                 .collect(Collectors.toList());
     }

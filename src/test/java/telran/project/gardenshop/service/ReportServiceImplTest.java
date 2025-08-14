@@ -6,27 +6,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
-import telran.project.gardenshop.dto.CancelledProductReportDto;
+import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.entity.*;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.GroupByPeriod;
+import telran.project.gardenshop.enums.ProductReportType;
 import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.OrderItemRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -119,13 +114,13 @@ class ReportServiceImplTest {
     }
 
     @Test
-    void getTopProductsBySales() {
+    void getTopProductsByType_Sales() {
         // Given
         when(orderRepository.findAllByStatus(OrderStatus.DELIVERED))
                 .thenReturn(Arrays.asList(order1));
 
         // When
-        List<ProductReportDto> result = reportService.getTopProductsBySales(10);
+        List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.SALES, 10);
 
         // Then
         assertNotNull(result);
@@ -137,7 +132,8 @@ class ReportServiceImplTest {
                 .orElse(null);
         assertNotNull(product1Report);
         assertEquals("Product 1", product1Report.getProductName());
-        assertEquals(2L, product1Report.getTotalQuantitySold());
+        assertEquals(2L, product1Report.getTotalQuantity());
+        assertEquals(ProductReportType.SALES, product1Report.getReportType());
     }
 
     @Test
@@ -375,13 +371,13 @@ class ReportServiceImplTest {
     }
 
     @Test
-    void getTopProductsBySales_ShouldReturnTopProducts() {
+    void getTopProductsByType_Sales_ShouldReturnTopProducts() {
         // Given
         when(orderRepository.findAllByStatus(OrderStatus.DELIVERED))
                 .thenReturn(Arrays.asList(order1));
 
         // When
-        List<ProductReportDto> result = reportService.getTopProductsBySales(5);
+        List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.SALES, 5);
 
         // Then
         assertNotNull(result);
@@ -389,11 +385,12 @@ class ReportServiceImplTest {
         ProductReportDto product = result.get(0);
         assertEquals(1L, product.getProductId());
         assertEquals("Product 1", product.getProductName());
-        assertEquals(2L, product.getTotalQuantitySold());
+        assertEquals(2L, product.getTotalQuantity());
+        assertEquals(ProductReportType.SALES, product.getReportType());
     }
 
     @Test
-    void getTopProductsByCancellations_ShouldReturnTopCancelledProductsByQuantity() {
+    void getTopProductsByType_Cancellations_ShouldReturnTopCancelledProductsByQuantity() {
         // Given
         Order cancelledOrder = Order.builder()
                 .id(2L)
@@ -407,26 +404,28 @@ class ReportServiceImplTest {
                 .thenReturn(Arrays.asList(cancelledOrder));
 
         // When
-        List<CancelledProductReportDto> result = reportService.getTopProductsByCancellations(5);
+        List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.CANCELLATIONS, 5);
 
         // Then
         assertNotNull(result);
         assertEquals(1, result.size());
-        CancelledProductReportDto product = result.get(0);
+        ProductReportDto product = result.get(0);
         assertEquals(2L, product.getProductId());
         assertEquals("Product 2", product.getProductName());
-        assertEquals(1L, product.getTotalQuantityCancelled());
+        assertEquals(1L, product.getTotalQuantity());
+        assertEquals(ProductReportType.CANCELLATIONS, product.getReportType());
+        assertEquals(BigDecimal.ZERO, product.getTotalRevenue()); // Revenue should be zero for cancellations
     }
 
     @Test
-    void getTopProductsByCancellations_ShouldSortByTotalQuantityCancelled() {
+    void getTopProductsByType_Cancellations_ShouldSortByTotalQuantity() {
         // Given
         Order cancelledOrder1 = Order.builder()
                 .id(2L)
                 .user(order1.getUser())
                 .status(OrderStatus.CANCELLED)
                 .createdAt(LocalDateTime.now().minusDays(15))
-                .items(Arrays.asList(item2)) // 2 units cancelled
+                .items(Arrays.asList(item2)) // 1 unit cancelled
                 .build();
 
         Order cancelledOrder2 = Order.builder()
@@ -434,32 +433,47 @@ class ReportServiceImplTest {
                 .user(order1.getUser())
                 .status(OrderStatus.CANCELLED)
                 .createdAt(LocalDateTime.now().minusDays(10))
-                .items(Arrays.asList(item1)) // 3 units cancelled
+                .items(Arrays.asList(item1)) // 2 units cancelled
                 .build();
 
         when(orderRepository.findAllByStatus(OrderStatus.CANCELLED))
                 .thenReturn(Arrays.asList(cancelledOrder1, cancelledOrder2));
 
         // When
-        List<CancelledProductReportDto> result = reportService.getTopProductsByCancellations(5);
+        List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.CANCELLATIONS, 5);
 
         // Then
         assertNotNull(result);
         assertEquals(2, result.size());
 
-        // First product should have highest totalQuantityCancelled (3)
+        // First product should have highest totalQuantity (2)
         assertEquals(1L, result.get(0).getProductId());
-        assertEquals(2L, result.get(0).getTotalQuantityCancelled());
+        assertEquals(2L, result.get(0).getTotalQuantity());
+        assertEquals(ProductReportType.CANCELLATIONS, result.get(0).getReportType());
     }
 
     @Test
-    void getTopProductsByCancellations_WithNoCancelledOrders_ShouldReturnEmptyList() {
+    void getTopProductsByType_Cancellations_WithNoCancelledOrders_ShouldReturnEmptyList() {
         // Given
         when(orderRepository.findAllByStatus(OrderStatus.CANCELLED))
                 .thenReturn(Collections.emptyList());
 
         // When
-        List<CancelledProductReportDto> result = reportService.getTopProductsByCancellations(5);
+        List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.CANCELLATIONS, 5);
+
+        // Then
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void getTopProductsByType_Sales_WithNoDeliveredOrders_ShouldReturnEmptyList() {
+        // Given
+        when(orderRepository.findAllByStatus(OrderStatus.DELIVERED))
+                .thenReturn(Collections.emptyList());
+
+        // When
+        List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.SALES, 5);
 
         // Then
         assertNotNull(result);

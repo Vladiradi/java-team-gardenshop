@@ -2,5 +2,8 @@ package telran.project.gardenshop.enums;
 
 
 public enum GroupByPeriod {
-    HOUR, DAY, WEEK, MONTH
+    HOUR,
+    DAY,
+    WEEK,
+    MONTH
 }

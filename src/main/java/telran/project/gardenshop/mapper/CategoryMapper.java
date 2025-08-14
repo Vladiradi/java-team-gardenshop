@@ -8,8 +8,7 @@ import telran.project.gardenshop.dto.CategoryRequestDto;
 import telran.project.gardenshop.dto.CategoryResponseDto;
 import telran.project.gardenshop.entity.Category;
 
-@Mapper(componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
 public interface CategoryMapper {
     Category toEntity(CategoryRequestDto dto);
     CategoryResponseDto toDto(Category category);

@@ -30,6 +30,7 @@ public class ProductController {
     private final ProductService productService;
 
     private final ProductMapper productMapper;
+
     private final ProductRepository productRepository;
 
     @PostMapping

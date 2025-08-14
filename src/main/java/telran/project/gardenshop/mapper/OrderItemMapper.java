@@ -8,12 +8,10 @@ import telran.project.gardenshop.entity.OrderItem;
 
 @Mapper(componentModel = "spring")
 public interface OrderItemMapper {
-
     @Mapping(source = "product.id", target = "productId")
     @Mapping(source = "product.name", target = "productName")
     @Mapping(source = "product.imageUrl", target = "productImageUrl")
     OrderItemResponseDto toDto(OrderItem item);
-
     @Mapping(source = "productId", target = "product.id")
     OrderItem toEntity(OrderItemRequestDto dto);
 }

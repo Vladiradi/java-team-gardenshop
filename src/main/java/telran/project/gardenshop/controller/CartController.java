@@ -27,6 +27,7 @@ import telran.project.gardenshop.service.CartService;
 public class CartController {
 
     private final CartService cartService;
+
     private final CartMapper cartMapper;
 
     @Operation(summary = "Get current user's cart",
@@ -48,6 +49,7 @@ public class CartController {
                     content = @Content(schema = @Schema(implementation = CartResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Item not found")
     })
+
     @PostMapping("/items")
     public ResponseEntity<CartResponseDto> addItem(@RequestParam Long productId) {
         Cart updated = cartService.addItem(productId);
@@ -61,6 +63,7 @@ public class CartController {
                     content = @Content(schema = @Schema(implementation = CartResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Cart item not found")
     })
+
     @PutMapping("/items/{cartItemId}")
     public ResponseEntity<CartResponseDto> updateItem(
             @PathVariable Long cartItemId,
@@ -75,6 +78,7 @@ public class CartController {
             @ApiResponse(responseCode = "204", description = "Removed"),
             @ApiResponse(responseCode = "404", description = "Cart item not found")
     })
+
     @DeleteMapping("/items/{cartItemId}")
     public ResponseEntity<Void> deleteItem(@PathVariable Long cartItemId) {
         cartService.deleteItem(cartItemId);

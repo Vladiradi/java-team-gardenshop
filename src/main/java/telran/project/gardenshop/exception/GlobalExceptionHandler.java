@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         Map<String, String> errors = new HashMap<>();
 
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("code", "VALIDATION_ERROR");
@@ -84,6 +84,16 @@ public class GlobalExceptionHandler {
             response.put("requestedQuantity", iqe.getRequestedQuantity());
         }
 
+        return response;
+    }
+
+    @ExceptionHandler(InvalidGroupByPeriodException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleInvalidGroupByPeriodException(InvalidGroupByPeriodException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("code", "INVALID_GROUP_BY_PERIOD");
+        response.put("message", ex.getMessage());
         return response;
     }
 

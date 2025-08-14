@@ -49,7 +49,49 @@ public class Product {
     @Builder.Default
     private List<Favorite> favorites = new ArrayList<>();
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    private List<Discount> discounts = new ArrayList<>();
+
     public List<Favorite> getFavorites() {
         return favorites != null ? favorites : new ArrayList<>();
+    }
+
+    public List<Discount> getDiscounts() {
+        return discounts != null ? discounts : new ArrayList<>();
+    }
+
+    /**
+     * Получает активную скидку для товара
+     */
+    public Discount getActiveDiscount() {
+        return getDiscounts().stream()
+                .filter(Discount::isCurrentlyActive)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Получает цену со скидкой
+     */
+    public BigDecimal getDiscountedPrice() {
+        Discount activeDiscount = getActiveDiscount();
+        if (activeDiscount != null) {
+            return activeDiscount.calculateDiscountedPrice(price);
+        }
+        return price;
+    }
+
+    /**
+     * Проверяет, является ли товар товаром дня
+     */
+    public boolean isProductOfDay() {
+        return getDiscounts().stream()
+                .anyMatch(
+                        discount -> discount.getType() == telran.project.gardenshop.enums.DiscountType.PRODUCT_OF_DAY &&
+                                discount.isCurrentlyActive());
     }
 }

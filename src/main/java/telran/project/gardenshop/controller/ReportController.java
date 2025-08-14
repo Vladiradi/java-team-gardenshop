@@ -10,12 +10,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
-import telran.project.gardenshop.dto.CancelledProductReportDto;
+import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.enums.GroupByPeriod;
+import telran.project.gardenshop.enums.ProductReportType;
 import telran.project.gardenshop.service.ReportService;
 
 import java.time.LocalDateTime;
@@ -29,25 +29,18 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/top-products")
-    @Operation(summary = "Get top products by sales quantity")
-    public ResponseEntity<List<ProductReportDto>> getTopProductsBySales(
+    @Operation(summary = "Get top products by type (sales or cancellations)")
+    public ResponseEntity<List<ProductReportDto>> getTopProductsByType(
+            @RequestParam(defaultValue = "SALES")
+            @Parameter(description = "Type of report",
+                    schema = @Schema(allowableValues = {"SALES", "CANCELLATIONS"}, defaultValue = "SALES"))
+            ProductReportType reportType,
             @RequestParam(defaultValue = "10")
             @Parameter(description = "Number of top products to return",
                     schema = @Schema(minimum = "1", defaultValue = "10"))
             int limit) {
-        List<ProductReportDto> topProducts = reportService.getTopProductsBySales(limit);
+        List<ProductReportDto> topProducts = reportService.getTopProductsByType(reportType, limit);
         return ResponseEntity.ok(topProducts);
-    }
-
-    @GetMapping("/top-cancelled-products")
-    @Operation(summary = "Get top products by total quantity cancelled")
-    public ResponseEntity<List<CancelledProductReportDto>> getTopCancelledProducts(
-            @RequestParam(defaultValue = "10")
-            @Parameter(description = "Number of top cancelled products to return",
-                    schema = @Schema(minimum = "1", defaultValue = "10"))
-            int limit) {
-        List<CancelledProductReportDto> topCancelledProducts = reportService.getTopProductsByCancellations(limit);
-        return ResponseEntity.ok(topCancelledProducts);
     }
 
     @GetMapping("/profit")
@@ -85,8 +78,6 @@ public class ReportController {
                     schema = @Schema(allowableValues = {"HOUR", "DAY", "WEEK", "MONTH"},
                             defaultValue = "DAY"))
             GroupByPeriod groupBy) {
-//        GroupByPeriod groupByPeriod = GroupByPeriod.fromString(groupBy);
-
         GroupedProfitReportDto groupedReport = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
         return ResponseEntity.ok(groupedReport);
     }

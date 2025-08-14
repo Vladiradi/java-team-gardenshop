@@ -7,12 +7,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import telran.project.gardenshop.dto.ProductReportDto;
-import telran.project.gardenshop.dto.CancelledProductReportDto;
 import telran.project.gardenshop.dto.ProfitReportDto;
 import telran.project.gardenshop.dto.GroupedProfitReportDto;
 import telran.project.gardenshop.dto.PendingPaymentReportDto;
+import telran.project.gardenshop.dto.ProductReportDto;
 import telran.project.gardenshop.enums.GroupByPeriod;
+import telran.project.gardenshop.enums.ProductReportType;
 import telran.project.gardenshop.service.ReportService;
 import telran.project.gardenshop.service.security.JwtFilter;
 import telran.project.gardenshop.service.security.JwtService;
@@ -46,65 +46,102 @@ class ReportControllerTest {
     private JwtFilter jwtFilter;
 
     @Test
-    void getTopProductsBySales_ShouldReturnTopProducts() throws Exception {
+    void getTopProductsByType_Sales_ShouldReturnTopProducts() throws Exception {
         // Given
         List<ProductReportDto> topProducts = Arrays.asList(
                 ProductReportDto.builder()
                         .productId(1L)
                         .productName("Product 1")
-                        .totalQuantitySold(10L)
+                        .totalQuantity(10L)
                         .totalRevenue(BigDecimal.valueOf(1000))
+                        .reportType(ProductReportType.SALES)
                         .build(),
                 ProductReportDto.builder()
                         .productId(2L)
                         .productName("Product 2")
-                        .totalQuantitySold(5L)
+                        .totalQuantity(5L)
                         .totalRevenue(BigDecimal.valueOf(500))
+                        .reportType(ProductReportType.SALES)
                         .build()
         );
 
-        when(reportService.getTopProductsBySales(5)).thenReturn(topProducts);
+        when(reportService.getTopProductsByType(ProductReportType.SALES, 5)).thenReturn(topProducts);
 
         // When & Then
         mockMvc.perform(get("/v1/reports/top-products")
+                        .param("reportType", "SALES")
                         .param("limit", "5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].productId").value(1))
                 .andExpect(jsonPath("$[0].productName").value("Product 1"))
-                .andExpect(jsonPath("$[0].totalQuantitySold").value(10))
+                .andExpect(jsonPath("$[0].totalQuantity").value(10))
+                .andExpect(jsonPath("$[0].reportType").value("SALES"))
                 .andExpect(jsonPath("$[1].productId").value(2))
                 .andExpect(jsonPath("$[1].productName").value("Product 2"))
-                .andExpect(jsonPath("$[1].totalQuantitySold").value(5));
+                .andExpect(jsonPath("$[1].totalQuantity").value(5))
+                .andExpect(jsonPath("$[1].reportType").value("SALES"));
     }
 
     @Test
-    void getTopCancelledProducts_ShouldReturnTopCancelledProductsByQuantity() throws Exception {
+    void getTopProductsByType_Cancellations_ShouldReturnTopCancelledProductsByQuantity() throws Exception {
         // Given
-        List<CancelledProductReportDto> topCancelledProducts = Arrays.asList(
-                CancelledProductReportDto.builder()
+        List<ProductReportDto> topCancelledProducts = Arrays.asList(
+                ProductReportDto.builder()
                         .productId(1L)
                         .productName("Product 1")
-                        .totalQuantityCancelled(10L)  // Highest quantity cancelled
+                        .totalQuantity(10L)  // Highest quantity cancelled
+                        .totalRevenue(BigDecimal.ZERO)
+                        .reportType(ProductReportType.CANCELLATIONS)
                         .build(),
-                CancelledProductReportDto.builder()
+                ProductReportDto.builder()
                         .productId(2L)
                         .productName("Product 2")
-                        .totalQuantityCancelled(5L)   // Lower quantity cancelled
+                        .totalQuantity(5L)   // Lower quantity cancelled
+                        .totalRevenue(BigDecimal.ZERO)
+                        .reportType(ProductReportType.CANCELLATIONS)
                         .build()
         );
 
-        when(reportService.getTopProductsByCancellations(5)).thenReturn(topCancelledProducts);
+        when(reportService.getTopProductsByType(ProductReportType.CANCELLATIONS, 5)).thenReturn(topCancelledProducts);
 
         // When & Then
-        mockMvc.perform(get("/v1/reports/top-cancelled-products")
+        mockMvc.perform(get("/v1/reports/top-products")
+                        .param("reportType", "CANCELLATIONS")
                         .param("limit", "5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].productId").value(1))
                 .andExpect(jsonPath("$[0].productName").value("Product 1"))
-                .andExpect(jsonPath("$[0].totalQuantityCancelled").value(10))
+                .andExpect(jsonPath("$[0].totalQuantity").value(10))
+                .andExpect(jsonPath("$[0].reportType").value("CANCELLATIONS"))
                 .andExpect(jsonPath("$[1].productId").value(2))
                 .andExpect(jsonPath("$[1].productName").value("Product 2"))
-                .andExpect(jsonPath("$[1].totalQuantityCancelled").value(5));
+                .andExpect(jsonPath("$[1].totalQuantity").value(5))
+                .andExpect(jsonPath("$[1].reportType").value("CANCELLATIONS"));
+    }
+
+    @Test
+    void getTopProductsByType_Default_ShouldReturnSalesReport() throws Exception {
+        // Given
+        List<ProductReportDto> topProducts = Arrays.asList(
+                ProductReportDto.builder()
+                        .productId(1L)
+                        .productName("Product 1")
+                        .totalQuantity(10L)
+                        .totalRevenue(BigDecimal.valueOf(1000))
+                        .reportType(ProductReportType.SALES)
+                        .build()
+        );
+
+        when(reportService.getTopProductsByType(ProductReportType.SALES, 10)).thenReturn(topProducts);
+
+        // When & Then
+        mockMvc.perform(get("/v1/reports/top-products")
+                        .param("limit", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].productId").value(1))
+                .andExpect(jsonPath("$[0].productName").value("Product 1"))
+                .andExpect(jsonPath("$[0].totalQuantity").value(10))
+                .andExpect(jsonPath("$[0].reportType").value("SALES"));
     }
 
     @Test

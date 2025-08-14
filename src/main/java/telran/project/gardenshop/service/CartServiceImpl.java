@@ -59,10 +59,12 @@ public class CartServiceImpl implements CartService {
             existingItem.setQuantity(existingItem.getQuantity() + 1);
         } else {
             Product product = productService.getProductById(productId);
+
             CartItem newItem = CartItem.builder()
-                    .quantity(1)
                     .product(product)
+                    //todo impl discount logic in productService
                     .price(product.getPrice().doubleValue())
+                    .quantity(1)
                     .build();
             cart.getItems().add(newItem);
         }

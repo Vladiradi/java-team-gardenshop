@@ -19,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserService userService;
 
     @Override
-    @Transactional(readOnly = true)  //???
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.getUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));

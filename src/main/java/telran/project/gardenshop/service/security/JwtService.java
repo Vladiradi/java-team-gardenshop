@@ -44,7 +44,7 @@ public class JwtService {
 
     public boolean isValidToken(String token) {
         try {
-            Claims claims = parse(token); // проверяет подпись
+            Claims claims = parse(token);
             return new Date().before(claims.getExpiration());
         } catch (Exception e) {
             return false;
@@ -57,7 +57,7 @@ public class JwtService {
 
     private Claims parse(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey()) // корректный способ для 0.12.x
+                .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

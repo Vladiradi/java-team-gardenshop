@@ -12,8 +12,7 @@ public class ProductSpecification {
             Double minPrice,
             Double maxPrice,
             Boolean discount,
-            String sort
-    ) {
+            String sort) {
         return (Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 

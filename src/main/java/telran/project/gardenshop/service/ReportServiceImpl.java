@@ -176,7 +176,6 @@ public class ReportServiceImpl implements ReportService {
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             case DAY -> LocalDate.parse(periodKey).atStartOfDay();
             case WEEK -> {
-                // periodKey format: "Week YYYY-MM-DD"
                 String datePart = periodKey.substring(5); // Remove "Week " prefix
                 yield LocalDate.parse(datePart).atStartOfDay(); // Remove "Week " prefix
             }
@@ -190,7 +189,6 @@ public class ReportServiceImpl implements ReportService {
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
             case DAY -> LocalDate.parse(periodKey).atTime(23, 59, 59);
             case WEEK -> {
-                //YYYY-MM-DD
                 String datePart = periodKey.substring(5); // Remove "Week " prefix
                 LocalDate weekStart = LocalDate.parse(datePart);
                 yield weekStart.plusDays(6).atTime(23, 59, 59);
@@ -283,7 +281,6 @@ public class ReportServiceImpl implements ReportService {
 
                 stats.setTotalQuantity(stats.getTotalQuantity() + item.getQuantity());
 
-                // Only calculate revenue for sales reports
                 if (reportType == ProductReportType.SALES) {
                     stats.setTotalRevenue(stats.getTotalRevenue().add(item.getPrice()));
                 }

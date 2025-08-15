@@ -62,7 +62,6 @@ public class CartServiceImpl implements CartService {
 
             CartItem newItem = CartItem.builder()
                     .product(product)
-                    //todo impl discount logic in productService
                     .price(product.getPrice().doubleValue())
                     .quantity(1)
                     .build();

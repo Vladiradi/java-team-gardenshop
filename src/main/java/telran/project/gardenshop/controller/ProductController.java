@@ -61,7 +61,7 @@ public class ProductController {
     @PutMapping("/{id}")
     @Operation(summary = "Update product")
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
-                                                     @Valid @RequestBody ProductRequestDto dto) {
+            @Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
         Product updated = productService.updateProduct(id, entity);
         return ResponseEntity.ok(productMapper.toDto(updated));
@@ -90,11 +90,9 @@ public class ProductController {
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) Boolean hasDiscount,
-            @RequestParam(required = false) String sort
-    ) {
+            @RequestParam(required = false) String sort) {
         Specification<Product> spec = ProductSpecification.filterProducts(
-                categoryId, minPrice, maxPrice, hasDiscount, sort
-        );
+                categoryId, minPrice, maxPrice, hasDiscount, sort);
 
         List<Product> products = productRepository.findAll(spec);
         List<ProductResponseDto> dtos = products.stream()

@@ -176,8 +176,8 @@ public class ReportServiceImpl implements ReportService {
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             case DAY -> LocalDate.parse(periodKey).atStartOfDay();
             case WEEK -> {
-                String datePart = periodKey.substring(5); // Remove "Week " prefix
-                yield LocalDate.parse(datePart).atStartOfDay(); // Remove "Week " prefix
+                String datePart = periodKey.substring(5);
+                yield LocalDate.parse(datePart).atStartOfDay();
             }
             case MONTH -> LocalDate.parse(periodKey + "-01").atStartOfDay();
         };
@@ -189,7 +189,7 @@ public class ReportServiceImpl implements ReportService {
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
             case DAY -> LocalDate.parse(periodKey).atTime(23, 59, 59);
             case WEEK -> {
-                String datePart = periodKey.substring(5); // Remove "Week " prefix
+                String datePart = periodKey.substring(5);
                 LocalDate weekStart = LocalDate.parse(datePart);
                 yield weekStart.plusDays(6).atTime(23, 59, 59);
             }

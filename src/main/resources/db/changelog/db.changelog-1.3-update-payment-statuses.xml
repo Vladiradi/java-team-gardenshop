@@ -7,19 +7,17 @@
 
     <changeSet id="1.3.0" author="system">
         <comment>Update payment statuses that are not PAID or UNPAID to UNPAID</comment>
-        
+
         <sql>
-            UPDATE payments 
-            SET status = 'UNPAID' 
+            UPDATE payments
+            SET status = 'UNPAID'
             WHERE status NOT IN ('PAID', 'UNPAID')
         </sql>
-        
+
         <rollback>
-            -- Note: This rollback cannot restore original statuses as they were overwritten
-            -- Consider this operation irreversible for status changes
             SELECT 'Payment status update cannot be rolled back - original statuses were overwritten' as warning;
         </rollback>
-        
+
     </changeSet>
 
-</databaseChangeLog> 
+</databaseChangeLog>

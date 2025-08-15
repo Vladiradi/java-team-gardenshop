@@ -172,6 +172,48 @@
             <column name="category_id" value="5"/>
         </insert>
 
+        <!-- Products with discounts -->
+        <insert tableName="products">
+            <column name="name" value="Premium rose fertilizer"/>
+            <column name="description" value="High-quality fertilizer for premium roses"/>
+            <column name="price" value="15.00"/>
+            <column name="discount_price" value="10.50"/>
+            <column name="image_url" value="https://example.com/images/premium_rose_fertilizer.jpg"/>
+            <column name="category_id" value="1"/>
+        </insert>
+        <insert tableName="products">
+            <column name="name" value="Organic pest control spray"/>
+            <column name="description" value="100% organic pest control solution"/>
+            <column name="price" value="18.00"/>
+            <column name="discount_price" value="12.60"/>
+            <column name="image_url" value="https://example.com/images/organic_pest_control.jpg"/>
+            <column name="category_id" value="2"/>
+        </insert>
+        <insert tableName="products">
+            <column name="name" value="Rare orchid seeds"/>
+            <column name="description" value="Exotic orchid seeds for collectors"/>
+            <column name="price" value="25.00"/>
+            <column name="discount_price" value="17.50"/>
+            <column name="image_url" value="https://example.com/images/rare_orchid_seeds.jpg"/>
+            <column name="category_id" value="3"/>
+        </insert>
+        <insert tableName="products">
+            <column name="name" value="Professional garden tool set"/>
+            <column name="description" value="Complete set of professional gardening tools"/>
+            <column name="price" value="45.00"/>
+            <column name="discount_price" value="31.50"/>
+            <column name="image_url" value="https://example.com/images/professional_tool_set.jpg"/>
+            <column name="category_id" value="4"/>
+        </insert>
+        <insert tableName="products">
+            <column name="name" value="Luxury ceramic planter set"/>
+            <column name="description" value="Set of 3 luxury ceramic planters"/>
+            <column name="price" value="35.00"/>
+            <column name="discount_price" value="24.50"/>
+            <column name="image_url" value="https://example.com/images/luxury_planter_set.jpg"/>
+            <column name="category_id" value="5"/>
+        </insert>
+
 
         <!-- Favorites -->
         <insert tableName="favorites">

@@ -70,4 +70,31 @@ public class ProductServiceImpl implements ProductService {
         Product product = getProductById(id);
         productRepository.delete(product);
     }
+
+    @Override
+    public Product getProductOfDay() {
+        List<Product> productsWithDiscount = productRepository.findAll().stream()
+                .filter(product -> product.getDiscountPrice() != null)
+                .toList();
+
+        if (productsWithDiscount.isEmpty()) {
+            throw new ProductNotFoundException("No products with discount found");
+        }
+
+        // Находим максимальную скидку (разницу между обычной ценой и ценой со скидкой)
+        double maxDiscount = productsWithDiscount.stream()
+                .mapToDouble(product -> product.getPrice().doubleValue() - product.getDiscountPrice())
+                .max()
+                .orElse(0.0);
+
+        // Фильтруем товары с максимальной скидкой
+        List<Product> productsWithMaxDiscount = productsWithDiscount.stream()
+                .filter(product -> Math
+                        .abs((product.getPrice().doubleValue() - product.getDiscountPrice()) - maxDiscount) < 0.01)
+                .toList();
+
+        // Случайный выбор из товаров с максимальной скидкой
+        int randomIndex = (int) (Math.random() * productsWithMaxDiscount.size());
+        return productsWithMaxDiscount.get(randomIndex);
+    }
 }

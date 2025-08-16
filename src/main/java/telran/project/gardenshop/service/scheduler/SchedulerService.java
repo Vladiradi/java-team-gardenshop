@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.PaymentStatus;
-import telran.project.gardenshop.repository.OrderRepository;
+import telran.project.gardenshop.service.OrderService;
 import telran.project.gardenshop.service.PaymentService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,9 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SchedulerService {
 
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final PaymentService paymentService;
-
 
     @Async
     @Scheduled(fixedRateString = "${scheduler.fixed-rate}")
@@ -52,7 +51,7 @@ public class SchedulerService {
                                OrderStatus newStatus,
                                PaymentStatus requiredPaymentStatus,
                                LocalDateTime cutoffTime) {
-        List<Order> orders = orderRepository.findAllByStatus(currentStatus);
+        List<Order> orders = orderService.getAllByStatus(currentStatus);
         LocalDateTime now = LocalDateTime.now();
 
         orders.stream()
@@ -61,7 +60,7 @@ public class SchedulerService {
               .forEach(order -> {
                   order.setUpdatedAt(now);
                   order.setStatus(newStatus);
-                  orderRepository.save(order);
+                  orderService.updateOrder(order);
                   paymentService.updatePaymentStatusByOrderId(order.getId(), requiredPaymentStatus);
                   log.debug("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
               });

@@ -25,10 +25,9 @@ public interface OrderService {
 
     Order updateOrder(Order order);
 
-    // Методы для отчетов
     List<Order> getAllByStatus(OrderStatus status);
-    
+
     List<Order> getAllByCreatedAtBetweenAndStatus(LocalDateTime startDate, LocalDateTime endDate, OrderStatus status);
-    
+
     List<Order> getAllByStatusAndCreatedAtBefore(OrderStatus status, LocalDateTime date);
 }

@@ -141,7 +141,6 @@ public class OrderServiceImpl implements OrderService {
         return cartItems.stream().filter(ci -> ci.getProduct().getId().equals(productId)).findFirst();
     }
 
-    // Методы для отчетов
     @Override
     public List<Order> getAllByStatus(OrderStatus status) {
         return orderRepository.findAllByStatus(status);

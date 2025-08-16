@@ -34,7 +34,7 @@ import java.util.HashMap;
 public class ReportServiceImpl implements ReportService {
 
     private final OrderService orderService;
-    
+
     private static final BigDecimal COST_MULTIPLIER = BigDecimal.valueOf(0.6);
     private static final int SCALE = 4;
 
@@ -134,7 +134,6 @@ public class ReportServiceImpl implements ReportService {
                 .collect(Collectors.toList());
     }
 
-    // Приватные вспомогательные методы
     private BigDecimal calculateTotalRevenue(List<Order> orders) {
         return orders.stream()
                 .flatMap(order -> order.getItems().stream())

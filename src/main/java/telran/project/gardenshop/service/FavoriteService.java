@@ -10,7 +10,7 @@ public interface FavoriteService {
 
     void removeFromFavorites(Long id);
 
-    List<Favorite> getAllByUserId(Long userId);
+    List<Favorite> getCurrentUserFavorites();
 
     Favorite getFavoriteById(Long id);
 

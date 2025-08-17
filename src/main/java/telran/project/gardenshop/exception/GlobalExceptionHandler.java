@@ -9,7 +9,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import telran.project.gardenshop.dto.ApiResponse;
+import telran.project.gardenshop.dto.ErrorResponse;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -20,13 +20,15 @@ public class GlobalExceptionHandler {
             EmptyCartException.class,
             ProductNotInCartException.class,
             InsufficientQuantityException.class,
+            InvalidDiscountPriceException.class,
+            InvalidDiscountDataException.class,
             MethodArgumentTypeMismatchException.class
     })
-    public ResponseEntity<ApiResponse> handleBadRequestExceptions(RuntimeException exception) {
+    public ResponseEntity<ErrorResponse> handleBadRequestExceptions(RuntimeException exception) {
         log.error(exception.getMessage(), exception);
 
         return new ResponseEntity<>(
-                ApiResponse.error(exception, HttpStatus.BAD_REQUEST.value()),
+                ErrorResponse.error(exception, HttpStatus.BAD_REQUEST.value()),
                 HttpStatus.BAD_REQUEST);
     }
 
@@ -39,10 +41,10 @@ public class GlobalExceptionHandler {
             PaymentNotFoundException.class,
             CartNotFoundException.class
     })
-    public ResponseEntity<ApiResponse> handleNotFoundException(RuntimeException exception) {
+    public ResponseEntity<ErrorResponse> handleNotFoundException(RuntimeException exception) {
         log.error(exception.getMessage(), exception);
         return new ResponseEntity<>(
-                ApiResponse.error(exception, HttpStatus.NOT_FOUND.value()),
+                ErrorResponse.error(exception, HttpStatus.NOT_FOUND.value()),
                 HttpStatus.NOT_FOUND);
     }
 
@@ -51,15 +53,15 @@ public class GlobalExceptionHandler {
             PaymentAlreadyExistsException.class,
             UserWithEmailAlreadyExistsException.class
     })
-    public ResponseEntity<ApiResponse> handleConflictExceptions(RuntimeException exception) {
+    public ResponseEntity<ErrorResponse> handleConflictExceptions(RuntimeException exception) {
         log.error(exception.getMessage(), exception);
         return new ResponseEntity<>(
-                ApiResponse.error(exception, HttpStatus.CONFLICT.value()),
+                ErrorResponse.error(exception, HttpStatus.CONFLICT.value()),
                 HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         log.error(exception.getMessage(), exception);
         Map<String, String> messages = exception.getBindingResult().getFieldErrors()
                 .stream()
@@ -69,15 +71,15 @@ public class GlobalExceptionHandler {
                         (msg1, msg2) -> msg1 + ". " + msg2));
 
         return new ResponseEntity<>(
-                ApiResponse.error(exception, messages, HttpStatus.BAD_REQUEST.value()),
+                ErrorResponse.error(exception, messages, HttpStatus.BAD_REQUEST.value()),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> handleAllExceptions(Exception exception) {
+    public ResponseEntity<ErrorResponse> handleAllExceptions(Exception exception) {
         log.error(exception.getMessage(), exception);
         return new ResponseEntity<>(
-                ApiResponse.error(exception, HttpStatus.INTERNAL_SERVER_ERROR.value()),
+                ErrorResponse.error(exception, HttpStatus.INTERNAL_SERVER_ERROR.value()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -16,6 +16,8 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Random;
 import telran.project.gardenshop.exception.NoDiscountedProductsException;
+import telran.project.gardenshop.exception.InvalidDiscountPriceException;
+import telran.project.gardenshop.exception.InvalidDiscountDataException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +27,8 @@ public class ProductServiceImpl implements ProductService {
 
     private final CategoryService categoryService;
 
-    private final DiscountService discountService;
-
     @Override
-    public Product createProduct(Product product) {
+    public Product create(Product product) {
         Category category = categoryService.getCategoryById(product.getCategory().getId());
 
         product.setCategory(category);
@@ -36,33 +36,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(Long id) {
+    public Product getById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public List<Product> getAll() {
         return productRepository.findAll();
     }
 
     @Override
-    public Product updateProduct(Long id, Product updatedProduct) {
-        Product product = getProductById(id);
-        Category category = categoryService.getCategoryById(updatedProduct.getCategory().getId());
-
-        product.setName(updatedProduct.getName());
-        product.setDescription(updatedProduct.getDescription());
-        product.setPrice(updatedProduct.getPrice());
-        product.setImageUrl(updatedProduct.getImageUrl());
-        product.setCategory(category);
-
-        return productRepository.save(product);
-    }
-
-    @Override
-    public Product updateProduct(Long id, ProductEditDto dto) {
-        Product product = getProductById(id);
+    public Product update(Long id, ProductEditDto dto) {
+        Product product = getById(id);
 
         product.setName(dto.getTitle());
         product.setDescription(dto.getDescription());
@@ -72,28 +58,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long id) {
-        Product product = getProductById(id);
+    public void delete(Long id) {
+        Product product = getById(id);
         productRepository.delete(product);
     }
 
-    // Методы для управления скидками
     @Override
     public Product addDiscount(Long productId, ProductDiscountDto discountDto) {
-        Product product = getProductById(productId);
+        Product product = getById(productId);
 
         if (discountDto.getDiscountPrice() != null) {
-            // Прямая установка скидочной цены
             BigDecimal discountPrice = BigDecimal.valueOf(discountDto.getDiscountPrice());
-            discountService.validateDiscountPrice(product, discountPrice);
+            validateDiscountPrice(product, discountPrice);
             product.setDiscountPrice(discountPrice);
         } else if (discountDto.getDiscountPercentage() != null) {
-            // Установка скидки по проценту
             BigDecimal discountPercentage = BigDecimal.valueOf(discountDto.getDiscountPercentage());
-            BigDecimal discountPrice = discountService.calculateDiscountPrice(product.getPrice(), discountPercentage);
+            BigDecimal discountPrice = calculateDiscountPrice(product.getPrice(), discountPercentage);
             product.setDiscountPrice(discountPrice);
         } else {
-            throw new IllegalArgumentException("Either discountPrice or discountPercentage must be provided");
+            throw new InvalidDiscountDataException("Either discountPrice or discountPercentage must be provided");
         }
 
         return productRepository.save(product);
@@ -101,28 +84,56 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product removeDiscount(Long productId) {
-        Product product = getProductById(productId);
+        Product product = getById(productId);
         product.setDiscountPrice(null);
         return productRepository.save(product);
     }
 
     @Override
     public List<Product> getProductsWithDiscount() {
-        return productRepository.findAll().stream()
-                .filter(discountService::hasDiscount)
-                .toList();
+        return productRepository.findProductsWithDiscount();
     }
-    
+
+    @Override
+    public List<Product> getProductsWithDiscount(Category category) {
+        if (category == null) {
+            return getProductsWithDiscount();
+        }
+        return productRepository.findProductsWithDiscountByCategory(category);
+    }
+
     @Override
     public Product getProductOfTheDay() {
         List<Product> productsWithHighestDiscount = productRepository.findProductsWithHighestDiscount();
-        
+
         if (productsWithHighestDiscount.isEmpty()) {
             throw new NoDiscountedProductsException("No discounted products available");
         }
-        
-        // Случайный выбор из товаров с одинаковой скидкой
+
         int randomIndex = new Random().nextInt(productsWithHighestDiscount.size());
         return productsWithHighestDiscount.get(randomIndex);
+    }
+
+    @Override
+    public BigDecimal getCurrentPrice(Product product) {
+        return hasDiscount(product) ? product.getDiscountPrice() : product.getPrice();
+    }
+
+    private boolean hasDiscount(Product product) {
+        return product.getDiscountPrice() != null &&
+                product.getDiscountPrice().doubleValue() < product.getPrice().doubleValue();
+    }
+
+    private void validateDiscountPrice(Product product, BigDecimal discountPrice) {
+        if (discountPrice != null && discountPrice.compareTo(product.getPrice()) >= 0) {
+            throw new InvalidDiscountPriceException("Discount price must be less than regular price");
+        }
+    }
+
+    private BigDecimal calculateDiscountPrice(BigDecimal originalPrice, BigDecimal discountPercentage) {
+        BigDecimal discountAmount = originalPrice
+                .multiply(discountPercentage)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        return originalPrice.subtract(discountAmount);
     }
 }

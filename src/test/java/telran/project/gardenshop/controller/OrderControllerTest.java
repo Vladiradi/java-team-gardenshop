@@ -2,7 +2,6 @@ package telran.project.gardenshop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,91 +35,87 @@ import java.util.List;
 @AutoConfigureMockMvc(addFilters = false)
 class OrderControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private OrderService orderService;
+        @MockBean
+        private OrderService orderService;
 
-    @MockBean
-    private OrderMapper orderMapper;
+        @MockBean
+        private OrderMapper orderMapper;
 
-    @MockBean
-    private UserService userService;
+        @MockBean
+        private UserService userService;
 
-    @MockBean
-    private JwtService jwtService;
+        @MockBean
+        private JwtService jwtService;
 
-    @MockBean
-    private JwtFilter jwtFilter;
+        @MockBean
+        private JwtFilter jwtFilter;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @Test
-    void testGetById() throws Exception {
-        Long orderId = 1L;
-        Order order = new Order();
-        order.setId(orderId);
+        @Test
+        void testGetById() throws Exception {
+                Long orderId = 1L;
+                Order order = new Order();
+                order.setId(orderId);
 
-        OrderResponseDto responseDto = OrderResponseDto.builder()
-                .id(orderId)
-                .createdAt(LocalDateTime.now())
-                .build();
+                OrderResponseDto responseDto = OrderResponseDto.builder()
+                                .id(orderId)
+                                .createdAt(LocalDateTime.now())
+                                .build();
 
-        when(orderService.getById(orderId)).thenReturn(order);
-        when(orderMapper.toDto(order)).thenReturn(responseDto);
+                when(orderService.getById(orderId)).thenReturn(order);
+                when(orderMapper.toDto(order)).thenReturn(responseDto);
 
-        mockMvc.perform(get("/v1/orders/{orderId}", orderId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(orderId.intValue())));
+                mockMvc.perform(get("/v1/orders/{orderId}", orderId))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id", is(orderId.intValue())));
 
-        verify(orderService).getById(orderId);
-        verify(orderMapper).toDto(order);
-    }
+                verify(orderService).getById(orderId);
+                verify(orderMapper).toDto(order);
+        }
 
-    //todo there is no /v1/orders/{userId}
-    @Disabled
-    @Test
-    void testCreateOrder() throws Exception {
-        Long userId = 1L;
-        User user = new User();
-        user.setId(userId);
+        @Test
+        void testCreateOrder() throws Exception {
+                Long userId = 1L;
+                User user = new User();
+                user.setId(userId);
 
-        OrderCreateRequestDto createDto = new OrderCreateRequestDto();
-        createDto.setDeliveryMethod(telran.project.gardenshop.enums.DeliveryMethod.COURIER);
-        createDto.setDeliveryAddress("123 Street");
-        
-        // Create items for the order
-        OrderItemRequestDto item1 = OrderItemRequestDto.builder()
-                .productId(1L)
-                .quantity(2)
-                .build();
-        OrderItemRequestDto item2 = OrderItemRequestDto.builder()
-                .productId(2L)
-                .quantity(1)
-                .build();
-        createDto.setItems(List.of(item1, item2));
+                OrderCreateRequestDto createDto = new OrderCreateRequestDto();
+                createDto.setDeliveryMethod(telran.project.gardenshop.enums.DeliveryMethod.COURIER);
+                createDto.setDeliveryAddress("123 Street");
 
-        Order order = new Order();
-        order.setId(100L);
+                OrderItemRequestDto item1 = OrderItemRequestDto.builder()
+                                .productId(1L)
+                                .quantity(2)
+                                .build();
+                OrderItemRequestDto item2 = OrderItemRequestDto.builder()
+                                .productId(2L)
+                                .quantity(1)
+                                .build();
+                createDto.setItems(List.of(item1, item2));
 
-        OrderResponseDto responseDto = OrderResponseDto.builder()
-                .id(100L)
-                .build();
+                Order order = new Order();
+                order.setId(100L);
 
-        when(orderService.create(any(OrderCreateRequestDto.class))).thenReturn(order);
-        when(userService.getCurrent()).thenReturn(user);
-        when(orderMapper.toDto(order)).thenReturn(responseDto);
+                OrderResponseDto responseDto = OrderResponseDto.builder()
+                                .id(100L)
+                                .build();
 
-        mockMvc.perform(post("/v1/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createDto)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(100)));
+                when(orderService.create(any(OrderCreateRequestDto.class))).thenReturn(order);
+                when(userService.getCurrent()).thenReturn(user);
+                when(orderMapper.toDto(order)).thenReturn(responseDto);
 
-        verify(orderService).create(any(OrderCreateRequestDto.class));
-        verify(orderMapper).toDto(order);
-    }
+                mockMvc.perform(post("/v1/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createDto)))
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.id", is(100)));
+
+                verify(orderService).create(any(OrderCreateRequestDto.class));
+                verify(orderMapper).toDto(order);
+        }
 }
-

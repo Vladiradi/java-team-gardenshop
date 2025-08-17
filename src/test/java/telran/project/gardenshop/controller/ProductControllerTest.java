@@ -23,102 +23,99 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
-@AutoConfigureMockMvc(addFilters = false)  // disable security
+@AutoConfigureMockMvc(addFilters = false)
 class ProductControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private ProductRepository productRepository;
+        @MockBean
+        private ProductRepository productRepository;
 
-    @MockBean
-    private ProductService productService;
+        @MockBean
+        private ProductService productService;
 
-    @MockBean
-    private ProductMapper productMapper;
+        @MockBean
+        private ProductMapper productMapper;
 
-    @MockBean
-    private JwtService jwtService;
+        @MockBean
+        private JwtService jwtService;
 
-    @Test
-    void createProduct_validInput_returnsCreated() throws Exception {
-        ProductRequestDto requestDto = ProductRequestDto.builder()
-                .name("Rose")
-                .description("Red flower")
-                .price(10.0)
-                .imageUrl("http://image.url/rose.jpg")
-                .categoryId(1L)
-                .build();
+        @Test
+        void createProduct_validInput_returnsCreated() throws Exception {
+                ProductRequestDto requestDto = ProductRequestDto.builder()
+                                .name("Rose")
+                                .description("Red flower")
+                                .price(10.0)
+                                .imageUrl("http://image.url/rose.jpg")
+                                .categoryId(1L)
+                                .build();
 
-        Product productEntity = Product.builder()
-                .id(1L)
-                .name("Rose")
-                .description("Red flower")
-                .price(BigDecimal.valueOf(10.0))
-                .imageUrl("http://image.url/rose.jpg")
-                .build();
+                Product productEntity = Product.builder()
+                                .id(1L)
+                                .name("Rose")
+                                .description("Red flower")
+                                .price(BigDecimal.valueOf(10.0))
+                                .imageUrl("http://image.url/rose.jpg")
+                                .build();
 
-        ProductResponseDto responseDto = ProductResponseDto.builder()
-                .id(1L)
-                .name("Rose")
-                .description("Red flower")
-                .price(10.0)
-                .imageUrl("http://image.url/rose.jpg")
-                .categoryName("Flowers")
-                .build();
+                ProductResponseDto responseDto = ProductResponseDto.builder()
+                                .id(1L)
+                                .name("Rose")
+                                .description("Red flower")
+                                .price(10.0)
+                                .imageUrl("http://image.url/rose.jpg")
+                                .categoryName("Flowers")
+                                .build();
 
-        // Мокаем маппер и сервис
-        when(productMapper.toEntity(any(ProductRequestDto.class))).thenReturn(productEntity);
-        when(productService.create(any(Product.class))).thenReturn(productEntity);
-        when(productMapper.toDto(any(Product.class))).thenReturn(responseDto);
+                when(productMapper.toEntity(any(ProductRequestDto.class))).thenReturn(productEntity);
+                when(productService.create(any(Product.class))).thenReturn(productEntity);
+                when(productMapper.toDto(any(Product.class))).thenReturn(responseDto);
 
-        mockMvc.perform(post("/v1/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                            {
-                                "name": "Rose",
-                                "description": "Red flower",
-                                "price": 10.0,
-                                "imageUrl": "http://image.url/rose.jpg",
-                                "categoryId": 1
-                            }
-                            """))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("Rose"))
-                .andExpect(jsonPath("$.categoryName").value("Flowers"));
-    }
+                mockMvc.perform(post("/v1/products")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                                {
+                                                    "name": "Rose",
+                                                    "description": "Red flower",
+                                                    "price": 10.0,
+                                                    "imageUrl": "http://image.url/rose.jpg",
+                                                    "categoryId": 1
+                                                }
+                                                """))
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.id").value(1))
+                                .andExpect(jsonPath("$.name").value("Rose"))
+                                .andExpect(jsonPath("$.categoryName").value("Flowers"));
+        }
 
-    // Тест на получение продукта по id
-    @Test
-    void getById_existingId_returnsProduct() throws Exception {
-        Long id = 1L;
+        @Test
+        void getById_existingId_returnsProduct() throws Exception {
+                Long id = 1L;
 
-        Product product = Product.builder()
-                .id(id)
-                .name("Rose")
-                .description("Red flower")
-                .price(BigDecimal.valueOf(10.0))
-                .imageUrl("http://image.url/rose.jpg")
-                .build();
+                Product product = Product.builder()
+                                .id(id)
+                                .name("Rose")
+                                .description("Red flower")
+                                .price(BigDecimal.valueOf(10.0))
+                                .imageUrl("http://image.url/rose.jpg")
+                                .build();
 
-        ProductResponseDto dto = ProductResponseDto.builder()
-                .id(id)
-                .name("Rose")
-                .description("Red flower")
-                .price(10.0)
-                .imageUrl("http://image.url/rose.jpg")
-                .categoryName("Flowers")
-                .build();
+                ProductResponseDto dto = ProductResponseDto.builder()
+                                .id(id)
+                                .name("Rose")
+                                .description("Red flower")
+                                .price(10.0)
+                                .imageUrl("http://image.url/rose.jpg")
+                                .categoryName("Flowers")
+                                .build();
 
-        when(productService.getById(id)).thenReturn(product);
-        when(productMapper.toDto(product)).thenReturn(dto);
+                when(productService.getById(id)).thenReturn(product);
+                when(productMapper.toDto(product)).thenReturn(dto);
 
-        mockMvc.perform(get("/v1/products/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value("Rose"));
-    }
-
+                mockMvc.perform(get("/v1/products/{id}", id))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(id))
+                                .andExpect(jsonPath("$.name").value("Rose"));
+        }
 }

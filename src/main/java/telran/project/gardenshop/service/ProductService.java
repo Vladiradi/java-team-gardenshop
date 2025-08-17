@@ -20,7 +20,6 @@ public interface ProductService {
 
     void delete(Long id);
 
-    // Методы для управления скидками
     Product addDiscount(Long productId, ProductDiscountDto discountDto);
 
     Product removeDiscount(Long productId);

@@ -30,8 +30,7 @@ public class SchedulerService {
                 OrderStatus.NEW,
                 OrderStatus.CANCELLED,
                 PaymentStatus.UNPAID,
-                now.minusMinutes(15)
-        );
+                now.minusMinutes(15));
     }
 
     @Async
@@ -42,27 +41,26 @@ public class SchedulerService {
                 OrderStatus.PAID,
                 OrderStatus.DELIVERED,
                 PaymentStatus.PAID,
-                now.minusMinutes(10)
-        );
+                now.minusMinutes(10));
     }
 
     @Transactional
     private void processOrders(OrderStatus currentStatus,
-                               OrderStatus newStatus,
-                               PaymentStatus requiredPaymentStatus,
-                               LocalDateTime cutoffTime) {
+            OrderStatus newStatus,
+            PaymentStatus requiredPaymentStatus,
+            LocalDateTime cutoffTime) {
         List<Order> orders = orderService.getAllByStatus(currentStatus);
         LocalDateTime now = LocalDateTime.now();
 
         orders.stream()
-              .filter(order -> order.getCreatedAt() != null && order.getCreatedAt().isBefore(cutoffTime))
-              .filter(order -> paymentService.isPaymentStatus(order.getId(), requiredPaymentStatus))
-              .forEach(order -> {
-                  order.setUpdatedAt(now);
-                  order.setStatus(newStatus);
-                  orderService.updateOrder(order);
-                  paymentService.updatePaymentStatusByOrderId(order.getId(), requiredPaymentStatus);
-                  log.debug("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
-              });
+                .filter(order -> order.getCreatedAt() != null && order.getCreatedAt().isBefore(cutoffTime))
+                .filter(order -> paymentService.isPaymentStatus(order.getId(), requiredPaymentStatus))
+                .forEach(order -> {
+                    order.setUpdatedAt(now);
+                    order.setStatus(newStatus);
+                    orderService.updateOrder(order);
+                    paymentService.updatePaymentStatusByOrderId(order.getId(), requiredPaymentStatus);
+                    log.debug("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
+                });
     }
 }

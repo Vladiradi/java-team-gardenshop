@@ -9,16 +9,6 @@ public class ProductNotInCartException extends RuntimeException {
         this.productId = productId;
     }
 
-    public ProductNotInCartException(Long productId, String message) {
-        super(message);
-        this.productId = productId;
-    }
-
-    public ProductNotInCartException(Long productId, String message, Throwable cause) {
-        super(message, cause);
-        this.productId = productId;
-    }
-
     public Long getProductId() {
         return productId;
     }

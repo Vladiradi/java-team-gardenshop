@@ -10,3 +10,4 @@ public class NoDiscountedProductsException extends RuntimeException {
         super(message, cause);
     }
 }
+

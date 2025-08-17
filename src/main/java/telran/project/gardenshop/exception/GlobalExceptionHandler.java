@@ -3,31 +3,31 @@ package telran.project.gardenshop.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import telran.project.gardenshop.dto.ApiResponse;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, Object> response = new HashMap<>();
-        Map<String, String> errors = new HashMap<>();
+    @ExceptionHandler({
+            EmptyCartException.class,
+            ProductNotInCartException.class,
+            InsufficientQuantityException.class,
+            MethodArgumentTypeMismatchException.class
+    })
+    public ResponseEntity<ApiResponse> handleBadRequestExceptions(RuntimeException exception) {
+        log.error(exception.getMessage(), exception);
 
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
-
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("code", "VALIDATION_ERROR");
-        response.put("message", "Validation failed");
-        response.put("errors", errors);
-
-        return response;
+        return new ResponseEntity<>(
+                ApiResponse.error(exception, HttpStatus.BAD_REQUEST.value()),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({
@@ -39,62 +39,45 @@ public class GlobalExceptionHandler {
             PaymentNotFoundException.class,
             CartNotFoundException.class
     })
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, Object> handleNotFoundException(RuntimeException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", HttpStatus.NOT_FOUND.value());
-        response.put("code", "NOT_FOUND");
-        response.put("message", ex.getMessage());
-        return response;
+    public ResponseEntity<ApiResponse> handleNotFoundException(RuntimeException exception) {
+        log.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(
+                ApiResponse.error(exception, HttpStatus.NOT_FOUND.value()),
+                HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({
-            UserAlreadyExistsException.class,
-            FavoriteAlreadyExistsException.class
+            FavoriteAlreadyExistsException.class,
+            PaymentAlreadyExistsException.class,
+            UserWithEmailAlreadyExistsException.class
     })
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, Object> handleFavoriteAlreadyExistsException(RuntimeException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", HttpStatus.CONFLICT.value());
-        response.put("code", "ALREADY_EXISTS");
-        response.put("message", ex.getMessage());
-        return response;
+    public ResponseEntity<ApiResponse> handleConflictExceptions(RuntimeException exception) {
+        log.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(
+                ApiResponse.error(exception, HttpStatus.CONFLICT.value()),
+                HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler({
-            EmptyCartException.class,
-            ProductNotInCartException.class,
-            MethodArgumentTypeMismatchException.class,
-            InsufficientQuantityException.class
-    })
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, Object> handleOrderCreationExceptions(RuntimeException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("code", "ORDER_CREATION_ERROR");
-        response.put("message", ex.getMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        log.error(exception.getMessage(), exception);
+        Map<String, String> messages = exception.getBindingResult().getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        FieldError::getDefaultMessage,
+                        (msg1, msg2) -> msg1 + ". " + msg2));
 
-        if (ex instanceof ProductNotInCartException) {
-            ProductNotInCartException pnce = (ProductNotInCartException) ex;
-            response.put("productId", pnce.getProductId());
-        } else if (ex instanceof InsufficientQuantityException) {
-            InsufficientQuantityException iqe = (InsufficientQuantityException) ex;
-            response.put("productId", iqe.getProductId());
-            response.put("availableQuantity", iqe.getAvailableQuantity());
-            response.put("requestedQuantity", iqe.getRequestedQuantity());
-        }
-
-        return response;
+        return new ResponseEntity<>(
+                ApiResponse.error(exception, messages, HttpStatus.BAD_REQUEST.value()),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, Object> handleAllExceptions(Exception ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        response.put("code", "INTERNAL_ERROR");
-        response.put("message", "Internal server error");
-        response.put("details", ex.getMessage());
-        return response;
+    public ResponseEntity<ApiResponse> handleAllExceptions(Exception exception) {
+        log.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(
+                ApiResponse.error(exception, HttpStatus.INTERNAL_SERVER_ERROR.value()),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

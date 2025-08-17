@@ -20,24 +20,6 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public BigDecimal getDiscountPercentage(Product product) {
-        if (!hasDiscount(product)) {
-            return BigDecimal.ZERO;
-        }
-        BigDecimal discountAmount = product.getPrice().subtract(product.getDiscountPrice());
-        return discountAmount.divide(product.getPrice(), 2, RoundingMode.HALF_UP)
-                .multiply(BigDecimal.valueOf(100));
-    }
-
-    @Override
-    public BigDecimal getDiscountAmount(Product product) {
-        if (!hasDiscount(product)) {
-            return BigDecimal.ZERO;
-        }
-        return product.getPrice().subtract(product.getDiscountPrice());
-    }
-
-    @Override
     public void validateDiscountPrice(Product product, BigDecimal discountPrice) {
         if (discountPrice != null && discountPrice.compareTo(product.getPrice()) >= 0) {
             throw new IllegalArgumentException("Discount price must be less than regular price");

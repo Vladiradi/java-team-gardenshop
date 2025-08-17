@@ -102,7 +102,6 @@ public class ProductController {
         return ResponseEntity.ok(dtos);
     }
 
-    // Эндпоинты для управления скидками
     @PostMapping("/{id}/discount")
     @Operation(summary = "Add discount to product")
     public ResponseEntity<ProductResponseDto> addDiscount(

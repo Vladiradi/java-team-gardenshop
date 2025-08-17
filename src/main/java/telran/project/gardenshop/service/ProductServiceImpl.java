@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import telran.project.gardenshop.dto.ProductDiscountDto;
 import telran.project.gardenshop.dto.ProductEditDto;
 import telran.project.gardenshop.entity.Category;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.exception.ProductNotFoundException;
 import telran.project.gardenshop.repository.ProductRepository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import java.util.Random;
+import telran.project.gardenshop.exception.NoDiscountedProductsException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +24,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
     private final CategoryService categoryService;
+
+    private final DiscountService discountService;
 
     @Override
     public Product createProduct(Product product) {
@@ -54,7 +61,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-
     public Product updateProduct(Long id, ProductEditDto dto) {
         Product product = getProductById(id);
 
@@ -69,5 +75,54 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         Product product = getProductById(id);
         productRepository.delete(product);
+    }
+
+    // Методы для управления скидками
+    @Override
+    public Product addDiscount(Long productId, ProductDiscountDto discountDto) {
+        Product product = getProductById(productId);
+
+        if (discountDto.getDiscountPrice() != null) {
+            // Прямая установка скидочной цены
+            BigDecimal discountPrice = BigDecimal.valueOf(discountDto.getDiscountPrice());
+            discountService.validateDiscountPrice(product, discountPrice);
+            product.setDiscountPrice(discountPrice);
+        } else if (discountDto.getDiscountPercentage() != null) {
+            // Установка скидки по проценту
+            BigDecimal discountPercentage = BigDecimal.valueOf(discountDto.getDiscountPercentage());
+            BigDecimal discountPrice = discountService.calculateDiscountPrice(product.getPrice(), discountPercentage);
+            product.setDiscountPrice(discountPrice);
+        } else {
+            throw new IllegalArgumentException("Either discountPrice or discountPercentage must be provided");
+        }
+
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product removeDiscount(Long productId) {
+        Product product = getProductById(productId);
+        product.setDiscountPrice(null);
+        return productRepository.save(product);
+    }
+
+    @Override
+    public List<Product> getProductsWithDiscount() {
+        return productRepository.findAll().stream()
+                .filter(discountService::hasDiscount)
+                .toList();
+    }
+    
+    @Override
+    public Product getProductOfTheDay() {
+        List<Product> productsWithHighestDiscount = productRepository.findProductsWithHighestDiscount();
+        
+        if (productsWithHighestDiscount.isEmpty()) {
+            throw new NoDiscountedProductsException("No discounted products available");
+        }
+        
+        // Случайный выбор из товаров с одинаковой скидкой
+        int randomIndex = new Random().nextInt(productsWithHighestDiscount.size());
+        return productsWithHighestDiscount.get(randomIndex);
     }
 }

@@ -28,6 +28,8 @@ public class OrderServiceImpl implements OrderService {
 
     private final CartService cartService;
 
+    private final DiscountService discountService;
+
     @Override
     public Order getById(Long orderId) {
         return findOrderById(orderId);
@@ -114,7 +116,7 @@ public class OrderServiceImpl implements OrderService {
                 .order(order)
                 .product(cartItem.getProduct())
                 .quantity(itemDto.getQuantity())
-                .price(cartItem.getProduct().getPrice())
+                .price(discountService.getCurrentPrice(cartItem.getProduct()))
                 .build();
 
         editCartItemList(cartItem, cart.getItems(), itemDto.getQuantity());

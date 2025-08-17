@@ -12,7 +12,10 @@ import telran.project.gardenshop.entity.Product;
 public interface ProductMapper {
 
     @Mapping(source = "category", target = "categoryName", qualifiedByName = "extractCategoryName")
-    @Mapping(target = "hasDiscount", expression = "java(product.getDiscountPrice() != null)")
+    @Mapping(target = "hasDiscount", constant = "false")
+    @Mapping(target = "currentPrice", source = "price")
+    @Mapping(target = "discountPercentage", constant = "0.0")
+    @Mapping(target = "discountAmount", constant = "0.0")
     ProductResponseDto toDto(Product product);
 
     @Mapping(source = "categoryId", target = "category.id")

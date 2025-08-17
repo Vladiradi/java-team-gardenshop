@@ -1,5 +1,6 @@
 package telran.project.gardenshop.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,10 +16,12 @@ import telran.project.gardenshop.exception.ProductNotInCartException;
 import telran.project.gardenshop.exception.InsufficientQuantityException;
 import telran.project.gardenshop.repository.OrderItemRepository;
 import telran.project.gardenshop.repository.OrderRepository;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,181 +32,171 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceImplTest {
 
-    private final Long userId = 1L;
+        @InjectMocks
+        private OrderServiceImpl orderService;
 
-    private final LocalDateTime now = LocalDateTime.now();
+        @Mock
+        private OrderRepository orderRepository;
 
-    @InjectMocks
-    private OrderServiceImpl orderService;
+        @Mock
+        private OrderItemRepository orderItemRepository;
 
-    @Mock
-    private OrderRepository orderRepository;
+        @Mock
+        private UserService userService;
 
-    @Mock
-    private OrderItemRepository orderItemRepository;
+        @Mock
+        private ProductService productService;
 
-    @Mock
-    private UserService userService;
+        @Mock
+        private CartService cartService;
 
-    @Mock
-    private ProductService productService;
+        private User testUser;
+        private Product testProduct1;
+        private Product testProduct2;
+        private Cart testCart;
+        private Order testOrder;
+        private LocalDateTime testDateTime;
 
-    @Mock
-    private CartService cartService;
+        @BeforeEach
+        void setUp() {
+                testDateTime = LocalDateTime.now();
 
-    @Test
-    void createOrder_ShouldCreateOrderWithItems() {
-        // Create order items
-        OrderItemRequestDto item1 = OrderItemRequestDto.builder()
-                .productId(10L)
-                .quantity(2)
-                .build();
-        OrderItemRequestDto item2 = OrderItemRequestDto.builder()
-                .productId(20L)
-                .quantity(1)
-                .build();
+                testUser = User.builder()
+                                .id(1L)
+                                .fullName("Test User")
+                                .build();
 
-        OrderCreateRequestDto dto = new OrderCreateRequestDto();
-        dto.setDeliveryMethod(DeliveryMethod.COURIER);
-        dto.setDeliveryAddress("Test Address");
-        dto.setItems(List.of(item1, item2));
+                testProduct1 = Product.builder()
+                                .id(10L)
+                                .price(BigDecimal.valueOf(100))
+                                .build();
 
-        User user = new User();
-        user.setId(userId);
-        user.setFullName("Test User");
+                testProduct2 = Product.builder()
+                                .id(20L)
+                                .price(BigDecimal.valueOf(50))
+                                .build();
 
-        Product product1 = new Product();
-        product1.setId(10L);
-        product1.setPrice(BigDecimal.valueOf(100));
+                testCart = Cart.builder()
+                                .id(5L)
+                                .items(new ArrayList<>())
+                                .build();
 
-        Product product2 = new Product();
-        product2.setId(20L);
-        product2.setPrice(BigDecimal.valueOf(50));
+                testOrder = Order.builder()
+                                .id(123L)
+                                .user(testUser)
+                                .status(OrderStatus.NEW)
+                                .deliveryMethod("COURIER")
+                                .deliveryAddress("Test Address")
+                                .contactName("Test User")
+                                .createdAt(testDateTime)
+                                .items(new ArrayList<>())
+                                .build();
+        }
 
-        // Build cart and items with proper relationships
-        Cart cart = new Cart();
-        cart.setId(5L);
+        @Test
+        void shouldCreateOrder_whenValidRequestProvided() {
+                OrderItemRequestDto item1 = OrderItemRequestDto.builder()
+                                .productId(10L)
+                                .quantity(2)
+                                .build();
+                OrderItemRequestDto item2 = OrderItemRequestDto.builder()
+                                .productId(20L)
+                                .quantity(1)
+                                .build();
 
-        CartItem cartItem1 = CartItem.builder()
-                .id(1L)
-             //   .cart(cart)
-                .product(product1)
-                .quantity(3)  // >= requested quantity (2)
-                .price(100d)
-                .build();
+                OrderCreateRequestDto dto = OrderCreateRequestDto.builder()
+                                .deliveryMethod(DeliveryMethod.COURIER)
+                                .deliveryAddress("Test Address")
+                                .items(List.of(item1, item2))
+                                .build();
 
-        CartItem cartItem2 = CartItem.builder()
-                .id(2L)
-               // .cart(cart)
-                .product(product2)
-                .quantity(2)  // >= requested quantity (1)
-                .price(50d)
-                .build();
+                CartItem cartItem1 = CartItem.builder()
+                                .id(1L)
+                                .product(testProduct1)
+                                .quantity(3)
+                                .price(100d)
+                                .build();
 
-        cart.setItems(new ArrayList<>(List.of(cartItem1, cartItem2)));
+                CartItem cartItem2 = CartItem.builder()
+                                .id(2L)
+                                .product(testProduct2)
+                                .quantity(2)
+                                .price(50d)
+                                .build();
 
-        Order savedOrder = Order.builder()
-                .id(123L)
-                .user(user)
-                .status(OrderStatus.NEW)
-                .deliveryMethod("COURIER")
-                .deliveryAddress("Test Address")
-                .contactName("Test User")
-                .createdAt(now)
-                .items(new ArrayList<>())
-                .build();
+                testCart.setItems(List.of(cartItem1, cartItem2));
 
-        when(userService.getCurrent()).thenReturn(user);
-        when(cartService.get()).thenReturn(cart);
-        when(orderRepository.save(any(Order.class))).thenReturn(savedOrder);
+                when(userService.getCurrent()).thenReturn(testUser);
+                when(cartService.get()).thenReturn(testCart);
+                when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
 
-        Order result = orderService.create(dto);
+                Order result = orderService.create(dto);
 
-        assertNotNull(result);
-        assertEquals(OrderStatus.NEW, result.getStatus());
-        assertEquals("Test Address", result.getDeliveryAddress());
-        assertEquals("Test User", result.getContactName());
-        verify(orderRepository).save(any(Order.class));
-    }
+                assertNotNull(result);
+                assertEquals(OrderStatus.NEW, result.getStatus());
+                assertEquals("Test Address", result.getDeliveryAddress());
+                assertEquals("Test User", result.getContactName());
+                verify(orderRepository).save(any(Order.class));
+        }
 
-    @Test
-    void createOrder_ShouldThrowException_WhenCartIsEmpty() {
-        OrderCreateRequestDto dto = new OrderCreateRequestDto();
-        dto.setDeliveryMethod(DeliveryMethod.COURIER);
-        dto.setDeliveryAddress("Some address");
-        dto.setItems(List.of());
+        @Test
+        void shouldThrowException_whenCartIsEmpty() {
+                OrderCreateRequestDto dto = OrderCreateRequestDto.builder()
+                                .deliveryMethod(DeliveryMethod.COURIER)
+                                .deliveryAddress("Some address")
+                                .items(List.of())
+                                .build();
 
-        User user = new User();
-        user.setId(userId);
+                when(userService.getCurrent()).thenReturn(testUser);
+                when(cartService.get()).thenReturn(testCart);
 
-        Cart emptyCart = new Cart();
-        emptyCart.setId(99L);
-        emptyCart.setItems(new ArrayList<>());
+                assertThrows(EmptyCartException.class, () -> orderService.create(dto));
+        }
 
-        when(userService.getCurrent()).thenReturn(user);
-        when(cartService.get()).thenReturn(emptyCart);
+        @Test
+        void shouldThrowException_whenProductNotInCart() {
+                OrderItemRequestDto item = OrderItemRequestDto.builder()
+                                .productId(999L)
+                                .quantity(1)
+                                .build();
 
-        assertThrows(EmptyCartException.class, () -> orderService.create(dto));
-    }
+                OrderCreateRequestDto dto = OrderCreateRequestDto.builder()
+                                .deliveryMethod(DeliveryMethod.COURIER)
+                                .deliveryAddress("Some address")
+                                .items(List.of(item))
+                                .build();
 
-    @Test
-    void createOrder_ShouldThrowException_WhenProductNotInCart() {
-        OrderItemRequestDto item = OrderItemRequestDto.builder()
-                .productId(999L)
-                .quantity(1)
-                .build();
+                when(userService.getCurrent()).thenReturn(testUser);
+                when(cartService.get()).thenReturn(testCart);
 
-        OrderCreateRequestDto dto = new OrderCreateRequestDto();
-        dto.setDeliveryMethod(DeliveryMethod.COURIER);
-        dto.setDeliveryAddress("Some address");
-        dto.setItems(List.of(item));
+                assertThrows(EmptyCartException.class, () -> orderService.create(dto));
+        }
 
-        User user = new User();
-        user.setId(userId);
+        @Test
+        void shouldThrowException_whenInsufficientQuantity() {
+                OrderItemRequestDto item = OrderItemRequestDto.builder()
+                                .productId(10L)
+                                .quantity(5)
+                                .build();
 
-        Cart cart = new Cart();
-        cart.setId(99L);
-        cart.setItems(new ArrayList<>());
+                OrderCreateRequestDto dto = OrderCreateRequestDto.builder()
+                                .deliveryMethod(DeliveryMethod.COURIER)
+                                .deliveryAddress("Some address")
+                                .items(List.of(item))
+                                .build();
 
-        when(userService.getCurrent()).thenReturn(user);
-        when(cartService.get()).thenReturn(cart);
+                CartItem cartItem = CartItem.builder()
+                                .id(1L)
+                                .product(testProduct1)
+                                .quantity(2)
+                                .price(100d)
+                                .build();
 
-        assertThrows(EmptyCartException.class, () -> orderService.create(dto));
-    }
+                testCart.setItems(List.of(cartItem));
 
-    @Test
-    void createOrder_ShouldThrowException_WhenInsufficientQuantity() {
-        OrderItemRequestDto item = OrderItemRequestDto.builder()
-                .productId(10L)
-                .quantity(5)
-                .build();
+                when(userService.getCurrent()).thenReturn(testUser);
+                when(cartService.get()).thenReturn(testCart);
 
-        OrderCreateRequestDto dto = new OrderCreateRequestDto();
-        dto.setDeliveryMethod(DeliveryMethod.COURIER);
-        dto.setDeliveryAddress("Some address");
-        dto.setItems(List.of(item));
-
-        User user = new User();
-        user.setId(userId);
-
-        Product product = new Product();
-        product.setId(10L);
-        product.setPrice(BigDecimal.valueOf(100));
-
-        CartItem cartItem = CartItem.builder()
-                .id(1L)
-                .product(product)
-                .quantity(2)
-                .price(100d)
-                .build();
-
-        Cart cart = new Cart();
-        cart.setId(99L);
-        cart.setItems(List.of(cartItem));
-
-        when(userService.getCurrent()).thenReturn(user);
-        when(cartService.get()).thenReturn(cart);
-
-        assertThrows(InsufficientQuantityException.class, () -> orderService.create(dto));
-    }
+                assertThrows(InsufficientQuantityException.class, () -> orderService.create(dto));
+        }
 }

@@ -2,9 +2,10 @@ package telran.project.gardenshop.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.Payment;
 import telran.project.gardenshop.enums.PaymentMethod;
@@ -12,10 +13,13 @@ import telran.project.gardenshop.enums.PaymentStatus;
 import telran.project.gardenshop.exception.OrderNotFoundException;
 import telran.project.gardenshop.exception.PaymentNotFoundException;
 import telran.project.gardenshop.repository.PaymentRepository;
+
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class PaymentServiceImplTest {
 
     @Mock
@@ -27,158 +31,146 @@ class PaymentServiceImplTest {
     @InjectMocks
     private PaymentServiceImpl paymentService;
 
+    private Order testOrder;
+    private Payment testPayment;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        testOrder = Order.builder().id(1L).build();
+        testPayment = Payment.builder()
+                .id(1L)
+                .order(testOrder)
+                .status(PaymentStatus.UNPAID)
+                .method(PaymentMethod.CARD)
+                .build();
     }
 
     @Test
-    void createPayment_whenOrderExists_thenReturnSavedPayment() {
-        Long orderId = 1L;
-        Order order = Order.builder().id(orderId).build();
-
-        when(orderService.getById(orderId)).thenReturn(order);
+    void shouldCreatePayment_whenOrderExists() {
+        when(orderService.getById(1L)).thenReturn(testOrder);
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Payment payment = paymentService.createPayment(orderId, PaymentMethod.CARD);
+        Payment payment = paymentService.createPayment(1L, PaymentMethod.CARD);
 
         assertNotNull(payment);
-        assertEquals(order, payment.getOrder());
+        assertEquals(testOrder, payment.getOrder());
         assertEquals(PaymentStatus.UNPAID, payment.getStatus());
         assertEquals(PaymentMethod.CARD, payment.getMethod());
 
-        verify(orderService).getById(orderId);
+        verify(orderService).getById(1L);
         verify(paymentRepository).save(any(Payment.class));
     }
 
     @Test
-    void createPayment_whenOrderNotFound_thenThrowException() {
-        Long orderId = 99L;
-        when(orderService.getById(orderId))
-                .thenThrow(new OrderNotFoundException("Order not found with id: " + orderId));
+    void shouldThrowException_whenOrderNotFound() {
+        when(orderService.getById(99L))
+                .thenThrow(new OrderNotFoundException("Order not found with id: 99"));
 
-        OrderNotFoundException ex = assertThrows(OrderNotFoundException.class, () ->
-                paymentService.createPayment(orderId, PaymentMethod.CASH));
+        OrderNotFoundException ex = assertThrows(OrderNotFoundException.class,
+                () -> paymentService.createPayment(99L, PaymentMethod.CASH));
 
-        assertEquals("Order not found with id: " + orderId, ex.getMessage());
-        verify(orderService).getById(orderId);
+        assertEquals("Order not found with id: 99", ex.getMessage());
+        verify(orderService).getById(99L);
         verifyNoMoreInteractions(paymentRepository);
     }
 
     @Test
-    void getPaymentById_whenExists_thenReturnPayment() {
-        Long paymentId = 1L;
-        Payment payment = Payment.builder().id(paymentId).build();
+    void shouldReturnPayment_whenPaymentIdExists() {
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(testPayment));
 
-        when(paymentRepository.findById(paymentId)).thenReturn(Optional.of(payment));
+        Payment result = paymentService.getPaymentById(1L);
 
-        Payment result = paymentService.getPaymentById(paymentId);
-
-        assertEquals(payment, result);
-        verify(paymentRepository).findById(paymentId);
+        assertEquals(testPayment, result);
+        verify(paymentRepository).findById(1L);
     }
 
     @Test
-    void getPaymentById_whenNotFound_thenThrowException() {
-        Long paymentId = 1L;
+    void shouldThrowException_whenPaymentIdNotFound() {
+        when(paymentRepository.findById(1L)).thenReturn(Optional.empty());
 
-        when(paymentRepository.findById(paymentId)).thenReturn(Optional.empty());
+        PaymentNotFoundException ex = assertThrows(PaymentNotFoundException.class,
+                () -> paymentService.getPaymentById(1L));
 
-        PaymentNotFoundException ex = assertThrows(PaymentNotFoundException.class, () ->
-                paymentService.getPaymentById(paymentId));
-
-        assertEquals("Payment not found with id: " + paymentId, ex.getMessage());
-        verify(paymentRepository).findById(paymentId);
+        assertEquals("Payment not found with id: 1", ex.getMessage());
+        verify(paymentRepository).findById(1L);
     }
 
     @Test
-    void deletePayment_whenExists_thenDelete() {
-        Long paymentId = 1L;
+    void shouldDeletePayment_whenPaymentExists() {
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(testPayment));
+        doNothing().when(paymentRepository).deleteById(1L);
 
-        Payment payment = Payment.builder().id(paymentId).build();
-        when(paymentRepository.findById(paymentId)).thenReturn(Optional.of(payment));
-        doNothing().when(paymentRepository).deleteById(paymentId);
+        paymentService.deletePayment(1L);
 
-        paymentService.deletePayment(paymentId);
-
-        verify(paymentRepository).findById(paymentId);
-        verify(paymentRepository).deleteById(paymentId);
+        verify(paymentRepository).findById(1L);
+        verify(paymentRepository).deleteById(1L);
     }
 
     @Test
-    void deletePayment_whenNotFound_thenThrowException() {
-        Long paymentId = 1L;
+    void shouldThrowException_whenDeletingNonExistentPayment() {
+        when(paymentRepository.findById(1L)).thenReturn(Optional.empty());
 
-        when(paymentRepository.findById(paymentId)).thenReturn(Optional.empty());
+        PaymentNotFoundException ex = assertThrows(PaymentNotFoundException.class,
+                () -> paymentService.deletePayment(1L));
 
-        PaymentNotFoundException ex = assertThrows(PaymentNotFoundException.class, () ->
-                paymentService.deletePayment(paymentId));
-
-        assertEquals("Payment not found with id: " + paymentId, ex.getMessage());
-        verify(paymentRepository).findById(paymentId);
-        verify(paymentRepository, never()).deleteById(paymentId);
+        assertEquals("Payment not found with id: 1", ex.getMessage());
+        verify(paymentRepository).findById(1L);
+        verify(paymentRepository, never()).deleteById(1L);
     }
 
     @Test
-    void updatePaymentStatus_whenExists_thenUpdateAndSave() {
-        Long paymentId = 1L;
-        Payment payment = Payment.builder().id(paymentId).status(PaymentStatus.UNPAID).build();
-
-        when(paymentRepository.findById(paymentId)).thenReturn(Optional.of(payment));
+    void shouldUpdatePaymentStatus_whenPaymentExists() {
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(testPayment));
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Payment updated = paymentService.updatePaymentStatus(paymentId, PaymentStatus.PAID);
+        Payment updated = paymentService.updatePaymentStatus(1L, PaymentStatus.PAID);
 
         assertEquals(PaymentStatus.PAID, updated.getStatus());
-        verify(paymentRepository).findById(paymentId);
-        verify(paymentRepository).save(payment);
+        verify(paymentRepository).findById(1L);
+        verify(paymentRepository).save(testPayment);
     }
 
     @Test
-    void isPaymentStatus_whenPaymentExistsAndStatusMatches_thenReturnTrue() {
-        Long orderId = 1L;
-        Payment payment = Payment.builder().status(PaymentStatus.PAID).build();
+    void shouldReturnTrue_whenPaymentExistsAndStatusMatches() {
+        Payment paidPayment = Payment.builder().status(PaymentStatus.PAID).build();
+        when(paymentRepository.findByOrderId(1L)).thenReturn(Optional.of(paidPayment));
 
-        when(paymentRepository.findByOrderId(orderId)).thenReturn(Optional.of(payment));
-
-        assertTrue(paymentService.isPaymentStatus(orderId, PaymentStatus.PAID));
+        assertTrue(paymentService.isPaymentStatus(1L, PaymentStatus.PAID));
     }
 
     @Test
-    void isPaymentStatus_whenPaymentNotFound_thenReturnFalse() {
-        Long orderId = 1L;
+    void shouldReturnFalse_whenPaymentNotFound() {
+        when(paymentRepository.findByOrderId(1L)).thenReturn(Optional.empty());
 
-        when(paymentRepository.findByOrderId(orderId)).thenReturn(Optional.empty());
-
-        assertFalse(paymentService.isPaymentStatus(orderId, PaymentStatus.PAID));
+        assertFalse(paymentService.isPaymentStatus(1L, PaymentStatus.PAID));
     }
 
     @Test
-    void updatePaymentStatusByOrderId_whenPaymentExists_thenUpdate() {
-        Long orderId = 1L;
-        Payment payment = Payment.builder().order(Order.builder().id(orderId).build()).status(PaymentStatus.UNPAID).build();
+    void shouldUpdatePaymentStatusByOrderId_whenPaymentExists() {
+        Payment payment = Payment.builder()
+                .order(testOrder)
+                .status(PaymentStatus.UNPAID)
+                .build();
 
-        when(paymentRepository.findByOrderId(orderId)).thenReturn(Optional.of(payment));
+        when(paymentRepository.findByOrderId(1L)).thenReturn(Optional.of(payment));
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Optional<Payment> updatedOpt = paymentService.updatePaymentStatusByOrderId(orderId, PaymentStatus.PAID);
+        Optional<Payment> updatedOpt = paymentService.updatePaymentStatusByOrderId(1L, PaymentStatus.PAID);
 
         assertTrue(updatedOpt.isPresent());
         Payment updated = updatedOpt.get();
         assertEquals(PaymentStatus.PAID, updated.getStatus());
         assertNotNull(updated.getUpdatedAt());
-        verify(paymentRepository).findByOrderId(orderId);
+        verify(paymentRepository).findByOrderId(1L);
         verify(paymentRepository).save(payment);
     }
 
     @Test
-    void updatePaymentStatusByOrderId_whenPaymentNotFound_thenThrowException() {
-        Long orderId = 1L;
+    void shouldReturnEmpty_whenPaymentNotFoundByOrderId() {
+        when(paymentRepository.findByOrderId(1L)).thenReturn(Optional.empty());
 
-        when(paymentRepository.findByOrderId(orderId)).thenReturn(Optional.empty());
-
-        Optional<Payment> updatedOpt = paymentService.updatePaymentStatusByOrderId(orderId, PaymentStatus.PAID);
+        Optional<Payment> updatedOpt = paymentService.updatePaymentStatusByOrderId(1L, PaymentStatus.PAID);
         assertTrue(updatedOpt.isEmpty());
-        verify(paymentRepository).findByOrderId(orderId);
+        verify(paymentRepository).findByOrderId(1L);
     }
 }

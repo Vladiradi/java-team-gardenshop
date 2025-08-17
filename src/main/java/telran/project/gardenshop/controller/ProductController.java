@@ -127,4 +127,11 @@ public class ProductController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtoList);
     }
+
+    @GetMapping("/product-of-the-day")
+    @Operation(summary = "Get product of the day - product with highest discount")
+    public ResponseEntity<ProductResponseDto> getProductOfTheDay() {
+        Product product = productService.getProductOfTheDay();
+        return ResponseEntity.ok(productMapper.toDto(product));
+    }
 }

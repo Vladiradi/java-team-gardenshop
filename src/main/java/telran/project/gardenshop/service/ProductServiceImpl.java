@@ -14,6 +14,8 @@ import telran.project.gardenshop.repository.ProductRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Random;
+import telran.project.gardenshop.exception.NoDiscountedProductsException;
 
 @Service
 @RequiredArgsConstructor
@@ -109,5 +111,18 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll().stream()
                 .filter(discountService::hasDiscount)
                 .toList();
+    }
+    
+    @Override
+    public Product getProductOfTheDay() {
+        List<Product> productsWithHighestDiscount = productRepository.findProductsWithHighestDiscount();
+        
+        if (productsWithHighestDiscount.isEmpty()) {
+            throw new NoDiscountedProductsException("No discounted products available");
+        }
+        
+        // Случайный выбор из товаров с одинаковой скидкой
+        int randomIndex = new Random().nextInt(productsWithHighestDiscount.size());
+        return productsWithHighestDiscount.get(randomIndex);
     }
 }

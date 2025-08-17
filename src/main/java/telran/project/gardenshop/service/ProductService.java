@@ -26,4 +26,6 @@ public interface ProductService {
     Product removeDiscount(Long productId);
 
     List<Product> getProductsWithDiscount();
+    
+    Product getProductOfTheDay();
 }

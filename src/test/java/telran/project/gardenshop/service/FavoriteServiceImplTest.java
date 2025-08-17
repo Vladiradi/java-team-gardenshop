@@ -43,7 +43,7 @@ class FavoriteServiceImplTest {
     @DisplayName("Add to favorites: positive case")
     void addToFavoritesPositiveCase() {
         when(userService.getCurrent()).thenReturn(user);
-        when(productService.getProductById(product.getId())).thenReturn(product);
+        when(productService.getById(product.getId())).thenReturn(product);
         when(favoriteRepository.findByUserIdAndProductId(user.getId(), product.getId()))
                 .thenReturn(Optional.empty());
         when(favoriteRepository.save(any(Favorite.class))).thenReturn(favorite);
@@ -59,7 +59,7 @@ class FavoriteServiceImplTest {
     @DisplayName("Add to favorites: negative case - already exists")
     void addToFavoritesNegativeCase() {
         when(userService.getCurrent()).thenReturn(user);
-        when(productService.getProductById(product.getId())).thenReturn(product);
+        when(productService.getById(product.getId())).thenReturn(product);
         when(favoriteRepository.findByUserIdAndProductId(user.getId(), product.getId()))
                 .thenReturn(Optional.of(favorite));
 

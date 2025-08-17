@@ -66,12 +66,11 @@ class ProductControllerTest {
                 .price(10.0)
                 .imageUrl("http://image.url/rose.jpg")
                 .categoryName("Flowers")
-                .hasDiscount(false)
                 .build();
 
         // Мокаем маппер и сервис
         when(productMapper.toEntity(any(ProductRequestDto.class))).thenReturn(productEntity);
-        when(productService.createProduct(any(Product.class))).thenReturn(productEntity);
+        when(productService.create(any(Product.class))).thenReturn(productEntity);
         when(productMapper.toDto(any(Product.class))).thenReturn(responseDto);
 
         mockMvc.perform(post("/v1/products")
@@ -111,10 +110,9 @@ class ProductControllerTest {
                 .price(10.0)
                 .imageUrl("http://image.url/rose.jpg")
                 .categoryName("Flowers")
-                .hasDiscount(false)
                 .build();
 
-        when(productService.getProductById(id)).thenReturn(product);
+        when(productService.getById(id)).thenReturn(product);
         when(productMapper.toDto(product)).thenReturn(dto);
 
         mockMvc.perform(get("/v1/products/{id}", id))

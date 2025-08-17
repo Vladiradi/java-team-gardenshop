@@ -17,6 +17,8 @@ import telran.project.gardenshop.dto.ProductResponseDto;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.mapper.ProductMapper;
 import telran.project.gardenshop.service.ProductService;
+import telran.project.gardenshop.entity.Category;
+import telran.project.gardenshop.service.CategoryService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,54 +35,48 @@ public class ProductController {
 
     private final ProductRepository productRepository;
 
+    private final CategoryService categoryService;
+
     @PostMapping
     @Operation(summary = "Add new product")
     public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
-        Product saved = productService.createProduct(entity);
+        Product saved = productService.create(entity);
         return ResponseEntity.status(201).body(productMapper.toDto(saved));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get product by ID")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
-        Product product = productService.getProductById(id);
+        Product product = productService.getById(id);
         return ResponseEntity.ok(productMapper.toDto(product));
     }
 
     @GetMapping
     @Operation(summary = "Get all products")
     public ResponseEntity<List<ProductResponseDto>> getAll() {
-        List<Product> products = productService.getAllProducts();
+        List<Product> products = productService.getAll();
         List<ProductResponseDto> dtoList = products.stream()
                 .map(productMapper::toDto)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtoList);
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Update product")
-    public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
-            @Valid @RequestBody ProductRequestDto dto) {
-        Product entity = productMapper.toEntity(dto);
-        Product updated = productService.updateProduct(id, entity);
-        return ResponseEntity.ok(productMapper.toDto(updated));
-    }
 
-    @PutMapping("/{id}/edit")
-    @Operation(summary = "Edit product (title, description, price)")
+    @PutMapping("/{id}")
+    @Operation(summary = "Update product (title, description, price)")
     public ResponseEntity<ProductResponseDto> editProduct(
             @PathVariable Long id,
             @RequestBody ProductEditDto dto) {
 
-        Product updated = productService.updateProduct(id, dto);
+        Product updated = productService.update(id, dto);
         return ResponseEntity.ok(productMapper.toDto(updated));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete product")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        productService.deleteProduct(id);
+        productService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -122,6 +118,17 @@ public class ProductController {
     @Operation(summary = "Get all products with discount")
     public ResponseEntity<List<ProductResponseDto>> getProductsWithDiscount() {
         List<Product> products = productService.getProductsWithDiscount();
+        List<ProductResponseDto> dtoList = products.stream()
+                .map(productMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtoList);
+    }
+
+    @GetMapping("/discounts/category/{categoryId}")
+    @Operation(summary = "Get products with discount by category")
+    public ResponseEntity<List<ProductResponseDto>> getProductsWithDiscountByCategory(@PathVariable Long categoryId) {
+        Category category = categoryService.getCategoryById(categoryId);
+        List<Product> products = productService.getProductsWithDiscount(category);
         List<ProductResponseDto> dtoList = products.stream()
                 .map(productMapper::toDto)
                 .collect(Collectors.toList());

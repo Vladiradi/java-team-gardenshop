@@ -1,5 +1,6 @@
 package telran.project.gardenshop.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,7 +105,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderItem processOrderItem(OrderItemRequestDto itemDto, Cart cart, Order order) {
-        CartItem cartItem = findCartItemByProductId(cart.getItems(), itemDto.getProductId()).orElseThrow(() -> new ProductNotInCartException(itemDto.getProductId()));
+        CartItem cartItem = findCartItemByProductId(cart.getItems(), itemDto.getProductId())
+                .orElseThrow(() -> new ProductNotInCartException(itemDto.getProductId()));
 
         validateQuantity(cartItem, itemDto);
 
@@ -122,7 +124,8 @@ public class OrderServiceImpl implements OrderService {
 
     private void validateQuantity(CartItem cartItem, OrderItemRequestDto itemDto) {
         if (cartItem.getQuantity() < itemDto.getQuantity()) {
-            throw new InsufficientQuantityException(itemDto.getProductId(), cartItem.getQuantity(), itemDto.getQuantity());
+            throw new InsufficientQuantityException(itemDto.getProductId(), cartItem.getQuantity(),
+                    itemDto.getQuantity());
         }
     }
 
@@ -136,6 +139,27 @@ public class OrderServiceImpl implements OrderService {
 
     private Optional<CartItem> findCartItemByProductId(List<CartItem> cartItems, Long productId) {
         return cartItems.stream().filter(ci -> ci.getProduct().getId().equals(productId)).findFirst();
+    }
+
+    @Override
+    public List<Order> getAllByStatus(OrderStatus status) {
+        return orderRepository.findAllByStatus(status);
+    }
+
+    @Override
+    public List<Order> getAllByCreatedAtBetweenAndStatus(LocalDateTime startDate, LocalDateTime endDate,
+            OrderStatus status) {
+        return orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, status);
+    }
+
+    @Override
+    public List<Order> getAllByStatusAndCreatedAtBefore(OrderStatus status, LocalDateTime date) {
+        return orderRepository.findAllByStatusAndCreatedAtBefore(status, date);
+    }
+
+    @Override
+    public Order updateOrder(Order order) {
+        return orderRepository.save(order);
     }
 
 }

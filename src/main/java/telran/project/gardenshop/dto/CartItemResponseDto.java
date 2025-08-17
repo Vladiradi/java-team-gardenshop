@@ -13,8 +13,6 @@ public class CartItemResponseDto {
 
     private Long id;
 
-    private Long cartId;
-
     private Long productId;
 
     private Integer quantity;

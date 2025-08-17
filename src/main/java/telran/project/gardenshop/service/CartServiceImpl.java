@@ -21,8 +21,6 @@ public class CartServiceImpl implements CartService {
 
     private final ProductService productService;
 
-
-
     @Override
     public Cart get() {
         User currentUser = userService.getCurrent();

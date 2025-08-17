@@ -14,7 +14,6 @@ import telran.project.gardenshop.entity.*;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.GroupByPeriod;
 import telran.project.gardenshop.enums.ProductReportType;
-import telran.project.gardenshop.repository.OrderRepository;
 import telran.project.gardenshop.repository.OrderItemRepository;
 
 import java.math.BigDecimal;
@@ -31,7 +30,7 @@ import static org.mockito.Mockito.*;
 class ReportServiceImplTest {
 
         @Mock
-        private OrderRepository orderRepository;
+        private OrderService orderService;
 
         @Mock
         private OrderItemRepository orderItemRepository;
@@ -116,7 +115,7 @@ class ReportServiceImplTest {
 
         @Test
         void shouldReturnTopProductsByType_whenSalesReportRequested() {
-                when(orderRepository.findAllByStatus(OrderStatus.DELIVERED))
+                when(orderService.getAllByStatus(OrderStatus.DELIVERED))
                                 .thenReturn(Arrays.asList(order1));
 
                 List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.SALES, 10);
@@ -139,7 +138,7 @@ class ReportServiceImplTest {
                 LocalDateTime startDate = LocalDateTime.now().minusDays(30);
                 LocalDateTime endDate = LocalDateTime.now();
 
-                when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
+                when(orderService.getAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                                 .thenReturn(Arrays.asList(order1));
 
                 ProfitReportDto result = reportService.getProfitReport(startDate, endDate);
@@ -161,7 +160,7 @@ class ReportServiceImplTest {
                 LocalDateTime endDate = LocalDateTime.now();
                 GroupByPeriod groupBy = GroupByPeriod.DAY;
 
-                when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
+                when(orderService.getAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                                 .thenReturn(Arrays.asList(order1));
 
                 GroupedProfitReportDto result = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
@@ -173,7 +172,8 @@ class ReportServiceImplTest {
                 assertEquals(BigDecimal.valueOf(400).doubleValue(), result.getTotalRevenue().doubleValue(), 0.001);
                 assertEquals(BigDecimal.valueOf(240).doubleValue(), result.getTotalCost().doubleValue(), 0.001);
                 assertEquals(BigDecimal.valueOf(160).doubleValue(), result.getTotalProfit().doubleValue(), 0.001);
-                assertEquals(BigDecimal.valueOf(40.0).doubleValue(), result.getProfitMargin().doubleValue(), 0.001);
+                assertEquals(BigDecimal.valueOf(40.0).doubleValue(), result.getProfitMargin().doubleValue(),
+                                0.001);
                 assertEquals(1L, result.getTotalOrders());
                 assertEquals(3L, result.getTotalItemsSold());
 
@@ -199,7 +199,7 @@ class ReportServiceImplTest {
                 LocalDateTime endDate = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
                 GroupByPeriod groupBy = GroupByPeriod.HOUR;
 
-                when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
+                when(orderService.getAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                                 .thenReturn(Arrays.asList(order1));
 
                 GroupedProfitReportDto result = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
@@ -216,7 +216,7 @@ class ReportServiceImplTest {
                 LocalDateTime endDate = LocalDateTime.now();
                 GroupByPeriod groupBy = GroupByPeriod.WEEK;
 
-                when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
+                when(orderService.getAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                                 .thenReturn(Arrays.asList(order1));
 
                 GroupedProfitReportDto result = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
@@ -233,7 +233,7 @@ class ReportServiceImplTest {
                 LocalDateTime endDate = LocalDateTime.now();
                 GroupByPeriod groupBy = GroupByPeriod.MONTH;
 
-                when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
+                when(orderService.getAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                                 .thenReturn(Arrays.asList(order1));
 
                 GroupedProfitReportDto result = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
@@ -250,7 +250,7 @@ class ReportServiceImplTest {
                 LocalDateTime endDate = LocalDateTime.now();
                 GroupByPeriod groupBy = GroupByPeriod.DAY;
 
-                when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
+                when(orderService.getAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                                 .thenReturn(Collections.emptyList());
 
                 GroupedProfitReportDto result = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
@@ -290,7 +290,7 @@ class ReportServiceImplTest {
                                 .items(Arrays.asList(item2))
                                 .build();
 
-                when(orderRepository.findAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
+                when(orderService.getAllByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.DELIVERED))
                                 .thenReturn(Arrays.asList(orderDay1, orderDay2));
 
                 GroupedProfitReportDto result = reportService.getGroupedProfitReport(startDate, endDate, groupBy);
@@ -321,7 +321,7 @@ class ReportServiceImplTest {
 
         @Test
         void shouldReturnPendingPaymentOrders_whenOrdersExist() {
-                when(orderRepository.findAllByStatusAndCreatedAtBefore(eq(OrderStatus.NEW), any(LocalDateTime.class)))
+                when(orderService.getAllByStatusAndCreatedAtBefore(eq(OrderStatus.NEW), any(LocalDateTime.class)))
                                 .thenReturn(Arrays.asList(order2));
 
                 List<PendingPaymentReportDto> result = reportService.getPendingPaymentOrders(7);
@@ -342,7 +342,7 @@ class ReportServiceImplTest {
 
         @Test
         void shouldReturnTopProductsByType_whenSalesReportWithLimitRequested() {
-                when(orderRepository.findAllByStatus(OrderStatus.DELIVERED))
+                when(orderService.getAllByStatus(OrderStatus.DELIVERED))
                                 .thenReturn(Arrays.asList(order1));
 
                 List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.SALES, 5);
@@ -366,7 +366,7 @@ class ReportServiceImplTest {
                                 .items(Arrays.asList(item2))
                                 .build();
 
-                when(orderRepository.findAllByStatus(OrderStatus.CANCELLED))
+                when(orderService.getAllByStatus(OrderStatus.CANCELLED))
                                 .thenReturn(Arrays.asList(cancelledOrder));
 
                 List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.CANCELLATIONS, 5);
@@ -399,7 +399,7 @@ class ReportServiceImplTest {
                                 .items(Arrays.asList(item1))
                                 .build();
 
-                when(orderRepository.findAllByStatus(OrderStatus.CANCELLED))
+                when(orderService.getAllByStatus(OrderStatus.CANCELLED))
                                 .thenReturn(Arrays.asList(cancelledOrder1, cancelledOrder2));
 
                 List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.CANCELLATIONS, 5);
@@ -414,7 +414,7 @@ class ReportServiceImplTest {
 
         @Test
         void shouldReturnEmptyList_whenNoCancelledOrdersExist() {
-                when(orderRepository.findAllByStatus(OrderStatus.CANCELLED))
+                when(orderService.getAllByStatus(OrderStatus.CANCELLED))
                                 .thenReturn(Collections.emptyList());
 
                 List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.CANCELLATIONS, 5);
@@ -425,7 +425,7 @@ class ReportServiceImplTest {
 
         @Test
         void shouldReturnEmptyList_whenNoDeliveredOrdersExist() {
-                when(orderRepository.findAllByStatus(OrderStatus.DELIVERED))
+                when(orderService.getAllByStatus(OrderStatus.DELIVERED))
                                 .thenReturn(Collections.emptyList());
 
                 List<ProductReportDto> result = reportService.getTopProductsByType(ProductReportType.SALES, 5);

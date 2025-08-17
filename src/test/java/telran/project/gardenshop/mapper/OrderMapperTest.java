@@ -1,15 +1,12 @@
 package telran.project.gardenshop.mapper;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import telran.project.gardenshop.dto.*;
 import telran.project.gardenshop.entity.*;
 import telran.project.gardenshop.enums.OrderStatus;
-import telran.project.gardenshop.service.security.JwtFilter;
-import telran.project.gardenshop.service.security.JwtService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,21 +14,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class OrderMapperTest {
 
-    @Autowired
-    private OrderMapper orderMapper;
-
-    @Autowired
-    private OrderItemMapper orderItemMapper;
-
-    @MockBean
-    private JwtService jwtService;
-
-    @MockBean
-    private JwtFilter jwtFilter;
-
+    private final OrderMapper orderMapper = new OrderMapperImpl();
+    private final OrderItemMapper orderItemMapper = new OrderItemMapperImpl();
 
     @Test
     void testToDto() {

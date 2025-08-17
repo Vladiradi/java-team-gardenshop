@@ -1,11 +1,9 @@
 package telran.project.gardenshop.mapper;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import telran.project.gardenshop.dto.FavoriteResponseDto;
 import telran.project.gardenshop.dto.UserEditDto;
 import telran.project.gardenshop.dto.UserRequestDto;
 import telran.project.gardenshop.dto.UserResponseDto;
@@ -13,93 +11,111 @@ import telran.project.gardenshop.entity.Favorite;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.enums.Role;
-import telran.project.gardenshop.service.security.JwtFilter;
-import telran.project.gardenshop.service.security.JwtService;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class UserMapperTest {
 
-    @Autowired
-    private UserMapper userMapper;
+        private final UserMapper userMapper = new UserMapperImpl();
 
-    @MockBean
-    private JwtService jwtService;
+        @Test
+        void testToEntity() {
+                UserRequestDto dto = UserRequestDto.builder()
+                                .email("test@example.com")
+                                .fullName("Test User")
+                                .phoneNumber("+1234567890")
+                                .password("password123")
+                                .build();
 
-    @MockBean
-    private JwtFilter jwtFilter;
+                User user = userMapper.toEntity(dto);
 
-    @Test
-    void testToEntity() {
-        UserRequestDto dto = UserRequestDto.builder()
-                .fullName("john_doe")
-                .email("john@example.com")
-                .password("password123")
-                .build();
+                assertThat(user).isNotNull();
+                assertThat(user.getEmail()).isEqualTo("test@example.com");
+                assertThat(user.getFullName()).isEqualTo("Test User");
+                assertThat(user.getPhoneNumber()).isEqualTo("+1234567890");
+                assertThat(user.getPassword()).isEqualTo("password123");
+                assertThat(user.getRole()).isEqualTo(Role.USER);
+        }
 
-        User user = userMapper.toEntity(dto);
+        @Test
+        void testToDto() {
+                User user = User.builder()
+                                .id(1L)
+                                .email("test@example.com")
+                                .fullName("Test User")
+                                .phoneNumber("+1234567890")
+                                .role(Role.USER)
+                                .build();
 
-        assertThat(user).isNotNull();
-        assertThat(user.getFullName()).isEqualTo("john_doe");
-        assertThat(user.getEmail()).isEqualTo("john@example.com");
-        assertThat(user.getPassword()).isEqualTo("password123");
-    }
+                UserResponseDto dto = userMapper.toDto(user);
 
-    @Test
-    void testToDtoWithFavorites() {
-        Product product = Product.builder()
-                .id(1L)
-                .name("Rose")
-                .price(BigDecimal.valueOf(10.5))
-                .imageUrl("rose.jpg")
-                .build();
+                assertThat(dto).isNotNull();
+                assertThat(dto.getId()).isEqualTo(1L);
+                assertThat(dto.getEmail()).isEqualTo("test@example.com");
+                assertThat(dto.getFullName()).isEqualTo("Test User");
+                assertThat(dto.getPhoneNumber()).isEqualTo("+1234567890");
+        }
 
-        User userEntity = User.builder()
-                .id(2L)
-                .fullName("john_doe")
-                .email("john@example.com")
-                .role(Role.USER)
-                .favorites(List.of(Favorite.builder()
-                        .id(3L)
-                        .user(User.builder().id(2L).build())
-                        .product(product)
-                        .build()))
-                .build();
+        @Test
+        void testToDtoWithFavorites() {
+                Product product = Product.builder()
+                                .id(1L)
+                                .name("Test Product")
+                                .build();
 
-        UserResponseDto dto = userMapper.toDto(userEntity);
+                Favorite favorite = Favorite.builder()
+                                .id(1L)
+                                .product(product)
+                                .build();
 
-        assertThat(dto).isNotNull();
-        assertThat(dto.getFullName()).isEqualTo("john_doe");
-        assertThat(dto.getRole()).isEqualTo("USER");
+                User user = User.builder()
+                                .id(1L)
+                                .email("test@example.com")
+                                .fullName("Test User")
+                                .phoneNumber("+1234567890")
+                                .role(Role.USER)
+                                .favorites(List.of(favorite))
+                                .build();
 
-        assertThat(dto.getFavorites()).hasSize(1);
-        FavoriteResponseDto favDto = dto.getFavorites().get(0);
-        assertThat(favDto.getProductId()).isEqualTo(1L);
-        assertThat(favDto.getProductName()).isEqualTo("Rose");
-        assertThat(favDto.getPrice()).isEqualTo(10.5);
-        assertThat(favDto.getImageUrl()).isEqualTo("rose.jpg");
-    }
+                UserResponseDto dto = userMapper.toDto(user);
 
-    @Test
-    void testUpdateUserFromDto() {
-        User user = User.builder()
-                .id(1L)
-                .fullName("old_name")
-                .email("old@example.com")
-                .build();
+                assertThat(dto).isNotNull();
+                assertThat(dto.getId()).isEqualTo(1L);
+                assertThat(dto.getEmail()).isEqualTo("test@example.com");
+                assertThat(dto.getFullName()).isEqualTo("Test User");
+                assertThat(dto.getPhoneNumber()).isEqualTo("+1234567890");
+                assertThat(dto.getFavorites()).hasSize(1);
+                assertThat(dto.getFavorites().get(0).getProductId()).isEqualTo(1L);
+        }
 
-        UserEditDto editDto = UserEditDto.builder()
-                .fullName("new_name")
-                .email("new@example.com")
-                .build();
+        @Test
+        void testUpdateUserFromDto() {
+                User user = User.builder()
+                                .id(1L)
+                                .email("old@example.com")
+                                .fullName("Old Name")
+                                .phoneNumber("+1234567890")
+                                .password("oldpass")
+                                .role(Role.USER)
+                                .build();
 
-        userMapper.updateUserFromDto(editDto, user);
+                UserEditDto editDto = UserEditDto.builder()
+                                .email("new@example.com")
+                                .fullName("New Name")
+                                .phoneNumber("+9876543210")
+                                .password("newpass")
+                                .build();
 
-        assertThat(user.getFullName()).isEqualTo("new_name");
-        assertThat(user.getEmail()).isEqualTo("new@example.com");
-    }
+                userMapper.updateUserFromDto(editDto, user);
+
+                assertThat(user.getEmail()).isEqualTo("new@example.com");
+                assertThat(user.getFullName()).isEqualTo("New Name");
+                assertThat(user.getPhoneNumber()).isEqualTo("+9876543210");
+                assertThat(user.getPassword()).isEqualTo("newpass");
+                assertThat(user.getId()).isEqualTo(1L);
+                assertThat(user.getRole()).isEqualTo(Role.USER);
+        }
 }

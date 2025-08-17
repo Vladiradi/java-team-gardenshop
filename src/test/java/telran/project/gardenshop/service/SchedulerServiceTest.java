@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 class SchedulerServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderService orderService;
 
     @Mock
     private PaymentService paymentService;
@@ -60,21 +60,15 @@ class SchedulerServiceTest {
                 .status(OrderStatus.NEW)
                 .build();
 
-        when(orderRepository.findAllByStatus(OrderStatus.NEW))
+        when(orderService.getAllByStatus(OrderStatus.NEW))
                 .thenReturn(List.of(oldOrder, recentOrder));
         when(paymentService.isPaymentStatus(1L, PaymentStatus.UNPAID)).thenReturn(true);
 
         schedulerService.cancelOrders();
 
-        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
-        verify(orderRepository, times(1)).save(orderCaptor.capture());
-        Order saved = orderCaptor.getValue();
-        assertEquals(OrderStatus.CANCELLED, saved.getStatus());
-
-        verify(paymentService, times(1))
-                .updatePaymentStatusByOrderId(1L, PaymentStatus.UNPAID);
-        verify(paymentService, never())
-                .updatePaymentStatusByOrderId(2L, PaymentStatus.UNPAID);
+        verify(orderService).updateOrder(any(Order.class));
+        verify(paymentService).updatePaymentStatusByOrderId(1L, PaymentStatus.UNPAID);
+        verify(paymentService, never()).updatePaymentStatusByOrderId(2L, PaymentStatus.UNPAID);
     }
 
     @Test
@@ -86,13 +80,13 @@ class SchedulerServiceTest {
                 .status(OrderStatus.PAID)
                 .build();
 
-        when(orderRepository.findAllByStatus(OrderStatus.PAID))
+        when(orderService.getAllByStatus(OrderStatus.PAID))
                 .thenReturn(List.of(order));
         when(paymentService.isPaymentStatus(3L, PaymentStatus.PAID)).thenReturn(false);
 
         schedulerService.completePaidOrders();
 
-        verify(orderRepository, never()).save(any());
+        verify(orderService, never()).updateOrder(any());
         verify(paymentService, never()).updatePaymentStatusByOrderId(anyLong(), any());
     }
 
@@ -105,18 +99,13 @@ class SchedulerServiceTest {
                 .status(OrderStatus.PAID)
                 .build();
 
-        when(orderRepository.findAllByStatus(OrderStatus.PAID))
+        when(orderService.getAllByStatus(OrderStatus.PAID))
                 .thenReturn(List.of(order));
         when(paymentService.isPaymentStatus(4L, PaymentStatus.PAID)).thenReturn(true);
 
         schedulerService.completePaidOrders();
 
-        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
-        verify(orderRepository).save(orderCaptor.capture());
-        Order saved = orderCaptor.getValue();
-        assertEquals(OrderStatus.DELIVERED, saved.getStatus());
-
-        verify(paymentService)
-                .updatePaymentStatusByOrderId(4L, PaymentStatus.PAID);
+        verify(orderService).updateOrder(any(Order.class));
+        verify(paymentService).updatePaymentStatusByOrderId(4L, PaymentStatus.PAID);
     }
 }

@@ -21,4 +21,10 @@ public class ProductResponseDto {
     private String categoryName;
 
     private boolean hasDiscount;
+    
+    private Double currentPrice;
+    
+    private Double discountPercentage;
+    
+    private Double discountAmount;
 }

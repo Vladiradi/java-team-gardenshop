@@ -2,6 +2,7 @@ package telran.project.gardenshop.service;
 
 import java.util.List;
 
+import telran.project.gardenshop.dto.ProductDiscountDto;
 import telran.project.gardenshop.dto.ProductEditDto;
 import telran.project.gardenshop.entity.Product;
 
@@ -18,4 +19,11 @@ public interface ProductService {
     Product updateProduct(Long id, ProductEditDto dto);
 
     void deleteProduct(Long id);
+
+    // Методы для управления скидками
+    Product addDiscount(Long productId, ProductDiscountDto discountDto);
+
+    Product removeDiscount(Long productId);
+
+    List<Product> getProductsWithDiscount();
 }

@@ -28,6 +28,8 @@ public class CartServiceImpl implements CartService {
 
     private final ProductService productService;
 
+    private final DiscountService discountService;
+
     @Override
     public Cart get() {
         User currentUser = userService.getCurrent();
@@ -62,7 +64,7 @@ public class CartServiceImpl implements CartService {
 
             CartItem newItem = CartItem.builder()
                     .product(product)
-                    .price(product.getPrice().doubleValue())
+                    .price(discountService.getCurrentPrice(product).doubleValue())
                     .quantity(1)
                     .build();
             cart.getItems().add(newItem);

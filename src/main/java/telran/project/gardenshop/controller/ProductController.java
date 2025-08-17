@@ -1,15 +1,16 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import telran.project.gardenshop.utilities.ProductSpecification;
 import telran.project.gardenshop.repository.ProductRepository;
+import telran.project.gardenshop.dto.ProductDiscountDto;
 import telran.project.gardenshop.dto.ProductEditDto;
 import telran.project.gardenshop.dto.ProductRequestDto;
 import telran.project.gardenshop.dto.ProductResponseDto;
@@ -20,11 +21,10 @@ import telran.project.gardenshop.service.ProductService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/v1/products")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class ProductController {
 
     private final ProductService productService;
@@ -100,5 +100,32 @@ public class ProductController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(dtos);
+    }
+
+    // Эндпоинты для управления скидками
+    @PostMapping("/{id}/discount")
+    @Operation(summary = "Add discount to product")
+    public ResponseEntity<ProductResponseDto> addDiscount(
+            @PathVariable Long id,
+            @Valid @RequestBody ProductDiscountDto discountDto) {
+        Product product = productService.addDiscount(id, discountDto);
+        return ResponseEntity.ok(productMapper.toDto(product));
+    }
+
+    @DeleteMapping("/{id}/discount")
+    @Operation(summary = "Remove discount from product")
+    public ResponseEntity<ProductResponseDto> removeDiscount(@PathVariable Long id) {
+        Product product = productService.removeDiscount(id);
+        return ResponseEntity.ok(productMapper.toDto(product));
+    }
+
+    @GetMapping("/discounts")
+    @Operation(summary = "Get all products with discount")
+    public ResponseEntity<List<ProductResponseDto>> getProductsWithDiscount() {
+        List<Product> products = productService.getProductsWithDiscount();
+        List<ProductResponseDto> dtoList = products.stream()
+                .map(productMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtoList);
     }
 }

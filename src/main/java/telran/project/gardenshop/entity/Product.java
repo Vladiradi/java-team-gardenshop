@@ -35,9 +35,9 @@ public class Product {
 
     private String imageUrl;
 
-    private Double discountPrice;
+    private BigDecimal discountPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     @JsonBackReference
     private Category category;

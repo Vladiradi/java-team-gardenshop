@@ -59,9 +59,6 @@ class CartControllerTest {
     @MockBean
     private CartMapper cartMapper;
 
-//    @Autowired
-//    private ObjectMapper objectMapper;
-
     @MockBean
     private JwtService jwtService;
 
@@ -77,7 +74,6 @@ class CartControllerTest {
         cartDto = new CartResponseDto();
         cartDto.setId(1L);
     }
-
 
     @WithMockUser
     @Test
@@ -102,8 +98,8 @@ class CartControllerTest {
         when(cartMapper.toDto(cart)).thenReturn(cartDto);
 
         mockMvc.perform(post("/v1/cart/items")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("productId", String.valueOf(productId)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("productId", String.valueOf(productId)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(cartDto.getId()));
 
@@ -121,7 +117,7 @@ class CartControllerTest {
         when(cartMapper.toDto(cart)).thenReturn(cartDto);
 
         mockMvc.perform(put("/v1/cart/items/{cartItemId}", cartItemId)
-                        .param("quantity", String.valueOf(quantity)))
+                .param("quantity", String.valueOf(quantity)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(cartDto.getId()));
 

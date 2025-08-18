@@ -47,7 +47,7 @@ class UserControllerTest extends AbstractTest {
         private ObjectMapper objectMapper;
 
         @BeforeEach
-        void setUp() {
+        protected void setUp() {
                 super.setUp();
                 mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
                 objectMapper = new ObjectMapper();

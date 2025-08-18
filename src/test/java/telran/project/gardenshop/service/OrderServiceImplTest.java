@@ -44,7 +44,7 @@ class OrderServiceImplTest extends AbstractTest {
         private OrderServiceImpl orderService;
 
         @BeforeEach
-        void setUp() {
+        protected void setUp() {
                 super.setUp();
         }
 

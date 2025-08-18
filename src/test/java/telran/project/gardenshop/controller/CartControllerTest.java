@@ -2,147 +2,213 @@ package telran.project.gardenshop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.MockBeans;
-import org.springframework.context.annotation.Import;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-
-import telran.project.gardenshop.configuration.SecurityConfig;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import telran.project.gardenshop.AbstractTest;
+import telran.project.gardenshop.dto.CartItemResponseDto;
 import telran.project.gardenshop.dto.CartResponseDto;
 import telran.project.gardenshop.entity.Cart;
+import telran.project.gardenshop.entity.CartItem;
+import telran.project.gardenshop.exception.CartNotFoundException;
 import telran.project.gardenshop.mapper.CartMapper;
 import telran.project.gardenshop.service.CartService;
-import telran.project.gardenshop.service.security.JwtFilter;
-import telran.project.gardenshop.service.security.JwtService;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import telran.project.gardenshop.service.UserService;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(CartController.class)
-@Import({
-        SecurityConfig.class,
-})
-@MockBeans({
-        @MockBean(JwtService.class),
-        @MockBean(CartService.class),
-        @MockBean(CartMapper.class),
-        @MockBean(AuthenticationManager.class)
-})
-@ActiveProfiles("test")
-@TestPropertySource(properties = {
-        "spring.security.user.name=test",
-        "spring.security.user.password=test",
-        "spring.security.user.roles=USER"
-})
-@AutoConfigureMockMvc(addFilters = false)
-class CartControllerTest {
+@ExtendWith(MockitoExtension.class)
+class CartControllerTest extends AbstractTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        private MockMvc mockMvc;
 
-    @MockBean
-    private CartService cartService;
+        @Mock
+        private CartService cartService;
 
-    @MockBean
-    private CartMapper cartMapper;
+        @Mock
+        private UserService userService;
 
-    @MockBean
-    private JwtService jwtService;
+        @Mock
+        private CartMapper cartMapper;
 
-    private Cart cart;
-    private CartResponseDto cartDto;
+        @InjectMocks
+        private CartController cartController;
 
-    @BeforeEach
-    void setUp() {
-        cart = Cart.builder()
-                .id(1L)
-                .build();
+        private ObjectMapper objectMapper;
 
-        cartDto = new CartResponseDto();
-        cartDto.setId(1L);
-    }
+        @BeforeEach
+        protected void setUp() {
+                super.setUp();
+                mockMvc = MockMvcBuilders.standaloneSetup(cartController).build();
+                objectMapper = new ObjectMapper();
+        }
 
-    @WithMockUser
-    @Test
-    void getCurrentCart_ReturnsOk() throws Exception {
-        when(cartService.get()).thenReturn(cart);
-        when(cartMapper.toDto(cart)).thenReturn(cartDto);
+        @Test
+        @DisplayName("GET /v1/cart - Get cart for current user")
+        void getForCurrentUser() throws Exception {
+                when(userService.getCurrent()).thenReturn(user1);
+                when(cartService.get()).thenReturn(cart1);
+                when(cartMapper.toDto(cart1)).thenReturn(cartResponseDto1);
 
-        mockMvc.perform(get("/v1/cart"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(cartDto.getId()));
+                mockMvc.perform(get("/v1/cart"))
+                                .andDo(print())
+                                .andExpectAll(
+                                                status().isOk(),
+                                                content().contentType(MediaType.APPLICATION_JSON),
+                                                content().json(objectMapper.writeValueAsString(cartResponseDto1)));
+        }
 
-        verify(cartService).get();
-        verify(cartMapper).toDto(cart);
-    }
+        @Test
+        @DisplayName("POST /v1/cart/items - Add cart item for current user")
+        void addItem() throws Exception {
+                Long productId = product1.getId();
 
-    @WithMockUser
-    @Test
-    void addItem_ReturnsOk() throws Exception {
-        Long productId = 2L;
+                CartItem cartItemUpdated = CartItem.builder()
+                                .id(cartItem1.getId())
+                                .product(cartItem1.getProduct())
+                                .quantity(cartItem1.getQuantity() + 1)
+                                .build();
 
-        when(cartService.addItem(productId)).thenReturn(cart);
-        when(cartMapper.toDto(cart)).thenReturn(cartDto);
+                Cart cartUpdated = Cart.builder()
+                                .id(cart1.getId())
+                                .user(cart1.getUser())
+                                .items(cart1.getItems())
+                                .build();
 
-        mockMvc.perform(post("/v1/cart/items")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("productId", String.valueOf(productId)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(cartDto.getId()));
+                cartUpdated.getItems().remove(cartItem1);
+                cartUpdated.getItems().add(cartItemUpdated);
 
-        verify(cartService).addItem(eq(productId));
-        verify(cartMapper).toDto(cart);
-    }
+                CartItemResponseDto cartItemResponseDtoUpdated = CartItemResponseDto.builder()
+                                .id(cartItemUpdated.getId())
+                                .productId(cartItemUpdated.getProduct().getId())
+                                .quantity(cartItemUpdated.getQuantity())
+                                .build();
 
-    @WithMockUser
-    @Test
-    void updateItem_ReturnsOk() throws Exception {
-        Long cartItemId = 5L;
-        Integer quantity = 3;
+                CartResponseDto cartResponseDtoUpdated = new CartResponseDto();
+                cartResponseDtoUpdated.setId(cartUpdated.getId());
+                cartResponseDtoUpdated.setUserId(cartUpdated.getUser().getId());
+                cartResponseDtoUpdated.setItems(cartUpdated.getItems().stream()
+                                .map(item -> CartItemResponseDto.builder()
+                                                .id(item.getId())
+                                                .productId(item.getProduct().getId())
+                                                .quantity(item.getQuantity())
+                                                .build())
+                                .toList());
 
-        when(cartService.updateItem(cartItemId, quantity)).thenReturn(cart);
-        when(cartMapper.toDto(cart)).thenReturn(cartDto);
+                when(cartService.addItem(productId)).thenReturn(cartUpdated);
+                when(cartMapper.toDto(cartUpdated)).thenReturn(cartResponseDtoUpdated);
 
-        mockMvc.perform(put("/v1/cart/items/{cartItemId}", cartItemId)
-                .param("quantity", String.valueOf(quantity)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(cartDto.getId()));
+                mockMvc.perform(post("/v1/cart/items")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .param("productId", String.valueOf(productId)))
+                                .andDo(print())
+                                .andExpectAll(
+                                                status().isOk(),
+                                                content().contentType(MediaType.APPLICATION_JSON),
+                                                content().json(objectMapper
+                                                                .writeValueAsString(cartResponseDtoUpdated)));
+        }
 
-        verify(cartService).updateItem(eq(cartItemId), eq(quantity));
-        verify(cartMapper).toDto(cart);
-    }
+        @Test
+        @DisplayName("PUT /v1/cart/items/{cartItemId} - Update cart item quantity")
+        void updateItem() throws Exception {
+                Long cartItemId = cartItem1.getId();
+                Integer quantity = 3;
 
-    @WithMockUser
-    @Test
-    void deleteItem_ReturnsNoContent() throws Exception {
-        Long cartItemId = 7L;
+                CartItem cartItemUpdated = CartItem.builder()
+                                .id(cartItem1.getId())
+                                .product(cartItem1.getProduct())
+                                .quantity(quantity)
+                                .build();
 
-        when(cartService.deleteItem(cartItemId)).thenReturn(new Cart());
+                Cart cartUpdated = Cart.builder()
+                                .id(cart1.getId())
+                                .user(cart1.getUser())
+                                .items(cart1.getItems())
+                                .build();
 
-        mockMvc.perform(delete("/v1/cart/items/{cartItemId}", cartItemId))
-                .andExpect(status().isNoContent());
+                cartUpdated.getItems().remove(cartItem1);
+                cartUpdated.getItems().add(cartItemUpdated);
 
-        verify(cartService).deleteItem(eq(cartItemId));
-        verifyNoInteractions(cartMapper);
-    }
+                CartResponseDto cartResponseDtoUpdated = new CartResponseDto();
+                cartResponseDtoUpdated.setId(cartUpdated.getId());
+                cartResponseDtoUpdated.setUserId(cartUpdated.getUser().getId());
+                cartResponseDtoUpdated.setItems(cartUpdated.getItems().stream()
+                                .map(item -> CartItemResponseDto.builder()
+                                                .id(item.getId())
+                                                .productId(item.getProduct().getId())
+                                                .quantity(item.getQuantity())
+                                                .build())
+                                .toList());
 
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.security.user.name", () -> "test");
-        registry.add("spring.security.user.password", () -> "test");
-        registry.add("spring.security.user.roles", () -> "USER");
-    }
+                when(cartService.updateItem(cartItemId, quantity)).thenReturn(cartUpdated);
+                when(cartMapper.toDto(cartUpdated)).thenReturn(cartResponseDtoUpdated);
+
+                mockMvc.perform(put("/v1/cart/items/{cartItemId}", cartItemId)
+                                .param("quantity", quantity.toString()))
+                                .andDo(print())
+                                .andExpectAll(
+                                                status().isOk(),
+                                                content().contentType(MediaType.APPLICATION_JSON),
+                                                content().json(objectMapper
+                                                                .writeValueAsString(cartResponseDtoUpdated)));
+        }
+
+        @Test
+        @DisplayName("DELETE /v1/cart/items/{cartItemId} - Delete cart item successfully")
+        void deleteItemPositiveCase() throws Exception {
+                Long cartItemId = cartItem1.getId();
+
+                Cart cartUpdated = Cart.builder()
+                                .id(cart1.getId())
+                                .user(cart1.getUser())
+                                .items(cart1.getItems())
+                                .build();
+                cartUpdated.getItems().remove(cartItem1);
+
+                CartResponseDto cartResponseDtoUpdated = new CartResponseDto();
+                cartResponseDtoUpdated.setId(cartUpdated.getId());
+                cartResponseDtoUpdated.setUserId(cartUpdated.getUser().getId());
+                cartResponseDtoUpdated.setItems(cartUpdated.getItems().stream()
+                                .map(item -> CartItemResponseDto.builder()
+                                                .id(item.getId())
+                                                .productId(item.getProduct().getId())
+                                                .quantity(item.getQuantity())
+                                                .build())
+                                .toList());
+
+                when(cartService.deleteItem(cartItemId)).thenReturn(cartUpdated);
+                when(cartMapper.toDto(cartUpdated)).thenReturn(cartResponseDtoUpdated);
+
+                mockMvc.perform(delete("/v1/cart/items/{cartItemId}", cartItemId))
+                                .andDo(print())
+                                .andExpectAll(
+                                                status().isOk(),
+                                                content().contentType(MediaType.APPLICATION_JSON),
+                                                content().json(objectMapper
+                                                                .writeValueAsString(cartResponseDtoUpdated)));
+        }
+
+        @Test
+        @DisplayName("DELETE /v1/cart/items/{cartItemId} - Delete cart item not found")
+        void deleteItemNegativeCase() throws Exception {
+                Long cartItemId = 99L;
+
+                when(cartService.deleteItem(cartItemId)).thenThrow(new CartNotFoundException("Cart not found"));
+
+                mockMvc.perform(delete("/v1/cart/items/{cartItemId}", cartItemId))
+                                .andDo(print())
+                                .andExpect(status().isNotFound());
+        }
 }

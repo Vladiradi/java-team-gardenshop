@@ -1,5 +1,10 @@
 package telran.project.gardenshop;
 
+import telran.project.gardenshop.dto.OrderCreateRequestDto;
+import telran.project.gardenshop.dto.OrderItemRequestDto;
+import telran.project.gardenshop.dto.OrderItemResponseDto;
+import telran.project.gardenshop.dto.OrderResponseDto;
+import telran.project.gardenshop.dto.OrderShortResponseDto;
 import telran.project.gardenshop.dto.*;
 import telran.project.gardenshop.entity.*;
 import telran.project.gardenshop.enums.*;
@@ -94,6 +99,10 @@ public abstract class AbstractTest {
     protected OrderResponseDto orderResponseDto3;
     protected OrderResponseDto orderResponseDto4;
     protected OrderCreateRequestDto orderCreateRequestDto;
+    protected OrderShortResponseDto orderShortResponseDto1;
+    protected OrderShortResponseDto orderShortResponseDto2;
+    protected OrderShortResponseDto orderShortResponseDto3;
+    protected OrderShortResponseDto orderShortResponseDto4;
     protected OrderItemResponseDto orderItemResponseDto1;
     protected OrderItemResponseDto orderItemResponseDto2;
     protected OrderItemResponseDto orderItemResponseDto3;
@@ -546,6 +555,38 @@ public abstract class AbstractTest {
     }
 
     private void initOrderDtos() {
+        orderShortResponseDto1 = OrderShortResponseDto.builder()
+                .id(order1.getId())
+                .status(order1.getStatus().name())
+                .deliveryAddress(order1.getDeliveryAddress())
+                .contactName(order1.getContactName())
+                .deliveryMethod(order1.getDeliveryMethod())
+                .build();
+
+        orderShortResponseDto2 = OrderShortResponseDto.builder()
+                .id(order2.getId())
+                .status(order2.getStatus().name())
+                .deliveryAddress(order2.getDeliveryAddress())
+                .contactName(order2.getContactName())
+                .deliveryMethod(order2.getDeliveryMethod())
+                .build();
+
+        orderShortResponseDto3 = OrderShortResponseDto.builder()
+                .id(order3.getId())
+                .status(order3.getStatus().name())
+                .deliveryAddress(order3.getDeliveryAddress())
+                .contactName(order3.getContactName())
+                .deliveryMethod(order3.getDeliveryMethod())
+                .build();
+
+        orderShortResponseDto4 = OrderShortResponseDto.builder()
+                .id(order4.getId())
+                .status(order4.getStatus().name())
+                .deliveryAddress(order4.getDeliveryAddress())
+                .contactName(order4.getContactName())
+                .deliveryMethod(order4.getDeliveryMethod())
+                .build();
+
         orderResponseDto1 = OrderResponseDto.builder()
                 .id(order1.getId())
                 .status(order1.getStatus())

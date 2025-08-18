@@ -65,19 +65,20 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product addDiscount(Long productId, ProductDiscountDto discountDto) {
-        Product product = getById(productId);
-
-        if (discountDto.getDiscountPrice() != null) {
-            BigDecimal discountPrice = BigDecimal.valueOf(discountDto.getDiscountPrice());
-            validateDiscountPrice(product, discountPrice);
-            product.setDiscountPrice(discountPrice);
-        } else if (discountDto.getDiscountPercentage() != null) {
-            BigDecimal discountPercentage = BigDecimal.valueOf(discountDto.getDiscountPercentage());
-            BigDecimal discountPrice = calculateDiscountPrice(product.getPrice(), discountPercentage);
-            product.setDiscountPrice(discountPrice);
-        } else {
+        if (discountDto.getDiscountPrice() ==  null && discountDto.getDiscountPercentage() == null) {
             throw new InvalidDiscountDataException("Either discountPrice or discountPercentage must be provided");
         }
+
+        Product product = getById(productId);
+        BigDecimal discountPrice;
+        if (discountDto.getDiscountPrice() != null) {
+            discountPrice = BigDecimal.valueOf(discountDto.getDiscountPrice());
+            validateDiscountPrice(product, discountPrice);
+        } else {
+            BigDecimal discountPercentage = BigDecimal.valueOf(discountDto.getDiscountPercentage());
+            discountPrice = calculateDiscountPrice(product.getPrice(), discountPercentage);
+        }
+        product.setDiscountPrice(discountPrice);
 
         return productRepository.save(product);
     }

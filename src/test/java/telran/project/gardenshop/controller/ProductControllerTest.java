@@ -12,6 +12,7 @@ import telran.project.gardenshop.dto.ProductResponseDto;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.mapper.ProductMapper;
 import telran.project.gardenshop.repository.ProductRepository;
+import telran.project.gardenshop.service.CategoryService;
 import telran.project.gardenshop.service.ProductService;
 import telran.project.gardenshop.service.security.JwtService;
 import java.math.BigDecimal;
@@ -33,6 +34,10 @@ class ProductControllerTest {
         private ProductRepository productRepository;
 
         @MockBean
+        private CategoryService categoryService;
+
+
+    @MockBean
         private ProductService productService;
 
         @MockBean

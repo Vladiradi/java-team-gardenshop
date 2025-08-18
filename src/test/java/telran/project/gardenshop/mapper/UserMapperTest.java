@@ -2,8 +2,11 @@ package telran.project.gardenshop.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import telran.project.gardenshop.dto.FavoriteResponseDto;
 import telran.project.gardenshop.dto.UserEditDto;
 import telran.project.gardenshop.dto.UserRequestDto;
 import telran.project.gardenshop.dto.UserResponseDto;
@@ -15,11 +18,16 @@ import telran.project.gardenshop.enums.Role;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserMapperTest {
 
+    @InjectMocks
     private final UserMapper userMapper = new UserMapperImpl();
+
+    @Mock
     private final FavoriteMapper favoriteMapper = new FavoriteMapperImpl();
 
     @Test
@@ -62,6 +70,10 @@ class UserMapperTest {
 
     @Test
     void testToDtoWithFavorites() {
+
+        when(favoriteMapper.toDto(any(Favorite.class)))
+                .thenReturn(FavoriteResponseDto.builder().productId(1L).build());
+
         Product product = Product.builder()
                 .id(1L)
                 .name("Test Product")

@@ -7,15 +7,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.MockBeans;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+
+import telran.project.gardenshop.configuration.SecurityConfig;
 import telran.project.gardenshop.dto.CartResponseDto;
 import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.mapper.CartMapper;
 import telran.project.gardenshop.service.CartService;
+import telran.project.gardenshop.service.security.JwtFilter;
 import telran.project.gardenshop.service.security.JwtService;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -23,6 +32,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CartController.class)
+@Import({
+        SecurityConfig.class,
+})
+@MockBeans({
+        @MockBean(JwtService.class),
+        @MockBean(CartService.class),
+        @MockBean(CartMapper.class),
+        @MockBean(AuthenticationManager.class)
+})
+@ActiveProfiles("test")
+@TestPropertySource(properties = {
+        "spring.security.user.name=test",
+        "spring.security.user.password=test",
+        "spring.security.user.roles=USER"
+})
 @AutoConfigureMockMvc(addFilters = false)
 class CartControllerTest {
 
@@ -35,8 +59,8 @@ class CartControllerTest {
     @MockBean
     private CartMapper cartMapper;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+//    @Autowired
+//    private ObjectMapper objectMapper;
 
     @MockBean
     private JwtService jwtService;
@@ -54,6 +78,8 @@ class CartControllerTest {
         cartDto.setId(1L);
     }
 
+
+    @WithMockUser
     @Test
     void getCurrentCart_ReturnsOk() throws Exception {
         when(cartService.get()).thenReturn(cart);
@@ -67,6 +93,7 @@ class CartControllerTest {
         verify(cartMapper).toDto(cart);
     }
 
+    @WithMockUser
     @Test
     void addItem_ReturnsOk() throws Exception {
         Long productId = 2L;
@@ -84,6 +111,7 @@ class CartControllerTest {
         verify(cartMapper).toDto(cart);
     }
 
+    @WithMockUser
     @Test
     void updateItem_ReturnsOk() throws Exception {
         Long cartItemId = 5L;
@@ -101,6 +129,7 @@ class CartControllerTest {
         verify(cartMapper).toDto(cart);
     }
 
+    @WithMockUser
     @Test
     void deleteItem_ReturnsNoContent() throws Exception {
         Long cartItemId = 7L;
@@ -112,5 +141,12 @@ class CartControllerTest {
 
         verify(cartService).deleteItem(eq(cartItemId));
         verifyNoInteractions(cartMapper);
+    }
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.security.user.name", () -> "test");
+        registry.add("spring.security.user.password", () -> "test");
+        registry.add("spring.security.user.roles", () -> "USER");
     }
 }

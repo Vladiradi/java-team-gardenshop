@@ -1,8 +1,13 @@
 package telran.project.gardenshop.mapper;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import telran.project.gardenshop.dto.*;
 import telran.project.gardenshop.entity.*;
@@ -13,24 +18,37 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrderMapperTest {
 
-    private final OrderMapper orderMapper = new OrderMapperImpl();
-    private final OrderItemMapper orderItemMapper = new OrderItemMapperImpl();
+    @Mock
+    private OrderItemMapper orderItemMapper;
+
+    @InjectMocks
+    private OrderMapperImpl orderMapper;
 
     @Test
     void testToDto() {
+
         Order order = buildSampleOrder();
+        OrderItemResponseDto mockItemDto = new OrderItemResponseDto(
+                10L, 1L, "Rose", "rose.jpg", 2, Double.valueOf(9.99));
+
+
+        when(orderItemMapper.toDto(any(OrderItem.class))).thenReturn(mockItemDto);
+
 
         OrderResponseDto dto = orderMapper.toDto(order);
 
-        assertThat(dto).isNotNull();
-        assertThat(dto.getAddress()).isEqualTo(order.getDeliveryAddress());
-        assertThat(dto.getItems()).hasSize(1);
-    }
 
+        assertThat(dto).isNotNull();
+        assertThat(dto.getAddress()).isEqualTo("123 Garden St");
+        assertThat(dto.getItems()).hasSize(1);
+        assertThat(dto.getItems().get(0).getProductName()).isEqualTo("Rose");
+    }
     @Test
     void testToShortDto() {
         Order order = buildSampleOrder();

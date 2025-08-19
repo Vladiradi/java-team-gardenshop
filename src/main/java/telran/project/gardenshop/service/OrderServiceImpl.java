@@ -3,6 +3,7 @@ package telran.project.gardenshop.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -65,6 +66,7 @@ public class OrderServiceImpl implements OrderService {
         Map<Long, CartItem> productIdPerCartItemMap = cart.getItems().stream()
                 .collect(Collectors.toMap(cartItem -> cartItem.getProduct().getId(), cartItem -> cartItem));
 
+        AtomicInteger successfullyAddedItems = new AtomicInteger(0);
         dto.getItems().forEach(itemDto -> {
             if (productIdPerCartItemMap.containsKey(itemDto.getProductId())) {
                 CartItem cartItem = productIdPerCartItemMap.get(itemDto.getProductId());
@@ -76,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
                 if (quantityToTake > 0) {
                     OrderItem orderItem = createOrderItem(quantityToTake, cartItem, order);
                     order.getItems().add(orderItem);
+                    successfullyAddedItems.incrementAndGet();
 
                     if (requestedQuantity > availableQuantity) {
                         log.debug("Product {}: Requested {} > available {}. Taking all available {} items.",
@@ -102,8 +105,16 @@ public class OrderServiceImpl implements OrderService {
 
         cartService.update(cart);
 
-        log.debug("Order created for user {}: requested {} items, actual {} items in order",
-                user.getEmail(), dto.getItems().size(), order.getItems().size());
+        if (successfullyAddedItems.get() == 0) {
+            log.warn(
+                    "Order creation failed for user {}: no valid items found in cart after filtering. Requested {} items, but none were available.",
+                    user.getEmail(), dto.getItems().size());
+            throw new EmptyCartException(
+                    "Cannot create an order with no valid items. All requested products are not available in cart or have insufficient quantity.");
+        }
+
+        log.debug("Order created for user {}: requested {} items, successfully added {} items to order",
+                user.getEmail(), dto.getItems().size(), successfullyAddedItems.get());
 
         return orderRepository.save(order);
     }

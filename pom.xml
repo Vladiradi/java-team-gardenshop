@@ -241,6 +241,35 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>telran/project/gardenshop/utilities/**</exclude>
+                        <exclude>telran/project/gardenshop/dto/**</exclude>
+                        <exclude>telran/project/gardenshop/enums/**</exclude>
+                        <exclude>telran/project/gardenshop/swagger/**</exclude>
+                        <exclude>telran/project/gardenshop/configuration/**</exclude>
+                        <exclude>telran/project/gardenshop/entity/**</exclude>
+                        <exclude>telran/project/gardenshop/mapper/**</exclude>
+                        <exclude>telran/project/gardenshop/GardenShopApplication.java</exclude>
+                        <exclude>telran/project/gardenshop/exception/**</exclude>
+                        <exclude>telran/project/gardenshop/repository/**</exclude>
+                        <exclude>telran/project/gardenshop/service/scheduler/**</exclude>
+                        <exclude>telran/project/gardenshop/service/security/**</exclude>
+                        <exclude>**/*Dto.java</exclude>
+                        <exclude>**/*Entity.java</exclude>
+                        <exclude>**/*Repository.java</exclude>
+                        <exclude>**/*Mapper.java</exclude>
+                        <exclude>**/*Config.java</exclude>
+                        <exclude>**/*Exception.java</exclude>
+                        <exclude>**/*Enum.java</exclude>
+                        <exclude>**/*Specification.java</exclude>
+                        <exclude>**/*Request.java</exclude>
+                        <exclude>**/*Response.java</exclude>
+                        <exclude>**/*Filter.java</exclude>
+                        <exclude>**/*Service.java</exclude>
+                        <exclude>**/*Controller.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

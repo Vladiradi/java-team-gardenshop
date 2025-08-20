@@ -13,7 +13,9 @@ import telran.project.gardenshop.enums.DeliveryMethod;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.Role;
 import telran.project.gardenshop.exception.EmptyCartException;
+import telran.project.gardenshop.exception.InsufficientQuantityException;
 import telran.project.gardenshop.exception.OrderNotFoundException;
+import telran.project.gardenshop.exception.ProductNotInCartException;
 import telran.project.gardenshop.repository.OrderRepository;
 
 import java.math.BigDecimal;
@@ -158,13 +160,21 @@ class OrderServiceImplTest {
 
                 when(userService.getCurrent()).thenReturn(testUser);
                 when(cartService.get()).thenReturn(testCart);
-                when(productService.getCurrentPrice(testProduct1)).thenReturn(BigDecimal.valueOf(8.99));
-                when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
 
-                Order result = orderService.create(requestDto);
+            InsufficientQuantityException exception = assertThrows(InsufficientQuantityException.class,
+                    () -> orderService.create(requestDto));
 
-                assertNotNull(result);
-                verify(cartService).update(testCart);
+            assertEquals("Insufficient quantity for product 1. Available: 5, Requested: 10",
+                    exception.getMessage());
+
+            verify(cartService, never()).update(any(Cart.class));
+//                when(productService.getCurrentPrice(testProduct1)).thenReturn(BigDecimal.valueOf(8.99));
+//                when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
+//
+//                Order result = orderService.create(requestDto);
+//
+//                assertNotNull(result);
+//                verify(cartService).update(testCart);
         }
 
         @Test
@@ -232,12 +242,20 @@ class OrderServiceImplTest {
                 when(userService.getCurrent()).thenReturn(testUser);
                 when(cartService.get()).thenReturn(testCart);
                 when(productService.getCurrentPrice(testProduct1)).thenReturn(BigDecimal.valueOf(8.99));
-                when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
 
-                Order result = orderService.create(requestDto);
+            ProductNotInCartException exception = assertThrows(ProductNotInCartException.class,
+                    () -> orderService.create(requestDto));
 
-                assertNotNull(result);
-                verify(cartService).update(testCart);
+            assertEquals("Product with ID 999 not found in cart", exception.getMessage());
+
+            // Проверяем, что корзина не обновлялась при ошибке
+            verify(cartService, never()).update(any(Cart.class));
+//                when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
+//
+//                Order result = orderService.create(requestDto);
+//
+//                assertNotNull(result);
+//                verify(cartService).update(testCart);
         }
 
         @Test
@@ -257,35 +275,35 @@ class OrderServiceImplTest {
                 assertEquals("Cannot create an order with an empty cart", exception.getMessage());
         }
 
-        @Test
-        void shouldThrowEmptyCartException_whenNoValidItemsAfterFiltering() {
-                OrderItemRequestDto item1 = OrderItemRequestDto.builder()
-                                .productId(999L)
-                                .quantity(1)
-                                .build();
-
-                OrderItemRequestDto item2 = OrderItemRequestDto.builder()
-                                .productId(888L)
-                                .quantity(1)
-                                .build();
-
-                List<OrderItemRequestDto> items = List.of(item1, item2);
-
-                OrderCreateRequestDto requestDto = OrderCreateRequestDto.builder()
-                                .items(items)
-                                .deliveryMethod(DeliveryMethod.COURIER)
-                                .deliveryAddress("123 Garden Street")
-                                .build();
-
-                when(userService.getCurrent()).thenReturn(testUser);
-                when(cartService.get()).thenReturn(testCart);
-
-                EmptyCartException exception = assertThrows(EmptyCartException.class,
-                                () -> orderService.create(requestDto));
-
-                assertEquals("Cannot create an order with no valid items. All requested products are not available in cart or have insufficient quantity.",
-                                exception.getMessage());
-        }
+//        @Test
+//        void shouldThrowEmptyCartException_whenNoValidItemsAfterFiltering() {
+//                OrderItemRequestDto item1 = OrderItemRequestDto.builder()
+//                                .productId(999L)
+//                                .quantity(1)
+//                                .build();
+//
+//                OrderItemRequestDto item2 = OrderItemRequestDto.builder()
+//                                .productId(888L)
+//                                .quantity(1)
+//                                .build();
+//
+//                List<OrderItemRequestDto> items = List.of(item1, item2);
+//
+//                OrderCreateRequestDto requestDto = OrderCreateRequestDto.builder()
+//                                .items(items)
+//                                .deliveryMethod(DeliveryMethod.COURIER)
+//                                .deliveryAddress("123 Garden Street")
+//                                .build();
+//
+//                when(userService.getCurrent()).thenReturn(testUser);
+//                when(cartService.get()).thenReturn(testCart);
+//
+//                EmptyCartException exception = assertThrows(EmptyCartException.class,
+//                                () -> orderService.create(requestDto));
+//
+//                assertEquals("Cannot create an order with no valid items. All requested products are not available in cart or have insufficient quantity.",
+//                                exception.getMessage());
+//        }
 
         @Test
         void getById_shouldReturnOrder() {

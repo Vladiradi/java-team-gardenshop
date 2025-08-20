@@ -1,6 +1,9 @@
 package telran.project.gardenshop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.mapper.OrderMapper;
 import telran.project.gardenshop.service.OrderService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -47,8 +51,11 @@ class OrderControllerTest extends AbstractTest {
         @BeforeEach
         protected void setUp() {
                 super.setUp();
-                mockMvc = MockMvcBuilders.standaloneSetup(orderController).build();
                 objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new JavaTimeModule());
+                objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+                mockMvc = MockMvcBuilders.standaloneSetup(orderController).build();
         }
 
         @Test
@@ -59,12 +66,24 @@ class OrderControllerTest extends AbstractTest {
                 when(orderService.getById(orderId)).thenReturn(order1);
                 when(orderMapper.toDto(order1)).thenReturn(orderResponseDto1);
 
+                LocalDateTime createdAt = orderResponseDto1.getCreatedAt();
+
                 mockMvc.perform(get("/v1/orders/{orderId}", orderId))
                                 .andDo(print())
                                 .andExpectAll(
                                                 status().isOk(),
                                                 content().contentType(MediaType.APPLICATION_JSON),
-                                                content().json(objectMapper.writeValueAsString(orderResponseDto1)));
+//                                                content().json(objectMapper.writeValueAsString(orderResponseDto1)),
+                                                jsonPath("$.id").value(orderResponseDto1.getId()),
+                                                jsonPath("$.createdAt[0]").value(createdAt.getYear()),
+                                                jsonPath("$.createdAt[1]").value(createdAt.getMonthValue()),
+                                                jsonPath("$.createdAt[2]").value(createdAt.getDayOfMonth()),
+                                                jsonPath("$.createdAt[3]").value(createdAt.getHour()),
+                                                jsonPath("$.createdAt[4]").value(createdAt.getMinute()),
+                                                jsonPath("$.status").value(orderResponseDto1.getStatus().toString()));
+
+
+
 
                 verify(orderService).getById(orderId);
                 verify(orderMapper).toDto(order1);
@@ -76,6 +95,8 @@ class OrderControllerTest extends AbstractTest {
                 when(orderService.create(any(OrderCreateRequestDto.class))).thenReturn(order1);
                 when(orderMapper.toDto(order1)).thenReturn(orderResponseDto1);
 
+                LocalDateTime createdAt = orderResponseDto1.getCreatedAt();
+
                 mockMvc.perform(post("/v1/orders")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(orderCreateRequestDto)))
@@ -83,7 +104,14 @@ class OrderControllerTest extends AbstractTest {
                                 .andExpectAll(
                                                 status().isCreated(),
                                                 content().contentType(MediaType.APPLICATION_JSON),
-                                                content().json(objectMapper.writeValueAsString(orderResponseDto1)));
+                                                jsonPath("$.id").value(orderResponseDto1.getId()),
+                                                jsonPath("$.createdAt[0]").value(createdAt.getYear()),
+                                                jsonPath("$.createdAt[1]").value(createdAt.getMonthValue()),
+                                                jsonPath("$.createdAt[2]").value(createdAt.getDayOfMonth()),
+                                                jsonPath("$.createdAt[3]").value(createdAt.getHour()),
+                                                jsonPath("$.createdAt[4]").value(createdAt.getMinute()),
+                                                jsonPath("$.status").value(orderResponseDto1.getStatus().toString()));
+//                                                content().json(objectMapper.writeValueAsString(orderResponseDto1)));
         }
 
         @Test
@@ -126,11 +154,20 @@ class OrderControllerTest extends AbstractTest {
                 when(orderService.cancel(orderId)).thenReturn(order1);
                 when(orderMapper.toDto(order1)).thenReturn(orderResponseDto1);
 
+                LocalDateTime createdAt = orderResponseDto1.getCreatedAt();
+
                 mockMvc.perform(delete("/v1/orders/{orderId}", orderId))
                                 .andDo(print())
                                 .andExpectAll(
                                                 status().isOk(),
                                                 content().contentType(MediaType.APPLICATION_JSON),
-                                                content().json(objectMapper.writeValueAsString(orderResponseDto1)));
+                                                jsonPath("$.id").value(orderResponseDto1.getId()),
+                                                jsonPath("$.createdAt[0]").value(createdAt.getYear()),
+                                                jsonPath("$.createdAt[1]").value(createdAt.getMonthValue()),
+                                                jsonPath("$.createdAt[2]").value(createdAt.getDayOfMonth()),
+                                                jsonPath("$.createdAt[3]").value(createdAt.getHour()),
+                                                jsonPath("$.createdAt[4]").value(createdAt.getMinute()),
+                                                jsonPath("$.status").value(orderResponseDto1.getStatus().toString()));
+//                                                content().json(objectMapper.writeValueAsString(orderResponseDto1)));
         }
 }

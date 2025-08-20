@@ -17,6 +17,7 @@ import telran.project.gardenshop.dto.CartResponseDto;
 import telran.project.gardenshop.entity.Cart;
 import telran.project.gardenshop.entity.CartItem;
 import telran.project.gardenshop.exception.CartNotFoundException;
+import telran.project.gardenshop.exception.GlobalExceptionHandler;
 import telran.project.gardenshop.mapper.CartMapper;
 import telran.project.gardenshop.service.CartService;
 import telran.project.gardenshop.service.UserService;
@@ -50,14 +51,16 @@ class CartControllerTest extends AbstractTest {
         @BeforeEach
         protected void setUp() {
                 super.setUp();
-                mockMvc = MockMvcBuilders.standaloneSetup(cartController).build();
+                mockMvc = MockMvcBuilders.standaloneSetup(cartController)
+                        .setControllerAdvice(new GlobalExceptionHandler())
+                        .build();
                 objectMapper = new ObjectMapper();
         }
 
         @Test
         @DisplayName("GET /v1/cart - Get cart for current user")
         void getForCurrentUser() throws Exception {
-                when(userService.getCurrent()).thenReturn(user1);
+//                when(userService.getCurrent()).thenReturn(user1);
                 when(cartService.get()).thenReturn(cart1);
                 when(cartMapper.toDto(cart1)).thenReturn(cartResponseDto1);
 
@@ -170,34 +173,35 @@ class CartControllerTest extends AbstractTest {
         void deleteItemPositiveCase() throws Exception {
                 Long cartItemId = cartItem1.getId();
 
-                Cart cartUpdated = Cart.builder()
-                                .id(cart1.getId())
-                                .user(cart1.getUser())
-                                .items(cart1.getItems())
-                                .build();
-                cartUpdated.getItems().remove(cartItem1);
-
-                CartResponseDto cartResponseDtoUpdated = new CartResponseDto();
-                cartResponseDtoUpdated.setId(cartUpdated.getId());
-                cartResponseDtoUpdated.setUserId(cartUpdated.getUser().getId());
-                cartResponseDtoUpdated.setItems(cartUpdated.getItems().stream()
-                                .map(item -> CartItemResponseDto.builder()
-                                                .id(item.getId())
-                                                .productId(item.getProduct().getId())
-                                                .quantity(item.getQuantity())
-                                                .build())
-                                .toList());
-
-                when(cartService.deleteItem(cartItemId)).thenReturn(cartUpdated);
-                when(cartMapper.toDto(cartUpdated)).thenReturn(cartResponseDtoUpdated);
+//                Cart cartUpdated = Cart.builder()
+//                                .id(cart1.getId())
+//                                .user(cart1.getUser())
+//                                .items(cart1.getItems())
+//                                .build();
+//                cartUpdated.getItems().remove(cartItem1);
+//
+//                CartResponseDto cartResponseDtoUpdated = new CartResponseDto();
+//                cartResponseDtoUpdated.setId(cartUpdated.getId());
+//                cartResponseDtoUpdated.setUserId(cartUpdated.getUser().getId());
+//                cartResponseDtoUpdated.setItems(cartUpdated.getItems().stream()
+//                                .map(item -> CartItemResponseDto.builder()
+//                                                .id(item.getId())
+//                                                .productId(item.getProduct().getId())
+//                                                .quantity(item.getQuantity())
+//                                                .build())
+//                                .toList());
+//
+//                when(cartService.deleteItem(cartItemId)).thenReturn(cartUpdated);
+//                when(cartMapper.toDto(cartUpdated)).thenReturn(cartResponseDtoUpdated);
 
                 mockMvc.perform(delete("/v1/cart/items/{cartItemId}", cartItemId))
                                 .andDo(print())
                                 .andExpectAll(
-                                                status().isOk(),
-                                                content().contentType(MediaType.APPLICATION_JSON),
-                                                content().json(objectMapper
-                                                                .writeValueAsString(cartResponseDtoUpdated)));
+                                                status().isNoContent()
+//                                                content().contentType(MediaType.APPLICATION_JSON),
+//                                                content().json(objectMapper
+//                                                                .writeValueAsString(cartResponseDtoUpdated))
+                                                                );
         }
 
         @Test

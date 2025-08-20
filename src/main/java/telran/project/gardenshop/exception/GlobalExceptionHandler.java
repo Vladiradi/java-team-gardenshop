@@ -1,6 +1,7 @@
 package telran.project.gardenshop.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -73,6 +74,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 ErrorResponse.error(exception, messages, HttpStatus.BAD_REQUEST.value()),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException exception) {
+        log.error("Access denied: {}", exception.getMessage(), exception);
+        return new ResponseEntity<>(
+                ErrorResponse.error(exception, HttpStatus.FORBIDDEN.value()),
+                HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)

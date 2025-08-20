@@ -3,7 +3,6 @@ package telran.project.gardenshop.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -11,8 +10,6 @@ import telran.project.gardenshop.entity.Order;
 import telran.project.gardenshop.entity.User;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.enums.PaymentStatus;
-import telran.project.gardenshop.repository.OrderRepository;
-import telran.project.gardenshop.service.PaymentService;
 import telran.project.gardenshop.service.scheduler.SchedulerService;
 
 import java.time.LocalDateTime;
@@ -66,7 +63,7 @@ class SchedulerServiceTest {
 
         schedulerService.cancelOrders();
 
-        verify(orderService).updateOrder(any(Order.class));
+        verify(orderService).update(any(Order.class));
         verify(paymentService).updatePaymentStatusByOrderId(1L, PaymentStatus.UNPAID);
         verify(paymentService, never()).updatePaymentStatusByOrderId(2L, PaymentStatus.UNPAID);
     }
@@ -86,7 +83,7 @@ class SchedulerServiceTest {
 
         schedulerService.completePaidOrders();
 
-        verify(orderService, never()).updateOrder(any());
+        verify(orderService, never()).update(any());
         verify(paymentService, never()).updatePaymentStatusByOrderId(anyLong(), any());
     }
 
@@ -105,7 +102,7 @@ class SchedulerServiceTest {
 
         schedulerService.completePaidOrders();
 
-        verify(orderService).updateOrder(any(Order.class));
+        verify(orderService).update(any(Order.class));
         verify(paymentService).updatePaymentStatusByOrderId(4L, PaymentStatus.PAID);
     }
 }

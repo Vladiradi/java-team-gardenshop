@@ -23,7 +23,7 @@ public interface OrderService {
 
     void delete(Long id);
 
-    Order updateOrder(Order order);
+    Order update(Order order);
 
     List<Order> getAllByStatus(OrderStatus status);
 

@@ -58,7 +58,7 @@ public class SchedulerService {
                 .forEach(order -> {
                     order.setUpdatedAt(now);
                     order.setStatus(newStatus);
-                    orderService.updateOrder(order);
+                    orderService.update(order);
                     paymentService.updatePaymentStatusByOrderId(order.getId(), requiredPaymentStatus);
                     log.debug("Order {} status changed from {} to {}", order.getId(), currentStatus, newStatus);
                 });

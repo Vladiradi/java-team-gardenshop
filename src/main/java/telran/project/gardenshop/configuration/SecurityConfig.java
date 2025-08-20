@@ -42,7 +42,6 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
                         .requestMatchers("/v1/login").permitAll()
-                        .requestMatchers("/v1/orders/**").hasRole("USER")
                         .requestMatchers("/v1/categories").authenticated()
                         .anyRequest().permitAll()
                 )

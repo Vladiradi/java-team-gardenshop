@@ -355,10 +355,10 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void updateOrder_shouldUpdateOrder() {
+    void updateOrder_shouldUpdate() {
         when(orderRepository.save(any(Order.class))).thenReturn(testOrder);
 
-        Order result = orderService.updateOrder(testOrder);
+        Order result = orderService.update(testOrder);
 
         assertEquals(testOrder, result);
         verify(orderRepository).save(testOrder);

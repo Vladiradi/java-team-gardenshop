@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import telran.project.gardenshop.dto.OrderCreateRequestDto;
-import telran.project.gardenshop.dto.OrderItemRequestDto;
 import telran.project.gardenshop.entity.*;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.exception.EmptyCartException;
@@ -76,21 +75,18 @@ public class OrderServiceImpl implements OrderService {
                 int quantityToTake = Math.min(requestedQuantity, availableQuantity);
 
                 if (quantityToTake > 0) {
-                    OrderItem orderItem = createOrderItem(quantityToTake, cartItem, order);
+                    OrderItem orderItem = buildOrderItem(quantityToTake, cartItem, order);
                     order.getItems().add(orderItem);
                     successfullyAddedItems.incrementAndGet();
 
-                    if (requestedQuantity > availableQuantity) {
-                        log.debug("Product {}: Requested {} > available {}. Taking all available {} items.",
-                                cartItem.getProduct().getName(), requestedQuantity, availableQuantity, quantityToTake);
-                    } else if (requestedQuantity < availableQuantity) {
-                        log.debug("Product {}: Requested {} < available {}. Taking {} items, {} remain in cart.",
-                                cartItem.getProduct().getName(), requestedQuantity, availableQuantity, quantityToTake,
-                                availableQuantity - quantityToTake);
-                    } else {
-                        log.debug("Product {}: Requested {} = available {}. Taking all {} items.",
-                                cartItem.getProduct().getName(), requestedQuantity, availableQuantity, quantityToTake);
-                    }
+                    log.debug("Product {}: Requested {}, available {}. Taking {} item(s){}",
+                            cartItem.getProduct().getName(),
+                            requestedQuantity,
+                            availableQuantity,
+                            quantityToTake,
+                            requestedQuantity < availableQuantity
+                                    ? String.format(", %d item(s) remain in cart", availableQuantity - quantityToTake)
+                                    : "");
 
                     editCartItemList(cartItem, cart.getItems(), quantityToTake);
                 } else {
@@ -151,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    private OrderItem createOrderItem(int quantity, CartItem cartItem, Order order) {
+    private OrderItem buildOrderItem(int quantity, CartItem cartItem, Order order) {
         return OrderItem.builder()
                 .order(order)
                 .product(cartItem.getProduct())
@@ -185,7 +181,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order updateOrder(Order order) {
+    public Order update(Order order) {
         return orderRepository.save(order);
     }
 

@@ -1,22 +1,23 @@
 # GardenShop
-
-A graduation project by **Java Team**
-
----
+project by **Java Four**
+<p align="left">
+  <img src="image.png" alt="Java Four Team" width="300 "/>
+</p>
 
 ## About the Project
 
-**GardenShop** is a backend application for an online store specializing in home and garden products.
+**GardenShop** is a backend application developed as a graduation project by the **Java Four**. for an online store specializing
+in home and garden products.
 It allows customers to browse the catalog, add products to their cart, place orders, and track order statuses.
 Administrators can manage the catalog, categories, discounts, and access sales reports for analytics.
-
 ---
 
-## Useful Links
-- [Mockup (Figma)](https://www.figma.com/design/SDNWLzCWkh9ZXdCpWEaByv/project-frontend?node-id=0-1&p=f)
-- Demo (coming soon)
+## Links
 
----
+- [Technical Task](https://docs.google.com/document/d/1Xn41eFhdYAJVYzRucsNwpbLJ5lNxdvpfx__SZf5DwXA/edit?tab=t.0#heading=h.e2bcw3kuo1da)
+- [Layout (Figma)](https://www.figma.com/design/SDNWLzCWkh9ZXdCpWEaByv/project-frontend?node-id=5251-7386&p=f&t=GAPyXsk75XCC4sjs-0)
+- [REST API Documentation](https://confirmed-baron-2e5.notion.site/REST-API-f186cf63a46c4020b2237f73093922ab)
+- [Deployed Version (Swagger UI)](http://150.241.114.225:8082/swagger-ui/index.html#/)
 
 ## Core Features
 - **User Management** – registration, authentication, profile editing, account deletion
@@ -101,15 +102,56 @@ Administrators can manage the catalog, categories, discounts, and access sales r
 
 ## Team
 
+### Vladimir Ryzhov
+**Team lead**
+
+**Contributions:**
+- Implemented **Order creation and management**
+- Refactored **Order logic and controller**
+- Implemented **Scheduler** for automatic order status updates
+- Integrated **JWT authentication**
+- Developed **RBAC (ADMIN/USER) system**
+- Built **CRUD layers**: Repository, Service, Controller, DTO
+- Configured **Liquibase migrations and foreign keys**
+- Set up **Spring Boot project** and dependencies
+- Implemented **DTO validation and converters**
+- Added **Product of the Day** feature
+
+---
+
 ### Arcady Zon
 **Developer**
 
 **Contributions:**
-- Implemented **Product filtering and sorting** (Sprint 2).
-- Developed **CartItem management**: add/remove products in cart (Sprint 3).
-- Built **Payment Service**: create & update payments (Sprint 3).
-- Refactored `PaymentService` and unified code style across all layers.
-- Implemented **Global Exception Handling** with `GlobalExceptionHandler` (Sprint 4).
-- Integrated **JaCoCo** for test coverage validation.
+- Implemented **Global Exception Handling** with `GlobalExceptionHandler`
+- Built **Payment Service**: create & update payments
+- Implemented **Product filtering and sorting**
+- Developed **CartItem management**: add/remove products in cart
+- Refactored `PaymentService` and unified code style across all layers
+- Integrated **JaCoCo** for test coverage validation**
 
 ---
+
+### Liudmyla Iermolenko
+**Developer**
+
+**Contributions:**
+- Implemented **Favorite entity with CRUD logic**
+- Developed **User profile editing (PUT)**
+- Implemented **Product editing (PUT)**
+- Added **OrderItem** to store product details in orders
+- Built **Report Service & Report Controller**
+- Developed **Reporting Module** with analytics features
+- Optimized **transactional usage** across services
+- Rebuilt and improved **ReportService**
+
+### Anna Boldt
+**Developer**
+
+**Contributions:**
+- Implemented **Category editing**
+- Added **Order history**: view past orders
+- Developed **Favorites** functionality and fixed null-safe execution
+- Implemented **User Cart creation**
+- Wrote **unit tests** for category editing, services, and controllers
+- Contributed to **team presentation preparation**

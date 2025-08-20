@@ -1,7 +1,7 @@
 # GardenShop
 project by **Java Four**
 <p align="left">
-  <img src="image.png" alt="Java Four Team" width="300 "/>
+  <img src="java.png" alt="Java Four Team" width="300 "/>
 </p>
 
 ## About the Project

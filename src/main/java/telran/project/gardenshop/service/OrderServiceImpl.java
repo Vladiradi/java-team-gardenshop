@@ -2,9 +2,12 @@ package telran.project.gardenshop.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +16,12 @@ import telran.project.gardenshop.dto.OrderItemRequestDto;
 import telran.project.gardenshop.entity.*;
 import telran.project.gardenshop.enums.OrderStatus;
 import telran.project.gardenshop.exception.EmptyCartException;
-import telran.project.gardenshop.exception.InsufficientQuantityException;
 import telran.project.gardenshop.exception.OrderNotFoundException;
-import telran.project.gardenshop.exception.ProductNotInCartException;
 import telran.project.gardenshop.repository.OrderRepository;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -60,11 +62,60 @@ public class OrderServiceImpl implements OrderService {
         validateCartNotEmpty(cart);
 
         Order order = buildOrder(user, dto);
-        List<OrderItem> orderItems = createOrderItemsFromCart(dto, cart, order);
 
-        order.getItems().addAll(orderItems);
+        Map<Long, CartItem> productIdPerCartItemMap = cart.getItems().stream()
+                .collect(Collectors.toMap(cartItem -> cartItem.getProduct().getId(), cartItem -> cartItem));
+
+        AtomicInteger successfullyAddedItems = new AtomicInteger(0);
+        dto.getItems().forEach(itemDto -> {
+            if (productIdPerCartItemMap.containsKey(itemDto.getProductId())) {
+                CartItem cartItem = productIdPerCartItemMap.get(itemDto.getProductId());
+
+                int requestedQuantity = itemDto.getQuantity();
+                int availableQuantity = cartItem.getQuantity();
+                int quantityToTake = Math.min(requestedQuantity, availableQuantity);
+
+                if (quantityToTake > 0) {
+                    OrderItem orderItem = createOrderItem(quantityToTake, cartItem, order);
+                    order.getItems().add(orderItem);
+                    successfullyAddedItems.incrementAndGet();
+
+                    if (requestedQuantity > availableQuantity) {
+                        log.debug("Product {}: Requested {} > available {}. Taking all available {} items.",
+                                cartItem.getProduct().getName(), requestedQuantity, availableQuantity, quantityToTake);
+                    } else if (requestedQuantity < availableQuantity) {
+                        log.debug("Product {}: Requested {} < available {}. Taking {} items, {} remain in cart.",
+                                cartItem.getProduct().getName(), requestedQuantity, availableQuantity, quantityToTake,
+                                availableQuantity - quantityToTake);
+                    } else {
+                        log.debug("Product {}: Requested {} = available {}. Taking all {} items.",
+                                cartItem.getProduct().getName(), requestedQuantity, availableQuantity, quantityToTake);
+                    }
+
+                    editCartItemList(cartItem, cart.getItems(), quantityToTake);
+                } else {
+                    log.debug("Product {}: Cannot create order item - requested {} but available {}.",
+                            cartItem.getProduct().getName(), requestedQuantity, availableQuantity);
+                }
+            } else {
+                log.debug("Product with ID {} not found in cart. Skipping order item creation.",
+                        itemDto.getProductId());
+            }
+        });
 
         cartService.update(cart);
+
+        if (successfullyAddedItems.get() == 0) {
+            log.warn(
+                    "Order creation failed for user {}: no valid items found in cart after filtering. Requested {} items, but none were available.",
+                    user.getEmail(), dto.getItems().size());
+            throw new EmptyCartException(
+                    "Cannot create an order with no valid items. All requested products are not available in cart or have insufficient quantity.");
+        }
+
+        log.debug("Order created for user {}: requested {} items, successfully added {} items to order",
+                user.getEmail(), dto.getItems().size(), successfullyAddedItems.get());
+
         return orderRepository.save(order);
     }
 
@@ -100,35 +151,13 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    private List<OrderItem> createOrderItemsFromCart(OrderCreateRequestDto dto, Cart cart, Order order) {
-        return dto.getItems().stream()
-                .map(itemDto -> processOrderItem(itemDto, cart, order))
-                .toList();
-    }
-
-    private OrderItem processOrderItem(OrderItemRequestDto itemDto, Cart cart, Order order) {
-        CartItem cartItem = findCartItemByProductId(cart.getItems(), itemDto.getProductId())
-                .orElseThrow(() -> new ProductNotInCartException(itemDto.getProductId()));
-
-        validateQuantity(cartItem, itemDto);
-
-        OrderItem orderItem = OrderItem.builder()
+    private OrderItem createOrderItem(int quantity, CartItem cartItem, Order order) {
+        return OrderItem.builder()
                 .order(order)
                 .product(cartItem.getProduct())
-                .quantity(itemDto.getQuantity())
+                .quantity(quantity)
                 .price(productService.getCurrentPrice(cartItem.getProduct()))
                 .build();
-
-        editCartItemList(cartItem, cart.getItems(), itemDto.getQuantity());
-
-        return orderItem;
-    }
-
-    private void validateQuantity(CartItem cartItem, OrderItemRequestDto itemDto) {
-        if (cartItem.getQuantity() < itemDto.getQuantity()) {
-            throw new InsufficientQuantityException(itemDto.getProductId(), cartItem.getQuantity(),
-                    itemDto.getQuantity());
-        }
     }
 
     private void editCartItemList(CartItem cartItem, List<CartItem> cartItems, int quantityToTake) {
@@ -137,10 +166,6 @@ public class OrderServiceImpl implements OrderService {
         } else {
             cartItem.setQuantity(cartItem.getQuantity() - quantityToTake);
         }
-    }
-
-    private Optional<CartItem> findCartItemByProductId(List<CartItem> cartItems, Long productId) {
-        return cartItems.stream().filter(ci -> ci.getProduct().getId().equals(productId)).findFirst();
     }
 
     @Override

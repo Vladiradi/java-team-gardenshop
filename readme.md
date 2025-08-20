@@ -1,12 +1,12 @@
-# GardenShop
+## GardenShop
 project by **Java Four**
 <p align="left">
   <img src="java.png" alt="Java Four Team" width="300 "/>
 </p>
 
-### About the Project
+## About the Project
 
-**GardenShop** is a backend application developed as a graduation project by the **Java Four**. for an online store specializing
+GardenShop is a backend application developed as a graduation project by the **Java Four**. for an online store specializing
 in home and garden products.
 It allows customers to browse the catalog, add products to their cart, place orders, and track order statuses.
 Administrators can manage the catalog, categories, discounts, and access sales reports for analytics.

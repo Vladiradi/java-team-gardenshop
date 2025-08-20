@@ -10,7 +10,9 @@ import telran.project.gardenshop.entity.*;
 @Mapper(componentModel = "spring", uses = { FavoriteMapper.class })
 public interface UserMapper {
 
+    @Mapping(target = "role", constant = "USER")
     User toEntity(UserRequestDto dto);
+
 
     @Mapping(source = "role", target = "role")
     @Mapping(source = "favorites", target = "favorites")

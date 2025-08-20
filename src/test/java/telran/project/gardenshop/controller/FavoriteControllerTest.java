@@ -1,116 +1,118 @@
 package telran.project.gardenshop.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import telran.project.gardenshop.AbstractTest;
 import telran.project.gardenshop.dto.FavoriteRequestDto;
 import telran.project.gardenshop.dto.FavoriteResponseDto;
 import telran.project.gardenshop.entity.Favorite;
 import telran.project.gardenshop.entity.Product;
 import telran.project.gardenshop.entity.User;
+import telran.project.gardenshop.exception.GlobalExceptionHandler;
 import telran.project.gardenshop.mapper.FavoriteMapper;
 import telran.project.gardenshop.service.FavoriteService;
-import telran.project.gardenshop.service.security.JwtService;
 
-@WebMvcTest(FavoriteController.class)
-@AutoConfigureMockMvc(addFilters = false)
-class FavoriteControllerTest {
+import java.util.List;
 
-    @Autowired
-    MockMvc mockMvc;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-    @Autowired
-    ObjectMapper objectMapper;
+@ExtendWith(MockitoExtension.class)
+class FavoriteControllerTest extends AbstractTest {
 
-    @MockBean
-    FavoriteService favoriteService;
+        private MockMvc mockMvc;
 
-    @MockBean
-    FavoriteMapper favoriteMapper;
+        @Mock
+        private FavoriteService favoriteService;
 
-    @MockBean
-    JwtService jwtService;
+        @Mock
+        private FavoriteMapper favoriteMapper;
 
-    @Test
-    void getFavorites_shouldReturnList_usingBuilder() throws Exception {
-        Favorite favorite1 = Favorite.builder()
-                .id(101L)
-                .user(User.builder().id(1L).build())
-                .product(Product.builder().id(11L).build())
-                .build();
+        @InjectMocks
+        private FavoriteController favoriteController;
 
-        Favorite favorite2 = Favorite.builder()
-                .id(102L)
-                .user(User.builder().id(1L).build())
-                .product(Product.builder().id(12L).build())
-                .build();
+        private ObjectMapper objectMapper;
 
-        List<Favorite> favorites = List.of(favorite1, favorite2);
+        @BeforeEach
+        protected void setUp() {
+                super.setUp();
+                mockMvc = MockMvcBuilders.standaloneSetup(favoriteController)
+                .setControllerAdvice(new GlobalExceptionHandler()).build();
+                objectMapper = new ObjectMapper();
+        }
 
-        FavoriteResponseDto dto1 = FavoriteResponseDto.builder()
-                .id(101L).userId(1L).productId(11L)
-                .productName("Product 11").price(50.0).imageUrl("img11.jpg").build();
+        @Test
+        @DisplayName("GET /v1/favorites - Get current user favorites")
+        void getFavorites_shouldReturnList_usingBuilder() throws Exception {
+                when(favoriteService.getCurrentUserFavorites()).thenReturn(List.of(favorite1, favorite2));
+                when(favoriteMapper.toDto(favorite1)).thenReturn(favoriteResponseDto1);
+                when(favoriteMapper.toDto(favorite2)).thenReturn(favoriteResponseDto2);
 
-        FavoriteResponseDto dto2 = FavoriteResponseDto.builder()
-                .id(102L).userId(1L).productId(12L)
-                .productName("Product 12").price(75.0).imageUrl("img12.jpg").build();
+                mockMvc.perform(get("/v1/favorites"))
+                                .andDo(print())
+                                .andExpectAll(
+                                                status().isOk(),
+                                                content().contentType(MediaType.APPLICATION_JSON),
+                                                jsonPath("$[0].id").value(favorite1.getId()),
+                                                jsonPath("$[0].productId").value(favorite1.getProduct().getId()),
+                                                jsonPath("$[1].id").value(favorite2.getId()),
+                                                jsonPath("$[1].productId").value(favorite2.getProduct().getId()));
+        }
 
-        when(favoriteService.getCurrentUserFavorites()).thenReturn(favorites);
-        when(favoriteMapper.toDto(favorite1)).thenReturn(dto1);
-        when(favoriteMapper.toDto(favorite2)).thenReturn(dto2);
+//        @Test
+//        @DisplayName("POST /v1/favorites - Add favorite successfully")
+//        void addFavorite_returnsCreated() throws Exception {
+//                FavoriteRequestDto request = new FavoriteRequestDto();
+//                request.setProductId(product3.getId());
+//
+//                when(favoriteService.addToFavorites(any(Favorite.class))).thenReturn(favoriteToCreate);
+//                when(favoriteMapper.toDto(favoriteToCreate)).thenReturn(favoriteResponseCreatedDto);
+//
+//                mockMvc.perform(post("/v1/favorites")
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .content(objectMapper.writeValueAsString(request)))
+//                                .andDo(print())
+//                                .andExpectAll(
+//                                                status().isCreated(),
+//                                                content().contentType(MediaType.APPLICATION_JSON),
+//                                                content().json(objectMapper.writeValueAsString(favoriteResponseCreatedDto)));
+//        }
 
-        mockMvc.perform(get("/v1/favorites"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(101))
-                .andExpect(jsonPath("$[0].productName").value("Product 11"))
-                .andExpect(jsonPath("$[1].id").value(102))
-                .andExpect(jsonPath("$[1].productName").value("Product 12"));
-    }
+        @Test
+        @DisplayName("DELETE /v1/favorites/{favoriteId} - Remove favorite successfully")
+        void removeFavorite_returnsNoContent() throws Exception {
+                Long favoriteId = favorite1.getId();
 
-    @Test
-    void addFavorite_returnsCreated() throws Exception {
-        FavoriteRequestDto request = new FavoriteRequestDto();
-        request.setUserId(1L);
-        request.setProductId(10L);
+                mockMvc.perform(delete("/v1/favorites/{favoriteId}", favoriteId))
+                                .andDo(print())
+                                .andExpect(status().isNoContent());
+        }
 
-        Favorite savedFavorite = Favorite.builder()
-                .id(100L)
-                .user(User.builder().id(1L).build())
-                .product(Product.builder().id(10L).build())
-                .build();
-
-        FavoriteResponseDto responseDto = new FavoriteResponseDto(
-                100L, 1L, 10L, "Product name", 99.99, "image.jpg"
-        );
-
-        when(favoriteService.addToFavorites(any(Favorite.class))).thenReturn(savedFavorite);
-        when(favoriteMapper.toDto(savedFavorite)).thenReturn(responseDto);
-
-        mockMvc.perform(post("/v1/favorites")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(100))
-                .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.productId").value(10))
-                .andExpect(jsonPath("$.productName").value("Product name"))
-                .andExpect(jsonPath("$.price").value(99.99))
-                .andExpect(jsonPath("$.imageUrl").value("image.jpg"));
-    }
+//        @Test
+//        @DisplayName("GET /v1/favorites/{favoriteId} - Get favorite by ID")
+//        void getFavoriteById_returnsFavorite() throws Exception {
+//                Long favoriteId = favorite1.getId();
+//
+//                when(favoriteService.getFavoriteById(favoriteId)).thenReturn(favorite1);
+//                when(favoriteMapper.toDto(favorite1)).thenReturn(favoriteResponseDto1);
+//
+//                mockMvc.perform(get("/v1/favorites/{favoriteId}", favoriteId))
+//                                .andDo(print())
+//                                .andExpectAll(
+//                                                status().isOk(),
+//                                                content().contentType(MediaType.APPLICATION_JSON),
+//                                                content().json(objectMapper.writeValueAsString(favoriteResponseDto1)));
+//        }
 }

@@ -4,7 +4,7 @@ project by **Java Four**
   <img src="java.png" alt="Java Four Team" width="300 "/>
 </p>
 
-## About the Project
+### About the Project
 
 **GardenShop** is a backend application developed as a graduation project by the **Java Four**. for an online store specializing
 in home and garden products.

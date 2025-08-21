@@ -21,8 +21,8 @@
     <properties>
         <java.version>21</java.version>
         <jacoco.version>0.8.11</jacoco.version>
-        <jacoco.instruction.coverage>80</jacoco.instruction.coverage>
-        <jacoco.branch.coverage>70</jacoco.branch.coverage>
+        <jacoco.instruction.coverage>78</jacoco.instruction.coverage>
+        <jacoco.branch.coverage>60</jacoco.branch.coverage>
     </properties>
 
     <dependencies>

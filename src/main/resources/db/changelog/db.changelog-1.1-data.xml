@@ -50,13 +50,7 @@
             <column name="password" value="pw123"/>
             <column name="role" value="USER"/>
         </insert>
-        <insert tableName="users">
-            <column name="email" value="vlad.admin@gardenshop.de"/>
-            <column name="full_name" value="Vlad Admin"/>
-            <column name="phone_number" value="+4915732201999"/>
-            <column name="password" value="123456"/>
-            <column name="role" value="ADMIN"/>
-        </insert>
+
 
         <!-- Categories -->
         <insert tableName="categories">

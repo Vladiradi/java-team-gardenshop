@@ -3,6 +3,9 @@ package telran.project.gardenshop.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +69,14 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete category", description = "Remove a category from the system")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete category", description = "Remove a category from the system. **ADMIN role required.**")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Category successfully deleted"),
+            @ApiResponse(responseCode = "403", description = "Access denied - ADMIN role required"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - JWT token required"),
+            @ApiResponse(responseCode = "404", description = "Category not found")
+    })
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();

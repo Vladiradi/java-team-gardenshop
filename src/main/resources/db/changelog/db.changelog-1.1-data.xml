@@ -51,6 +51,7 @@
             <column name="role" value="USER"/>
         </insert>
 
+
         <!-- Categories -->
         <insert tableName="categories">
             <column name="name" value="Fertilizers and plant food"/>

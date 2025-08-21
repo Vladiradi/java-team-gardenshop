@@ -1,7 +1,11 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/categories")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Categories", description = "Category management operations")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -31,7 +36,7 @@ public class CategoryController {
     private final CategoryMapper categoryMapper;
 
     @PostMapping
-    @Operation(summary = "Create a new category")
+    @Operation(summary = "Create a new category", description = "Add a new product category to the system")
     public ResponseEntity<CategoryResponseDto> create(@Valid @RequestBody CategoryRequestDto dto) {
         Category category = categoryMapper.toEntity(dto);
         Category saved = categoryService.createCategory(category);
@@ -39,33 +44,39 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get category by ID")
+    @Operation(summary = "Get category by ID", description = "Retrieve category information by unique identifier")
     public ResponseEntity<CategoryResponseDto> getById(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
         return ResponseEntity.ok(categoryMapper.toDto(category));
     }
 
     @GetMapping
-    @Operation(summary = "Get all categories")
+    @Operation(summary = "Get all categories", description = "Retrieve a list of all available product categories")
     public ResponseEntity<List<CategoryResponseDto>> getAll() {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(
                 categories.stream()
                         .map(categoryMapper::toDto)
-                        .collect(Collectors.toList())
-        );
+                        .collect(Collectors.toList()));
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update category")
+    @Operation(summary = "Update category", description = "Modify existing category information")
     public ResponseEntity<CategoryResponseDto> update(@PathVariable Long id,
-                                                      @Valid @RequestBody CategoryEditDto dto) {
+            @Valid @RequestBody CategoryEditDto dto) {
         Category saved = categoryService.updateCategory(id, dto);
         return ResponseEntity.ok(categoryMapper.toDto(saved));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete category")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Delete category", description = "Remove a category from the system. **ADMIN role required.**")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Category successfully deleted"),
+            @ApiResponse(responseCode = "403", description = "Access denied - ADMIN role required"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - JWT token required"),
+            @ApiResponse(responseCode = "404", description = "Category not found")
+    })
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();

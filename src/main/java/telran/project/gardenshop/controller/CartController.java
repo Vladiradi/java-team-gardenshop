@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import jakarta.validation.constraints.Min;
@@ -23,6 +24,7 @@ import telran.project.gardenshop.service.CartService;
 @RequestMapping("/v1/cart")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Cart", description = "Shopping cart management operations")
 public class CartController {
 
         private final CartService cartService;
@@ -39,7 +41,7 @@ public class CartController {
                 return ResponseEntity.ok(cartMapper.toDto(cart));
         }
 
-        @Operation(summary = "Add item to current cart", description = "adds 1 item by productId to the current user's cart")
+        @Operation(summary = "Add item to cart", description = "Adds 1 item by productId to the current user's cart")
         @ApiResponses({
                         @ApiResponse(responseCode = "200", description = "Item added", content = @Content(schema = @Schema(implementation = CartResponseDto.class))),
                         @ApiResponse(responseCode = "404", description = "Item not found")
@@ -51,7 +53,7 @@ public class CartController {
                 return ResponseEntity.status(HttpStatus.OK).body(cartMapper.toDto(updated));
         }
 
-        @Operation(summary = "Update quantity of cart item", description = "Update quantity of cart item by cartItemId")
+        @Operation(summary = "Update cart item quantity", description = "Update quantity of cart item by cartItemId")
         @ApiResponses({
                         @ApiResponse(responseCode = "200", description = "Quantity updated", content = @Content(schema = @Schema(implementation = CartResponseDto.class))),
                         @ApiResponse(responseCode = "404", description = "Cart item not found")

@@ -1,6 +1,7 @@
 package telran.project.gardenshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/products")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Products", description = "Product management operations")
 public class ProductController {
 
     private final ProductService productService;
@@ -38,7 +40,7 @@ public class ProductController {
     private final CategoryService categoryService;
 
     @PostMapping
-    @Operation(summary = "Add new product")
+    @Operation(summary = "Add new product", description = "Create a new product in the catalog")
     public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto dto) {
         Product entity = productMapper.toEntity(dto);
         Product saved = productService.create(entity);
@@ -46,14 +48,14 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get product by ID")
+    @Operation(summary = "Get product by ID", description = "Retrieve product information by unique identifier")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
         Product product = productService.getById(id);
         return ResponseEntity.ok(productMapper.toDto(product));
     }
 
     @GetMapping
-    @Operation(summary = "Get all products")
+    @Operation(summary = "Get all products", description = "Retrieve a list of all available products")
     public ResponseEntity<List<ProductResponseDto>> getAll() {
         List<Product> products = productService.getAll();
         List<ProductResponseDto> dtoList = products.stream()
@@ -62,9 +64,8 @@ public class ProductController {
         return ResponseEntity.ok(dtoList);
     }
 
-
     @PutMapping("/{id}")
-    @Operation(summary = "Update product (title, description, price)")
+    @Operation(summary = "Update product", description = "Modify existing product information (title, description, price)")
     public ResponseEntity<ProductResponseDto> editProduct(
             @PathVariable Long id,
             @RequestBody ProductEditDto dto) {
@@ -74,13 +75,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete product")
+    @Operation(summary = "Delete product", description = "Remove a product from the catalog")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/filter")
+    @Operation(summary = "Filter products", description = "Search and filter products by various criteria")
     public ResponseEntity<List<ProductResponseDto>> filterProducts(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Double minPrice,

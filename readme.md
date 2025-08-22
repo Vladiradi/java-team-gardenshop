@@ -19,13 +19,6 @@ in home and garden products. It allows customers to browse the catalog, add prod
 Administrators can manage the catalog, categories, discounts, and access sales reports for analytics.
 
 
-## Links
-
-- [Technical Task](https://docs.google.com/document/d/1Xn41eFhdYAJVYzRucsNwpbLJ5lNxdvpfx__SZf5DwXA/edit?tab=t.0#heading=h.e2bcw3kuo1da)
-- [Layout (Figma)](https://www.figma.com/design/SDNWLzCWkh9ZXdCpWEaByv/project-frontend?node-id=5251-7386&p=f&t=GAPyXsk75XCC4sjs-0)
-- [REST API Documentation](https://confirmed-baron-2e5.notion.site/REST-API-f186cf63a46c4020b2237f73093922ab)
-- [Deployed Version (Swagger UI)](http://150.241.114.225:8082/swagger-ui/index.html#/)
-
 ## Core Features
 - **User Management** – registration, authentication, profile editing, account deletion
 - **Product & Category Management** – create, update, and delete products and categories (admin only)

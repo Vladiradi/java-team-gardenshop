@@ -60,7 +60,7 @@ Administrators can manage the catalog, categories, discounts, and access sales r
 ### Favorites
 - View user’s favorite products
 
----
+
 
 ## Entities Overview
 
@@ -97,7 +97,7 @@ Administrators can manage the catalog, categories, discounts, and access sales r
 | Docker             | Containerization & deployment         |
 | Git + GitHub       | Version control                       |
 
----
+
 
 ## Team
 
@@ -116,7 +116,7 @@ Administrators can manage the catalog, categories, discounts, and access sales r
 - Implemented **DTO validation and converters**
 - Added **Product of the Day** feature
 
----
+
 
 ### Arkady Zon
 **Developer**
@@ -129,7 +129,7 @@ Administrators can manage the catalog, categories, discounts, and access sales r
 - Refactored `PaymentService` and unified code style across all layers
 - Integrated **JaCoCo** for test coverage validation**
 
----
+
 
 ### Liudmyla Iermolenko
 **Developer**

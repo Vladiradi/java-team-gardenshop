@@ -47,24 +47,7 @@ public class ReportServiceImpl implements ReportService {
                         return createEmptyProfitReport(startDate, endDate);
                 }
 
-                BigDecimal totalRevenue = calculateTotalRevenue(ordersInPeriod);
-                BigDecimal totalCost = totalRevenue.multiply(COST_MULTIPLIER);
-                BigDecimal totalProfit = totalRevenue.subtract(totalCost);
-                BigDecimal profitMargin = calculateProfitMargin(totalRevenue, totalProfit);
-
-                long totalOrders = ordersInPeriod.size();
-                long totalItemsSold = calculateTotalItemsSold(ordersInPeriod);
-
-                return ProfitReportDto.builder()
-                                .startDate(startDate)
-                                .endDate(endDate)
-                                .totalRevenue(totalRevenue)
-                                .totalCost(totalCost)
-                                .totalProfit(totalProfit)
-                                .profitMargin(profitMargin)
-                                .totalOrders(totalOrders)
-                                .totalItemsSold(totalItemsSold)
-                                .build();
+                return buildProfitReport(startDate, endDate, ordersInPeriod);
         }
 
         @Override
@@ -84,29 +67,7 @@ public class ReportServiceImpl implements ReportService {
                                 .sorted(Comparator.comparing(GroupedProfitReportDto.GroupedProfitData::getPeriodStart))
                                 .collect(Collectors.toList());
 
-                BigDecimal totalRevenue = groupedData.stream()
-                                .map(GroupedProfitReportDto.GroupedProfitData::getRevenue)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                BigDecimal totalCost = totalRevenue.multiply(COST_MULTIPLIER);
-                BigDecimal totalProfit = totalRevenue.subtract(totalCost);
-                BigDecimal profitMargin = calculateProfitMargin(totalRevenue, totalProfit);
-
-                long totalOrders = ordersInPeriod.size();
-                long totalItemsSold = calculateTotalItemsSold(ordersInPeriod);
-
-                return GroupedProfitReportDto.builder()
-                                .startDate(startDate)
-                                .endDate(endDate)
-                                .groupBy(groupBy.name())
-                                .groupedData(groupedData)
-                                .totalRevenue(totalRevenue)
-                                .totalCost(totalCost)
-                                .totalProfit(totalProfit)
-                                .profitMargin(profitMargin)
-                                .totalOrders(totalOrders)
-                                .totalItemsSold(totalItemsSold)
-                                .build();
+                return buildGroupedProfitReport(startDate, endDate, groupBy, groupedData, ordersInPeriod);
         }
 
         @Override
@@ -135,6 +96,50 @@ public class ReportServiceImpl implements ReportService {
                                 .collect(Collectors.toList());
         }
 
+        private ProfitReportDto buildProfitReport(LocalDateTime startDate, LocalDateTime endDate, List<Order> orders) {
+                BigDecimal totalRevenue = calculateTotalRevenue(orders);
+                ProfitCalculation profitCalc = calculateProfit(totalRevenue);
+
+                long totalOrders = orders.size();
+                long totalItemsSold = calculateTotalItemsSold(orders);
+
+                return ProfitReportDto.builder()
+                                .startDate(startDate)
+                                .endDate(endDate)
+                                .totalRevenue(totalRevenue)
+                                .totalCost(profitCalc.cost())
+                                .totalProfit(profitCalc.profit())
+                                .profitMargin(profitCalc.profitMargin())
+                                .totalOrders(totalOrders)
+                                .totalItemsSold(totalItemsSold)
+                                .build();
+        }
+
+        private GroupedProfitReportDto buildGroupedProfitReport(LocalDateTime startDate, LocalDateTime endDate, GroupByPeriod groupBy,
+                        List<GroupedProfitReportDto.GroupedProfitData> groupedData, List<Order> orders) {
+                BigDecimal totalRevenue = groupedData.stream()
+                                .map(GroupedProfitReportDto.GroupedProfitData::getRevenue)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                ProfitCalculation profitCalc = calculateProfit(totalRevenue);
+
+                long totalOrders = orders.size();
+                long totalItemsSold = calculateTotalItemsSold(orders);
+
+                return GroupedProfitReportDto.builder()
+                                .startDate(startDate)
+                                .endDate(endDate)
+                                .groupBy(groupBy.name())
+                                .groupedData(groupedData)
+                                .totalRevenue(totalRevenue)
+                                .totalCost(profitCalc.cost())
+                                .totalProfit(profitCalc.profit())
+                                .profitMargin(profitCalc.profitMargin())
+                                .totalOrders(totalOrders)
+                                .totalItemsSold(totalItemsSold)
+                                .build();
+        }
+
         private BigDecimal calculateTotalRevenue(List<Order> orders) {
                 return orders.stream()
                                 .flatMap(order -> order.getItems().stream())
@@ -154,10 +159,35 @@ public class ReportServiceImpl implements ReportService {
                                 : BigDecimal.ZERO;
         }
 
+        private ProfitCalculation calculateProfit(BigDecimal revenue) {
+                BigDecimal cost = revenue.multiply(COST_MULTIPLIER);
+                BigDecimal profit = revenue.subtract(cost);
+                BigDecimal profitMargin = calculateProfitMargin(revenue, profit);
+                return new ProfitCalculation(cost, profit, profitMargin);
+        }
+
+        private record ProfitCalculation(BigDecimal cost, BigDecimal profit, BigDecimal profitMargin) {}
+
         private ProfitReportDto createEmptyProfitReport(LocalDateTime startDate, LocalDateTime endDate) {
                 return ProfitReportDto.builder()
                                 .startDate(startDate)
                                 .endDate(endDate)
+                                .totalRevenue(BigDecimal.ZERO)
+                                .totalCost(BigDecimal.ZERO)
+                                .totalProfit(BigDecimal.ZERO)
+                                .profitMargin(BigDecimal.ZERO)
+                                .totalOrders(0L)
+                                .totalItemsSold(0L)
+                                .build();
+        }
+
+        private GroupedProfitReportDto createEmptyGroupedReport(LocalDateTime startDate, LocalDateTime endDate,
+                        GroupByPeriod groupBy) {
+                return GroupedProfitReportDto.builder()
+                                .startDate(startDate)
+                                .endDate(endDate)
+                                .groupBy(groupBy.name())
+                                .groupedData(new ArrayList<>())
                                 .totalRevenue(BigDecimal.ZERO)
                                 .totalCost(BigDecimal.ZERO)
                                 .totalProfit(BigDecimal.ZERO)
@@ -185,84 +215,10 @@ public class ReportServiceImpl implements ReportService {
                 };
         }
 
-        private GroupedProfitReportDto.GroupedProfitData calculateGroupedProfitData(String periodKey,
-                        List<Order> orders, GroupByPeriod groupBy) {
-                BigDecimal revenue = calculateTotalRevenue(orders);
-                BigDecimal cost = revenue.multiply(COST_MULTIPLIER);
-                BigDecimal profit = revenue.subtract(cost);
-                BigDecimal profitMargin = calculateProfitMargin(revenue, profit);
-
-                long orderCount = orders.size();
-                long itemsSold = calculateTotalItemsSold(orders);
-
-                LocalDateTime periodStart = getPeriodStart(periodKey, groupBy);
-                LocalDateTime periodEnd = getPeriodEnd(periodKey, groupBy);
-
-                return GroupedProfitReportDto.GroupedProfitData.builder()
-                                .periodLabel(periodKey)
-                                .periodStart(periodStart)
-                                .periodEnd(periodEnd)
-                                .revenue(revenue)
-                                .cost(cost)
-                                .profit(profit)
-                                .profitMargin(profitMargin)
-                                .orderCount(orderCount)
-                                .itemsSold(itemsSold)
-                                .build();
-        }
-
-        private LocalDateTime getPeriodStart(String periodKey, GroupByPeriod groupBy) {
-                return switch (groupBy) {
-                        case HOUR -> LocalDateTime.parse(periodKey + ":00",
-                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                        case DAY -> LocalDate.parse(periodKey).atStartOfDay();
-                        case WEEK -> {
-                                String datePart = periodKey.substring(5);
-                                yield LocalDate.parse(datePart).atStartOfDay();
-                        }
-                        case MONTH -> LocalDate.parse(periodKey + "-01").atStartOfDay();
-                };
-        }
-
-        private LocalDateTime getPeriodEnd(String periodKey, GroupByPeriod groupBy) {
-                return switch (groupBy) {
-                        case HOUR -> LocalDateTime.parse(periodKey + ":00",
-                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
-                        case DAY -> LocalDate.parse(periodKey).atTime(23, 59, 59);
-                        case WEEK -> {
-                                String datePart = periodKey.substring(5);
-                                LocalDate weekStart = LocalDate.parse(datePart);
-                                yield weekStart.plusDays(6).atTime(23, 59, 59);
-                        }
-                        case MONTH -> {
-                                LocalDate monthStart = LocalDate.parse(periodKey + "-01");
-                                yield monthStart.plusMonths(1).minusDays(1).atTime(23, 59, 59);
-                        }
-                };
-        }
-
-        private GroupedProfitReportDto createEmptyGroupedReport(LocalDateTime startDate, LocalDateTime endDate,
-                        GroupByPeriod groupBy) {
-                return GroupedProfitReportDto.builder()
-                                .startDate(startDate)
-                                .endDate(endDate)
-                                .groupBy(groupBy.name())
-                                .groupedData(new ArrayList<>())
-                                .totalRevenue(BigDecimal.ZERO)
-                                .totalCost(BigDecimal.ZERO)
-                                .totalProfit(BigDecimal.ZERO)
-                                .profitMargin(BigDecimal.ZERO)
-                                .totalOrders(0L)
-                                .totalItemsSold(0L)
-                                .build();
-        }
-
         private PendingPaymentReportDto buildPendingPaymentReportDto(Order order) {
                 long daysPending = ChronoUnit.DAYS.between(order.getCreatedAt(), LocalDateTime.now());
 
-                BigDecimal orderTotal = order.getItems().stream()
-                                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal orderTotal = calculateOrderTotal(order);
 
                 List<OrderItemResponseDto> items = order.getItems().stream()
                                 .map(this::buildOrderItemResponseDto)
@@ -278,6 +234,12 @@ public class ReportServiceImpl implements ReportService {
                                 .orderTotal(orderTotal)
                                 .items(items)
                                 .build();
+        }
+
+        private BigDecimal calculateOrderTotal(Order order) {
+                return order.getItems().stream()
+                                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
 
         private OrderItemResponseDto buildOrderItemResponseDto(OrderItem item) {
@@ -319,5 +281,59 @@ public class ReportServiceImpl implements ReportService {
                 }
 
                 return productStats;
+        }
+
+        private GroupedProfitReportDto.GroupedProfitData calculateGroupedProfitData(String periodKey,
+                        List<Order> orders, GroupByPeriod groupBy) {
+                BigDecimal revenue = calculateTotalRevenue(orders);
+                ProfitCalculation profitCalc = calculateProfit(revenue);
+
+                long orderCount = orders.size();
+                long itemsSold = calculateTotalItemsSold(orders);
+
+                LocalDateTime periodStart = getPeriodStart(periodKey, groupBy);
+                LocalDateTime periodEnd = getPeriodEnd(periodKey, groupBy);
+
+                return GroupedProfitReportDto.GroupedProfitData.builder()
+                                .periodLabel(periodKey)
+                                .periodStart(periodStart)
+                                .periodEnd(periodEnd)
+                                .revenue(revenue)
+                                .cost(profitCalc.cost())
+                                .profit(profitCalc.profit())
+                                .profitMargin(profitCalc.profitMargin())
+                                .orderCount(orderCount)
+                                .itemsSold(itemsSold)
+                                .build();
+        }
+
+        private LocalDateTime getPeriodStart(String periodKey, GroupByPeriod groupBy) {
+                return switch (groupBy) {
+                        case HOUR -> LocalDateTime.parse(periodKey + ":00",
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                        case DAY -> LocalDate.parse(periodKey).atStartOfDay();
+                        case WEEK -> {
+                                String datePart = periodKey.substring(5);
+                                yield LocalDate.parse(datePart).atStartOfDay();
+                        }
+                        case MONTH -> LocalDate.parse(periodKey + "-01").atStartOfDay();
+                };
+        }
+
+        private LocalDateTime getPeriodEnd(String periodKey, GroupByPeriod groupBy) {
+                return switch (groupBy) {
+                        case HOUR -> LocalDateTime.parse(periodKey + ":00",
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).plusHours(1);
+                        case DAY -> LocalDate.parse(periodKey).atTime(23, 59, 59);
+                        case WEEK -> {
+                                String datePart = periodKey.substring(5);
+                                LocalDate weekStart = LocalDate.parse(datePart);
+                                yield weekStart.plusDays(6).atTime(23, 59, 59);
+                        }
+                        case MONTH -> {
+                                LocalDate monthStart = LocalDate.parse(periodKey + "-01");
+                                yield monthStart.plusMonths(1).minusDays(1).atTime(23, 59, 59);
+                        }
+                };
         }
 }
